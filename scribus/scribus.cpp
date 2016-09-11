@@ -642,15 +642,16 @@ void ScribusMainWindow::initPalettes()
     nodePalette->installEventFilter(this);
 
 	layerPalette = new LayerPalette(this);
+
+	guidePalette = new GuideManager(this);
+
+	charPalette = new CharSelect(this);
+
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, layerPalette);
     connect( scrActions["toolsLayers"], SIGNAL(toggled(bool)) , layerPalette, SLOT(setPaletteShown(bool)) );
     connect( layerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsLayers"], SLOT(setChecked(bool)));
     layerPalette->installEventFilter(this);
     layerPalette->Table->installEventFilter(this);
-
-	guidePalette = new GuideManager(this);
-
-	charPalette = new CharSelect(this);
 
     scrapbookPalette = new Biblio(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, scrapbookPalette);
@@ -6770,6 +6771,8 @@ int ScribusMainWindow::ShowSubs()
 	marksManager->startup();
 	nsEditor->startup();
 	symbolPalette->startup();
+
+
 #if QT_VERSION < 0x050600
 	if (!m_prefsManager->appPrefs.uiPrefs.tabbedPalettes.isEmpty())
 	{
@@ -6848,6 +6851,8 @@ int ScribusMainWindow::ShowSubs()
 #endif
 	move(m_prefsManager->appPrefs.uiPrefs.mainWinSettings.xPosition, m_prefsManager->appPrefs.uiPrefs.mainWinSettings.yPosition);
 	resize(m_prefsManager->appPrefs.uiPrefs.mainWinSettings.width, m_prefsManager->appPrefs.uiPrefs.mainWinSettings.height);
+
+
 
 	// init the toolbars
 	fileToolBar->initVisibility();
@@ -7676,7 +7681,7 @@ void ScribusMainWindow::editMasterPagesEnd()
 	{
 		pagePalette->setVisible(m_pagePalVisible);
 		scrActions["toolsPages"]->setChecked(m_pagePalVisible);
-	}
+    }
 	// #12857 : the number of pages may change when undoing/redoing
 	// page addition/deletion while in edit mode, so take some extra
 	// care so that storedPageNum is in appropriate range

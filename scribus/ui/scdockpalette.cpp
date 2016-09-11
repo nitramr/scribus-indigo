@@ -24,9 +24,9 @@ for which a new license (GPL+exception) is in place.
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-//#include <QApplication>
+#include <QApplication>
 #include <QCloseEvent>
-//#include <QDesktopWidget>
+#include <QDesktopWidget>
 #include <QHideEvent>
 #include <QPoint>
 
@@ -190,7 +190,7 @@ void ScDockPalette::showEvent(QShowEvent *showEvent)
 		storeVisibility(true);
 	}
 #endif*/
-   // IndigoPanel::showEvent(showEvent);
+    IndigoPanel::showEvent(showEvent);
 }
 
 void ScDockPalette::hide()

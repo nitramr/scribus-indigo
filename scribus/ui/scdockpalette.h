@@ -27,7 +27,7 @@ for which a new license (GPL+exception) is in place.
 #define SCDOCKPALETTE_H
 
 #include <QCloseEvent>
-#include <QDockWidget>
+//#include <QDockWidget>
 #include <QHideEvent>
 #include <QKeySequence>
 #include <QShowEvent>
@@ -42,7 +42,7 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 
 	public:
         ScDockPalette( QWidget * parent = NULL, const QString& prefsContext = QString::null, Qt::WindowFlags f = 0 );
-        ~ScDockPalette() {}
+        ~ScDockPalette() {};
 		/** @brief Sample way to grab keystrokes, simply calls superclass at this point */
 		//virtual void keyPressEvent(QKeyEvent *keyEvent);
 		virtual void hide();
