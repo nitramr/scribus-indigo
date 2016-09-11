@@ -1,0 +1,38 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Drucken im Detail</title>
+</head>
+<body>
+<h2>Drucken im Detail</h2>
+<p>Eine der Herausforderungen für eine anspruchvolle DTP-Anwendung wie Scribus ist es, anspruchsvolle Eigenschaften der Dateiformate PostScript und PDF zu generieren. Mit "anspruchsvoll" sind Dinge wie Transparenz, Masken und Farbverläufe, wie sie normalerweise von professionellen DTP- und Zeichenprogrammen erzeugt werden, gemeint. Stellen Sie <strong>immer</strong> sicher, daß Sie aktuelle Versionen von CUPS und Ghostscript für Ihre Distribution installiert haben. Neuere Versionen von CUPS und Ghostscript unterstützen die anspruchsvollen Postscript-Level-3- und PDF-Funktionen von Scribus wesentlich besser.</p>
+<h3>Grundlegende Optionen:</h3>
+<ul>
+<li>Drucken Sie auf Ihrem Standarddrucker mit den Voreinstellungen von KPrinter, CUPS oder lprng, je nachdem, wie Ihre Installation eingerichtet ist. Sie können auch in Graustufen sowie in umgekehrter Reihenfolge drucken, so daß die Seiten in der richtigen Reihenfolge gestapelt werden.</li>
+<li>Sie können außerdem ein externes Druckkommando wie XPP oder kprinter verwenden.</li>
+</ul>
+
+<h3>Fortgeschrittene Optionen:</h3>
+<ul>
+<li>Farbseparationen drucken Sie, wie unten gezeigt. Damit können Sie jede der vier CMYK-Prozeßfarben auf ein separates Blatt drucken. Sie können statt dessen auch in eine Postscript-Datei drucken, die die vier Farbauszüge enthält.</li>
+</ul>
+<table width="100%"><tr><td align="center"><img src="images/printseps.png" alt="Farbseparationen aus Scribus drucken" title="Farbseparationen aus Scribus drucken" /></td></tr></table>
+
+<ul>
+<li>Sie können in eine PostScript-Datei drucken, die später "destillert" oder zur Weiterverarbeitung an einen Drucker oder ein Servicebüro vorbereitet werden kann.</li>
+<li>Wenn Sie die <strong>GutenPrint</strong>-Module installiert haben, öffnet ein Klick auf "Optionen" einen Dialog, der so ähnlich aussieht wie unten gezeigt. Der Inhalt ist abhängig von den Möglichkeiten des Druckers &ndash; ein guter Grund, GutenPrint zu verwenden. Dessen Module sind weniger "generisch" als die vieler anderer Druckertreiber  Wenn sie korrekt installiert sind, haben Sie Zugriff auf alle Funktionen, die Ihr Drucker bietet, etwa die Verwendung verschiedener Papiertypen, Duplexdruck, verschiedene Farbmodi etc. Scribus unterstützt <strong>Gutenprint</strong>-Treiber mit CUPS direkt. Diese hochwertiegn Druckertreiber sind optimiert für hochauflösende Ausdrucke mit Tintenstrahldruckern. Die technischen Details finden Sie unter <a href="cups.html">CUPS und Gimp-Print</a>.</li>
+</ul>
+<table width="100%"><tr><td align="center"><img src="images/printer1.png" alt="Druckereinstellungen" title="Druckereinstellungen"/></td></tr></table>
+
+<ul>
+	<li>Seiten spiegeln: Diese Option ermöglicht es Ihnen, Seiten beim Drucken zu "spiegeln". Dies ist praktisch, wenn Sie Visitenkarten, Kalender oder Broschüren drucken und beim Duplexdruck anschließend falten oder schneiden wollen.</li>
+</ul>
+<table width="100%"><tr><td align="center"><img src="images/printer2.png" alt="Weitere Optionen" title="Weitere Optionen"/></td></tr></table>
+
+<ul>
+	<li>Drucken mit Farbmanagement: Wenn das Farbmanagement aktiviert ist, kann Scribus ICC-Profile für den Ausdruck verwenden. Auf diese Weise ist es möglich, das Ergebnis im CMYK-Offsetdruck einigermaßen zu simulieren. Sie können auch Profile für verschiedene Papiersorten wie Fotopapier oder Spezialpapier für Farblaserdrucker anwenden. Weitere Informationen finden Sie unter <a href="cms.html">Scribus und littlecms</a>.</li>
+</ul>
+
+
+</body>
+</html>

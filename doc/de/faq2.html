@@ -1,0 +1,53 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Vermischte Fragen</title>
+</head>
+<body>
+<a name="top"></a>
+<h2>Vermischte Fragen</h2>
+<ul>
+	<li><a href="#9">Warum verwendet Scribus Qt und kein anderes Toolkit?</a></li>
+	<li><a href="#10">Woher stammt der Name &quot;Scribus&quot;?</a></li>
+	<li><a href="#19">Warum gibt es keine Importfilter f&#252;r QuarkXPress, InDesign oder andere kommerzielle DTP-Anwendungen?</a></li>
+	<li><a href="#20">Wie kann mit anderen zusammenarbeiten die ein anderes Programm f&#252;r das Seitenlayout verwenden?</a></li>
+		<li><a href="#31">Gibt es einen Microsoft-Publisher-Importfilter oder wird es einen geben?</a></li>
+</ul>
+
+<h3>Antworten</h3>
+
+<ol>
+	<li><a name="9"></a>
+		<p class="faqquestion">Warum verwendet Scribus Qt und kein anderes Toolkit??</p>
+Als Franz Schmid das Projekt gestartet hat, verwendete er zun&#228;chst Python. Aus Performancegr&#252;nden hat er sich entschieden, Scribus nach C++ zu portieren. Das Toolkit mit der umfangreichsten Dokumentation war zu dieser Zeit Qt 2.2. Die erste Version, die Qt2 verwendet hat, war 0.3 (2001). Scribus wurde nach der Ver&#246;ffentlichung auf Qt 3 portiert. Ab Version 1.3.5 wird Scribus Qt4 benutzen.</p></br>
+		<a href="#top">Nach oben</a><hr/>
+	</li>
+	<li><a name="10"></a>
+		<p class="faqquestion">Woher stammt der Name &quot;Scribus&quot;?</p>
+	<p>Als Franz Schmid das Projekt gestartet hat, lautete der Arbeitstitel &quot;Open Page&quot;, aber er hielt ihn f&#252;r zu allgemein. Scribus ist von der lateinischen Bezeichnung f&#252;r Schreiber im alten Rom (Scriba) abgeleitet. Dieses Wort hat sich in vielen Sprachen erhalten, etwa im englischen &quot;scribe&quot; oder im deutschen &quot;Schreiber&quot;. Scribus wird entweder englisch oder lateinisch ausgesprochen.</p>
+		<a href="#top">Nach oben</a><hr/>
+	</li>
+	<li><a name="19"></a>
+		<p class="faqquestion">Warum gibt es keine Importfilter f&#252;r QuarkXPress, InDesign oder andere kommerzielle DTP-Anwendungen?</p>
+		<p>Es gibt verschiedene Gr&#252;nde f&#252;r fehlende Importfilter f&#252;r die Dateiformate kommerzieller DTP-Anwendungen</p>
+		<ol>
+	<li>DTP-Dateiformate sind intern &#228;u&#223;erst komplex &ndash; wahrscheinlich sind es die komplexesten Formate &#252;berhaupt. Importfilter zu schreiben, ist wesentlich schwieriger als f&#252;r Tabellenkalkulationen oder Textverarbeitungen. Ein Programmierer, der mit dem Dateiformat von PageMaker vertraut ist, hat es einmal mit einem Flu&#223;diagramm verglichen, das zwei mal drei Meter gro&#223; ist und eine Schriftgr&#246;&#223;e von 6 Punkt verwendet. Bis zum Erscheinen von InDesign 2 war es unm&#246;glich, PageMaker-Dateien in einer anderen Anwendung zu importieren, obwohl Adobe &#252;ber die Beschreibung verf&#252;gte. Beachten Sie: Nicht einmal InDesign CS kann im InDesign-2-Format speichern.</li>
+			<li>Die Dateiformate sind manchmal patentgesch&#252;tzt und nicht &#246;ffentlich dokumentiert.</li>
+	<li>Ist es also unmoralisch oder illegal, eine InDesign-Datei in einem Hex-Editor zu &#246;ffenen, um ein Import-/Export-Plug-in f&#252;r Scribus zu schreiben?<br/>M&#246;glicherweise nicht, aber weil es sich um ein geschlossenes Format handelt, w&#252;rden wir vermutlich eine Warnung von Adobe erhalten. &#196;hnliches ist passiert, als ein Importfilter f&#252;r QuarkXPress-Dateien getestet wurde. Wir verf&#252;gen nicht &#252;ber die notwendigen juristischen Ressourcen, um gro&#223;e propriet&#228;re Softwarefirmen herauszufordern. Nur ein Entwickler hat das XPress-Dateiformat erfolgreich entschl&#252;sselt, und er hat erst nach einem langen Gerichtsverfahren recht bekommen.</li>
+			<li>Beschr&#228;nkte Entwicklerkapazit&#228;ten. Es ist die einhellige Meinung des Entwicklerteams, da&#223; es seine Zeit besser in die Weiterentwicklung von Scribus investiert.</li>
+		</ol>
+		<a href="#top">Nach oben</a><hr/>
+	</li>
+	<li><a name="20"></a>
+		<p class="faqquestion">Wie kann mit Leuten zusammenarbeiten, die ein anderes Programm f&#252;r das Seitenlayout verwenden?</p>
+		<p>Verwenden Sie EPS, SVG oder PDF als Austauschformat. PDF-Dateien, die mit Scribus erzeugt wurden, k&#246;nnen problemlos von kommerziellen Programmen importiert werden. Der SVG-Import ist hervorragend f&#252;r Vektorgrafiken geeignet. Scribus kann EPS-Dateien importieren, wenn Sie sich an die Spezifikationen halten. Das gilt auch f&#252;r Schmuckfarben in DCS-2.0-Dateien. Das Handbuch enth&#228;lt detaillierte Informationen zu diesen Themen.</p>
+		<a href="#top">Nach oben</a><hr/>
+	</li>
+		<li><a name="31"></a>
+		<p class="faqquestion">Gibt es einen Microsoft-Publisher-Importfilter oder wird es einen geben?</p>
+		<p>Es gibt keinen, und es wird wahrscheinlich vom Scribus-Team auch keiner bereitgestellt. Genau wie bei InDesign und QuarkXPress ist das Dateiformat nicht dokumentiert und schwer, vielleicht gar nicht zu entschl&#252;sseln. Selbst zwischen unterschiedlichen Publisher-Versionen ist ein reibungsloser Austausch von *.pub-Dateien problematisch.</p>
+		<a href="#top">Nach oben</a><hr/>
+	</li>
+</ol>
+</body>
+</html>

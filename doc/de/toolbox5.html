@@ -1,0 +1,16 @@
+<qt>
+<title>Ghostscript - Der Zauber einer Blackbox</title>
+<h2>Ghostscript - Der Zauber einer Blackbox</h2>
+
+<p>F&uuml;r alle, die sich damit nicht auskennen: Ghostscript ist strengenommen ein PostScript-Interpreter, und viele Programme verwenden GS f&uuml;r PostScript-Konvertierungen sowie f&uuml;r Im- oder Exporte. In gleicher Weise wird Ghostscript von Scribus verwendet, wobei manchmal einige der fortschrittlichsten M&ouml;glichkeiten und Funktionen genutzt werden, die nur in neueren Versionen vorhanden sind. </p>
+
+<p>Im Hinblick auf Scribus gibt es zwei gr&ouml;&szlig;ere Problembereiche: Ghostscript ist eine Art Blackbox-Befehlszeilenwerkzeug mit bisweilen verborgenen oder schwierig zu verstehenden Parametern. Viele von ihnen lassen sich wesentlich einfacher mit GSview ansprechen, sp&auml;ter mehr hierzu. Der andere liegt darin, da&szlig; es innerhalb der Versionen 8.x einige bedeutende Verbesserungen gibt, insbesondere mit dem fortgeschritten PS3, den M&ouml;glichkeiten von PDF 1.4 und anspruchsvollen Druckfunktionen. Der n&auml;chste Abschnitt skizziert einen m&ouml;glichen Weg, eine Aktualisierung zur neuesten Version vorzunehmen, ohne da&szlig; Ihre vorhandenen CUPS/Foomatic/GIMP-Druckeinstellungen verloren gehen.</p>
+
+<p>Zwar stammt Ghostscript von einem kommerziellen Unternehmen und stand einmal unter Dual-Lizenz, doch die Ghostscript-Entwickler sind gegen&uuml;ber Open Source Software (OSS) sehr aufgeschlossen und unterst&uuml;tzen das Scribus-Team hilfreich, insbesondere mit Dokumentationen und beim Erschlie&szlig;en einiger ziemlich verborgener Funktionen. Ghostscript ist eine der Haupts&auml;ulen quelloffener Software, ohne die diese nur schwer vorstellbar w&auml;re.</p>
+<!--company and is dual licensed > company and used to be dual licensed-->
+
+<p>Wenn wir bei Ghostscript von &quot;devices&quot; sprechen, so ist damit eine bestimmte Art Treiber oder ein Software-Modul gemeint, das der Umwandlung oder besonderen Art von PostScript-Aufbereitung dient.</p>
+
+<p>Die j&uuml;ngste Generation von GS hat einen neuartigen Tntenstrahldruckertreiber, genannt <strong>rinkj</strong>, der eine neue Methodik zum optimierten Druck f&uuml;r Tintenstrahldrucker verwendet. Au&szlig;erem wird nun der jpeg2000-Standard (auch Jasper genannt) zur verlustfreien jpeg-Komprimieruung sowie PDF 1.5 unterst&uuml;tzt. Dar&uuml;ber hinaus gibt es einige neue &quot;devices&quot;, die viele fortgeschrittene Funktionen der Druckvorstufe und des Druckens unterst&uuml;tzen. Scribus ist damit eine der ersten Anwendungen, die von diesen Verbesserungen profitieren werden. Aus diesem Grunde fordern wir immer wieder dazu auf, das neueste Ghostscript auf dem eigenen System verf&uuml;gbar zu haben, und auch die Distributionen sollten unbedingt zu GPL-Ghostscript Version 8.x wechseln. </p>
+<!--added a comma after driver-->
+</qt>

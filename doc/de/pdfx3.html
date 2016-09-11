@@ -1,0 +1,57 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Scribus-PDF/X-3-Information</title>
+</head>
+<body>
+<h2>Scribus-PDF/X-3-Information</h2>
+<p>Die Unterstützung des PDF/X-3-Formats ist ein Meilenstein in der Entwicklung von Scribus. Scribus war die erste DTP-Anwendung, die den anspruchsvollen, aber offenen ISO-Standard 15930-3:2002 unterstützt hat. Diese Art der PDF-Erstellung war bis dahin nur in teuren kommerziellen Anwendungen verfügbar. Das Erzeugen von "druckfertigen" PDFs war lange Zeit äußerst fehlerbeladen, vor allem, wenn Anwender nicht mit den Feinheiten von PostScript, dem "Destillieren" von PDFs und den verschiedenen Möglichkeiten der Plattenbelichter vertraut waren. Das Sprüchlein "Es ist schwer, eine gute PDF-Datei herzustellen, aber leicht, eine zu vermurksen" enthält jede Menge Wahrheit. Mit der allgemeinen Verbreitung der Acrobat-Distiller-Produktfamilie zur PDF-Erzeugung bedurfte es der Kenntnis von fast 100 Distiller-Parametern.</p>
+<p>In europäischen Ländern ist das PDF/X-Konzept weiter verbreitet als in Nordamerika. Viel Unterstützung erfuhren diese Standards aus Deutschland und deutschen Pre-Press-Firmen, die weltweit führend bei Druckmaschinen digitalen Belichtungstechnologien sind.</p>
+<p>Das Erzeugen von PDF/X-Dateien, für die es derzeit drei ISO-Standards gibt, ist teilweise ein Versuch, Endanwendern und Autoren einen herstellerneutralen Maßstab zu liefern, mit dessen Hilfe sie entscheiden können, ob Dateien für den professionellen Druck oder den Austausch mit einem Servicebüro geeignet sind. Scribus bietet leichtverständliche und einfach zu benutzende Optionen, die es Anwendern ermöglichen, 100%ig standardkonforme Dateien zu erzeugen. Beachten Sie wie immer, daß Ihre Druckerei oder der Plattenbelichtungs-Workflow auch in der Lage sein muß, diese Dateien zu verarbeiten. Nicht alle können mit der neuesten PDF-Technologie umgehen. Die neuesten Belichtungsworkflows von Prinergy und Harlequin unterstützen PDF/X-3.</p>
+<p><strong>Warnung: Alle Bilder sollten im RGB-Farbraum, nicht in CMYK vorliegen, bevor sie in Scribus importiert werden. Ansonsten könnten sich unerwünschte Farbverschiebungen ergeben.</strong></p>
+<h3>Schnellanleitung zum Erzeugen einer PDF/X-3-kompatiblen PDF-Datei</h3>
+<ol>
+	<li>Stellen Sie sicher, daß das Farbmanagement installiert ist und funktioniert. Sie benötigen mindestens ein ICC-Profil für einen CMYK-Drucker.</li>
+	<li>Unter in <strong>Datei &#062; Dokument einrichten &#062; Farbmanagement</strong> müssen Sie sicherstellen, daß das Farbmanagement eingeschaltet ist und daß die ausgewählten Profile Ihren Vorstellungen entsprechen.</li>
+	<li>Wählen Sie <strong>Datei &#062; Exportieren &#062; Als PDF speichern </strong> oder klicken Sie auf das PDF-Symbol in der Werkzeugleiste.</li>
+</ol>
+<p>Wählen Sie im PDF-Dialog in der Kompatibilitätsliste <strong>PDF/X-3</strong>. Damit ändern sich die Voreinstellungen automatisch.</p>
+<table width="100%"><tr><td align="center"><img src="images/pdfx3-1.png" alt="PDF Create Dialog General Tab" /></td></tr></table>
+<p>Als nächstes wechseln Sie in den Reiter <strong>Farbe</strong>, wie unten gezeigt:</p>
+<table width="100%"><tr><td align="center"><img src="images/pdfxcolor.png" alt="PDF Create Dialog Color Tab" /></td></tr></table>
+<p>Hier wählen Sie die Farbprofile aus, die in die PDF-Datei eingebettet werden. Wenn Sie kein Profil für Füllfarben auswählen, wird automatisch CMYK als Farbraum zugewiesen.</p>
+<p>Dann wechseln Sie in den <strong>PDF/X-3</strong>-Reiter:</p>
+<table width="100%"><tr><td align="center"><img src="images/pdfxintent.png" alt="PDF Create Dialog 
+PDF/X-3 Tab" /></td></tr></table>
+<p>Hier können Sie sowohl die Trim-Box als auch die PDF-Ausgabebedingung einstellen, die vom ICC-Profil des Druckers festgelegt wird. Dies ist vermutlich die wichtigste Entscheidung, was Farbprofile angeht, denn sie betrifft alle Farben im Dokument. Sie können auch eine Bemerkung über das Dokument einfügen, was später unter Umständen nützlich sein kann.<strong> Dieses Feld sollte nicht leer bleiben, weil die Datei dann nicht dem PDF/X-3-Standard entspricht.</strong><p>
+<p>Beachten Sie: Wegen der äußerst anspruchsvollen Bedingungen des PDF/X-3-Standards werden einige PDF-Funktionen deaktiviert. Dazu gehören Verschlüsselung, Präsentationseffekte, Anmerkungen und Transparenz. Schriften werden automatisch eingebettet. Sie sollten die Hinweise zu den <a href="pdfexport1.html">PDF-Exportoptionen</a> für die Vorbereitung von Dateien und die Auswahl des richtigen Bildformats beachten.</p>
+
+<h3>Wie hat Scribus das geschafft?</h3>
+<ul>
+	<li>Der PDF-Exporter von Scribus liegt nun in der siebten Generation vor. Nachdem der Programmcode für PDF-Export und Farbmanagement sorgsam für die hochwertige Ausgabe verfeinert wurde, können PDF-Dateien, die von Scribus exportiert wurden, ohne Bedenken an Servicebüros weitergegeben werden, die mit einem PDF-Workflow umgehen können. Viele Zeitschriften, Zeitungen und andere Publikationen bevorzugen heutzutage PDF/X-Dateien, etwa für Anzeigen. Beachten Sie die Hinweise im Kapitel <a href="prepress.html">Druckvorstufe</a>.</li>
+	<li>Besonderen Dank sind wir Marti Maria schuldig, weil er <strong>littlecms</strong>, das von Scribus verwendete Farbmanagementsystem, programmiert hat und es weiterhin pflegt. Littlecms ist kein Programm für Endanwender, aber es stellt Scribus die Farbmanagementwerkzeuge zur Verfügung, wie es sie bis dahin nur in proprietären Systemen gab.</li>
+</ul>
+
+<h3>Wann sollte man PDF/X-3 verwenden?</h3>
+<p>Wenn Sie eine <strong>sehr</strong> genaue Farbreproduktion benötigen <strong>und</strong> Ihre Druckerei PDF/X-3 akzeptiert. Ohne PDF/X-3-Unterstützung Ihrer Druckerei sind unschöne Farbabweichungen wahrscheinlicher als beim traditionellen PDF-Export.</p>
+
+<h3>Brauche ich wirklich Farbmanagement?</h3>
+<p>Ja. Das PDF/X-3-Format wurde geschaffen, um einen Workflow zu ermöglichen, der vollständig auf Farbmanagement basiert, ohne daß man etwas über die Details der tatsächlich verwendeten Drucktechnologien wissen muß.</p>
+
+<h3>Was sind die Unterschiede zwischen den verschiedenen PDF-X-Versionen?</h3>
+<p>Kurz gesagt, <strong>PDF/X-1a</strong> stellt folgende Anforderungen: Der Farbraum muß CMYK oder Graustufen sein, alle Schriften müssen eingebettet werden, und die PDF enthält Informationen darüber, ob Überfüllungen vorgenommen wurden oder nicht. Stellen Sie sich das wie eine Übergabe mit geschlossenen Augen vor, denn es gibt keine Sicherheit, wie das Ergebnis aussieht.</p>
+<p><strong>PDF/X-2</strong> ist ein wenig strenger Standard, dafür ist mehr Kommunikation zwischen dem Erzeuger und dem Empfänger nötig. Schriften müssen nicht eingebettet werden, und es ist möglich OPI (Open Press Initiative) einzusetzen. PDF/X-2 erlaubt außerdem die Verwendung von geräteunabhängigen Farbräumen wie CIE L*a*b.</p>
+<p><strong>PDF/X-3</strong> ermöglicht das Einbetten von ICC-Farbprofilen ebenso wie verschiedene Ausgabeprioritäten und den "DeviceN"-Farbraum (Schmuckfarben), der jetzt auch von Ghostscript unterstütz wird. Auch das Überdrucken von Farben ist möglich.</p>
+
+<h3>Wie kann ich testen und bescheinigen, daß PDF-Dateien aus Scribus wirklich PDF/X-3-konform sind?</h3>
+<ol>
+	<li><a href="http://callas.de/en/">Callas Software</a> hat einen kostenlosen PDF-Inspektor als Plug-in für Adobe Acrobat zur Verfügung gestellt. Dieses Plug-in überprüft die PDF-Datei und erstellt einen detaillierten Bericht über alle Inhalte der Datei, darunter Meta-Informationen und eine genaue Liste aller Bilder und anderer PDF-Objekte.</li>
+	<li>Einige PDF-Spezialprogramme, Enfocus Pit Stop Pro und die Vollversion des PDF Inspektor, können genaue sogenannte Preflight-Überprüfungen durchführen. Acrobat Professional ab Version 6 kann PDF/X-3-Dateien ebenfalls überprüfen.</li>
+</ol>
+
+<h3>PDF/X-Links:</h3>
+<p><a href="http://www.ddap.org/resource_center/article_index.php">http://www.ddap.org/resource_center/article_index.php</a></p>
+<p><a href="http://www.ipa.org/PDFS/pdfxguide.zip">http://www.ipa.org/PDFS/pdfxguide.zip</a></p>
+<p><a href="http://www.pdf-x.com/downloads/pdf/application_notes_pdfx3.pdf">http://www.pdf-x.com/downloads/pdf/application_notes_pdfx3.pdf</a></p>
+</body>
+</html>
