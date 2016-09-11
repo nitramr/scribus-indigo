@@ -54,11 +54,13 @@ class QMdiSubWindow;
 class QQuickView;
 
 // application specific includes
+
 #include "scribusapi.h"
 #include "scribusdoc.h"
 #include "styleoptions.h"
 #include "ui/customfdialog.h"
 #include "ui/scmessagebox.h"
+#include "ui/indigodockmanager.h"
 
 class ActionManager;
 class AlignDistributePalette;
@@ -111,6 +113,13 @@ class UndoManager;
 class UndoPalette;
 class UndoState;
 class ViewToolBar;
+
+class IndigoDock;
+class IndigoDockManager;
+class IndigoPanel;
+class IndigoPanelHandle;
+class IndigoTab;
+class IndigoTabBar;
 
 extern SCRIBUS_API ScribusQApp* ScQApp;
 
@@ -590,6 +599,10 @@ protected:
 	virtual void dropEvent( QDropEvent* e);
 
 private:
+
+    IndigoDockManager * wdg_indigoDockManager;
+    IndigoDock * wdg_indigoDock;
+
     /** init methods */
 	void initSplash(bool showSplash);
 	void initMenuBar(); // initMenuBar creates the menu_bar and inserts the menuitems
@@ -602,6 +615,7 @@ private:
 	void initHyphenator();
 	void initDefaultValues();
 	void initKeyboardShortcuts();
+    void initIndigoDock();
 	void initPalettes();
 	void initScrapbook();
 
@@ -612,6 +626,7 @@ private:
 	QLabel* m_mainWindowStatusLabel;
 	QString m_statusLabelText;
 	//QPixmap noIcon;
+
 
 	int m_toolbarMenuTools;
 	int m_toolbarMenuPDFTools;

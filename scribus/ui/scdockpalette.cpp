@@ -24,11 +24,10 @@ for which a new license (GPL+exception) is in place.
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
  ***************************************************************************/
 
-#include <QApplication>
+//#include <QApplication>
 #include <QCloseEvent>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QHideEvent>
-#include <QMainWindow>
 #include <QPoint>
 
 #include "iconmanager.h"
@@ -39,16 +38,14 @@ for which a new license (GPL+exception) is in place.
 #include "util.h"
 
 ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, Qt::WindowFlags f)
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-	: QDockWidget ( parent, f | Qt::Tool  | Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint ),
-#else
-	: QDockWidget ( parent, f | Qt::Tool  | Qt::CustomizeWindowHint ),
-#endif
+
+    : IndigoPanel(prefsContext ),
+
 	palettePrefs(0),
 	prefsContextName(QString::null),
 	visibleOnStartup(false)
 {
-	if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
+    if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
 	{
 		setStyleSheet("	QToolButton { margin: 1px; padding: 0px; font-size: 10px; } \
 						QToolButton:pressed { padding-top: 2px; padding-left: 2px } \
@@ -62,19 +59,22 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, Qt:
 							{ font-size: 10px ; } \
 						QToolBox::tab { font-size: 10px; padding: 0px; margin: 0px; } \
 			  		");
-	}
-	originalParent=parent;
-	tempParent=0;
-	setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	setWindowIcon(IconManager::instance()->loadPixmap("AppIcon.png"));
-	setPrefsContext(prefsContext);
-	setObjectName(prefsContext);
-	connect(PrefsManager::instance(), SIGNAL(prefsChanged()), this, SLOT(setFontSize()));
+    }
+   // originalParent=parent;
+    //tempParent=0;
+    //setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+   // setWindowIcon(IconManager::instance()->loadPixmap("AppIcon.png"));
+    setPrefsContext(prefsContext);
+    //setObjectName(prefsContext);
+    connect(PrefsManager::instance(), SIGNAL(prefsChanged()), this, SLOT(setFontSize()));
+
+    // dummy icon
+    setIcon(IconManager::instance()->loadPixmap("AppIcon.png"));
 }
 
 void ScDockPalette::setPrefsContext(QString context)
 {
-	if (prefsContextName.isEmpty())
+    if (prefsContextName.isEmpty())
 	{
 		prefsContextName=context;
 		if (!prefsContextName.isEmpty())
@@ -85,39 +85,25 @@ void ScDockPalette::setPrefsContext(QString context)
 		}
 		else
 			palettePrefs = NULL;
-	}
+    }
 }
 
 void ScDockPalette::startup()
 {
 	setFontSize();
-	if (visibleOnStartup)
+    if (visibleOnStartup)
 	{
-#if QT_VERSION < 0x050600
-		QMainWindow* mainWindow = dynamic_cast<QMainWindow*>(parent());
-		if (palettePrefs && mainWindow)
-		{
-			Qt::DockWidgetArea area = Qt::NoDockWidgetArea;
-			area = (Qt::DockWidgetArea) palettePrefs->getInt("area", (int) Qt::NoDockWidgetArea);
-			Qt::DockWidgetAreas areas = this->allowedAreas();
-			if (areas.testFlag(area))
-			{
-				mainWindow->addDockWidget(area, this);
-				setFloating (palettePrefs->getBool("floating"));
-			}
-		}
-#endif
-		show();
+        show();
 	}
 	else
-		hide();
+        hide();
 	emit paletteShown(visibleOnStartup);
 }
 
 void ScDockPalette::setPaletteShown(bool visible)
 {
-	storeVisibility(visible);
-	storeDockState();
+    storeVisibility(visible);
+    storeDockState();
 	if (!visible)
 		hide();
 	else if (!isVisible())
@@ -134,6 +120,7 @@ void ScDockPalette::setFontSize()
 	setFont(newfont);
 }
 
+
 void ScDockPalette::closeEvent(QCloseEvent *closeEvent)
 {
 	emit paletteShown(false);
@@ -143,15 +130,15 @@ void ScDockPalette::closeEvent(QCloseEvent *closeEvent)
 
 void ScDockPalette::hideEvent(QHideEvent* hideEvent)
 {
-	storePosition();
+    storePosition();
 	storeSize();
-	storeDockState();
-	QDockWidget::hideEvent(hideEvent);
+    storeDockState();
+    IndigoPanel::hideEvent(hideEvent);
 }
 
 void ScDockPalette::showEvent(QShowEvent *showEvent)
 {
-#if QT_VERSION < 0x050600
+/*#if QT_VERSION < 0x050600
 	// According to Qt doc, non-spontaneous show events are sent to widgets
 	// immediately before they are shown. We want to restore geometry for those
 	// events as spontaneous events are delivered after dialog has been shown
@@ -202,65 +189,70 @@ void ScDockPalette::showEvent(QShowEvent *showEvent)
 		storeDockState();
 		storeVisibility(true);
 	}
-#endif
-	QDockWidget::showEvent(showEvent);
+#endif*/
+   // IndigoPanel::showEvent(showEvent);
 }
 
 void ScDockPalette::hide()
 {
-	if (isVisible())
+    if (isVisible())
 	{
 		storePosition();
 		storeSize();
 		storeDockState();
-		QDockWidget::hide();
-	}
+        IndigoPanel::hide();
+    }
+
+   // IndigoPanel::hide();
 }
 
 void ScDockPalette::storePosition()
 {
-	if (palettePrefs)
+    if (palettePrefs)
 	{
 		QPoint geo = pos();
 		palettePrefs->set("left", geo.x());
 		palettePrefs->set("top", geo.y());
-	}
+    }
 }
 
 void ScDockPalette::storePosition(int newX, int newY)
 {
-	if (palettePrefs)
+    if (palettePrefs)
 	{
 		palettePrefs->set("left", newX);
 		palettePrefs->set("top", newY);
-	}
+    }
 }
 
 void ScDockPalette::storeSize()
 {
-	if (palettePrefs)
+    if (palettePrefs)
 	{
 		palettePrefs->set("width", width());
 		palettePrefs->set("height", height());
-	}
+    }
 }
 
 void ScDockPalette::storeVisibility(bool vis)
 {
-	if (palettePrefs)
-		palettePrefs->set("visible", vis);
+    if (palettePrefs)
+        palettePrefs->set("visible", vis);
 }
 
 void ScDockPalette::storeDockState()
 {
 	if (palettePrefs)
 	{
-		palettePrefs->set("floating", isFloating());
+
+        // TODO: add IndigoPanel Properties here!
+
+        /*palettePrefs->set("floating", isFloating());
 		Qt::DockWidgetArea area = Qt::NoDockWidgetArea;
 		QMainWindow* mainWindow = dynamic_cast<QMainWindow*>(parent());
 		if (mainWindow)
 			area = mainWindow->dockWidgetArea(this);
-		palettePrefs->set("area", (int) area);
+        palettePrefs->set("area", (int) area);*/
 	}
 }
 

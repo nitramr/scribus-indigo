@@ -344,6 +344,7 @@ SET(SCRIBUS_MOC_CLASSES
 	ui/effectsdialog.h
 	ui/extimageprops.h
 	ui/filedialogeventcatcher.h
+	ui/flowlayout.h
 	ui/fontcombo.h
 	ui/fontlistview.h
 	ui/fontreplacedialog.h
@@ -358,6 +359,10 @@ SET(SCRIBUS_MOC_CLASSES
 	ui/hruler.h
 	ui/hyask.h
 	ui/imageinfodialog.h
+        ui/indigodock.h
+        ui/indigodockmanager.h
+	ui/indigopanel.h
+	ui/indigotabbar.h
 	ui/inlinepalette.h
 	ui/insertTable.h
 	ui/insertaframe.h
@@ -807,6 +812,7 @@ SET(SCRIBUS_SOURCES
 	ui/effectsdialog.cpp
 	ui/extimageprops.cpp
 	ui/filedialogeventcatcher.cpp
+	ui/flowlayout.cpp
 	ui/fontcombo.cpp
 	ui/fontlistview.cpp
 	ui/fontreplacedialog.cpp
@@ -821,6 +827,10 @@ SET(SCRIBUS_SOURCES
 	ui/hruler.cpp
 	ui/hyask.cpp
 	ui/imageinfodialog.cpp
+        ui/indigodock.cpp
+        ui/indigodockmanager.cpp
+	ui/indigopanel.cpp
+	ui/indigotabbar.cpp
 	ui/inlinepalette.cpp
 	ui/insertTable.cpp
 	ui/insertaframe.cpp

@@ -33,20 +33,21 @@ for which a new license (GPL+exception) is in place.
 #include <QShowEvent>
 
 #include "scribusapi.h"
+#include "indigopanel.h"
 class PrefsContext;
 
-class SCRIBUS_API ScDockPalette : public QDockWidget
+class SCRIBUS_API ScDockPalette : public IndigoPanel
 {
 	Q_OBJECT
 
 	public:
-		ScDockPalette( QWidget * parent = NULL, const QString& prefsContext = QString::null, Qt::WindowFlags f = 0 );
-		~ScDockPalette() {};
+        ScDockPalette( QWidget * parent = NULL, const QString& prefsContext = QString::null, Qt::WindowFlags f = 0 );
+        ~ScDockPalette() {}
 		/** @brief Sample way to grab keystrokes, simply calls superclass at this point */
 		//virtual void keyPressEvent(QKeyEvent *keyEvent);
 		virtual void hide();
 		void startup();
-		
+
 	public slots:
 		virtual void setPaletteShown(bool);
 		virtual void setFontSize();
@@ -74,7 +75,7 @@ class SCRIBUS_API ScDockPalette : public QDockWidget
 		PrefsContext* palettePrefs;
 		QString prefsContextName;
 		bool visibleOnStartup;
-		QWidget* originalParent;
-		QWidget* tempParent;
+        //QWidget* originalParent;
+        //QWidget* tempParent;
 };
 #endif

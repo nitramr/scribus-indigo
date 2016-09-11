@@ -167,8 +167,8 @@ void PropertiesPalette::setMainWindow(ScribusMainWindow* mw)
 	QPoint p1 = mapToGlobal(pos());
 	QPoint p2 = m_ScMW->mapFromGlobal(p1);
 	//Qt4 reparent(m_ScMW, this->getWFlags(), p2);
-	setParent(m_ScMW);
-	move(p2);
+    //setParent(m_ScMW);
+    //move(p2);
 
 	this->xyzPal->setMainWindow(mw);
 	this->shadowPal->setMainWindow(mw);
