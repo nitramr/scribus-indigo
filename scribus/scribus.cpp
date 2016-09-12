@@ -262,6 +262,7 @@ for which a new license (GPL+exception) is in place.
 #include "util_formats.h"
 #include "util_ghostscript.h"
 #include "util_math.h"
+#include "themefactory.h"
 
 
 #ifdef HAVE_OSG
@@ -507,7 +508,9 @@ void ScribusMainWindow::initToolBars()
 
 void ScribusMainWindow::setStyleSheet()
 {
+    ThemeFactory *sf = new ThemeFactory();
 	QByteArray stylesheet;
+
 	if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
 	{
 		QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
@@ -518,9 +521,17 @@ void ScribusMainWindow::setStyleSheet()
 		QByteArray tba;
 		tba.append(toolbararrow);
 		stylesheet.replace("___tb_menu_arrow___", tba);
+
+        QString style(stylesheet);
+
+        sf->parseString(style);
+
+        qApp->setPalette(sf->palette());
+        qApp->setStyleSheet(style);
+
 	}
 
-	layerMenu->setStyleSheet(stylesheet);
+    /*layerMenu->setStyleSheet(stylesheet);
 	unitSwitcher->setStyleSheet(stylesheet);
 	zoomDefaultToolbarButton->setStyleSheet(stylesheet);
 	zoomInToolbarButton->setStyleSheet(stylesheet);
@@ -531,7 +542,10 @@ void ScribusMainWindow::setStyleSheet()
 	editToolBar->setStyleSheet(stylesheet);
 	modeToolBar->setStyleSheet(stylesheet);
 	pdfToolBar->setStyleSheet(stylesheet);
-	viewToolBar->setStyleSheet(stylesheet);
+    viewToolBar->setStyleSheet(stylesheet);*/
+
+
+
 }
 
 

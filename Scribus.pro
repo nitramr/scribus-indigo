@@ -958,7 +958,8 @@ HEADERS += scribus/actionmanager.h \
     scribus/ui/indigodock.h \
     scribus/ui/indigodockmanager.h \
     scribus/ui/indigopanel.h \
-    scribus/ui/indigotabbar.h
+    scribus/ui/indigotabbar.h \
+    scribus/themefactory.h
 FORMS += scribus/ui/aboutplugins.ui \
          scribus/ui/aligndistribute.ui \
          scribus/ui/annot.ui \
@@ -2044,7 +2045,8 @@ SOURCES += scribus/actionmanager.cpp \
     scribus/ui/indigodock.cpp \
     scribus/ui/indigodockmanager.cpp \
     scribus/ui/indigopanel.cpp \
-    scribus/ui/indigotabbar.cpp
+    scribus/ui/indigotabbar.cpp \
+    scribus/themefactory.cpp
 RESOURCES += scribus/plugins/scripter/python/sceditor/dockwidget_icons.qrc
 TRANSLATIONS += resources/translations/scribus.af.ts \
                 resources/translations/scribus.ar.ts \

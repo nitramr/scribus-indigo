@@ -298,6 +298,7 @@ SET(SCRIBUS_MOC_CLASSES
 	selection.h
 	selectionrubberband.h
 	styleitem.h
+	themefactory.h
 	tocgenerator.h
 	undogui.h
 	undomanager.h
@@ -744,6 +745,7 @@ SET(SCRIBUS_SOURCES
 	tablecell.cpp
 	tableutils.cpp
 	textwriter.cpp
+	themefactory.cpp
 	third_party/fparser/fpoptimizer.cc
 	third_party/fparser/fparser.cc
 	tocgenerator.cpp
