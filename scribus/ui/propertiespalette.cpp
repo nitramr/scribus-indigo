@@ -68,6 +68,7 @@ for which a new license (GPL+exception) is in place.
 #include "dasheditor.h"
 #include "fontcombo.h"
 #include "colorcombo.h"
+#include "iconmanager.h"
 
 //using namespace std;
 
@@ -143,6 +144,10 @@ PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, 
 	TabStack->setCurrentIndex(0);
 	TabStack->widget(0)->setEnabled(false);
 	TabStack->setItemEnabled(0, false);
+
+    // Panel icon
+    setIcon(IconManager::instance()->loadPixmap("64/pan-frame.png"));
+
 }
 
 void PropertiesPalette::closeEvent(QCloseEvent *closeEvent)

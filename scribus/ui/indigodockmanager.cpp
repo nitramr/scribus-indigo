@@ -22,7 +22,13 @@
 
 
 #include "indigodockmanager.h"
+
 #include <QDomDocument>
+#include <QXmlStreamWriter>
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QPropertyAnimation>
+#include <QStyle>
 
 IndigoDockManager::IndigoDockManager(QMainWindow *parent) : QWidget(parent){
 
@@ -353,7 +359,7 @@ void IndigoDockManager::dropPanel(){
 
 void IndigoDockManager::loadWorkspace(QByteArray workspaceArray){
 
-    QList<IndigoDock*> lst_tmpDocks;
+   QList<IndigoDock*> lst_tmpDocks;
     QList<IndigoPanel*> lst_tmpPanels;
 
 

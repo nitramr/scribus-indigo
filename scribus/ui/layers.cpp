@@ -79,6 +79,9 @@ LayerPalette::LayerPalette(QWidget* parent) : ScDockPalette( parent, "Layers", 0
 	Table->setHorizontalHeaderItem(6, new QTableWidgetItem(im->loadIcon("16/pointer.png"), ""));
 	Table->setHorizontalHeaderItem(7, new QTableWidgetItem( tr("Name")));
 
+    // Panel icon
+    setIcon(im->loadPixmap("64/pan-layer.png"));
+
 	QHeaderView *header = Table->horizontalHeader();
 	header->setStretchLastSection(true);
 	header->setSectionsClickable(false );

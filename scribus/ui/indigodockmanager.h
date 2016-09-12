@@ -25,15 +25,21 @@
 #define INDIGODOCKMANAGER_H
 
 #include <QWidget>
+#include <QMainWindow>
+#include <QList>
+#include <QString>
+#include <QByteArray>
+#include <QSize>
 #include "indigodock.h"
 
-#include "scribusapi.h"
+//#include "scribusapi.h"
 
-class SCRIBUS_API IndigoDockManager: public QWidget
+class /*SCRIBUS_API*/ IndigoDockManager: public QWidget
 {
     Q_OBJECT
 public:
     IndigoDockManager(QMainWindow *parent = 0);
+   //~IndigoDockManager(){};
 
     void addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area = Qt::LeftDockWidgetArea);
     void addIndigoPanel(IndigoPanel * panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, bool isNewPanel = true, int tabIndex = -1);
@@ -54,7 +60,7 @@ private:
     QList<IndigoDock*> lst_Docks;
     QList<IndigoDock*> lst_removeDocks;
     QString version;
-    void connectPanel(IndigoPanel *panel);  
+    void connectPanel(IndigoPanel *panel);
     void removeDock(IndigoDock *dock);
     void removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock);
 

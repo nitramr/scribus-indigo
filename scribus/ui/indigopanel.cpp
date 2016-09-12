@@ -6,7 +6,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -138,10 +138,23 @@ QString IndigoPanelHandle::Caption(){
 
 void IndigoPanelHandle::setIcon(QIcon icon, int iconSize){
 
+    QPixmap pix(iconSize, iconSize);
+    pix.fill(QColor(0,0,0,0));
+
+    if(icon.isNull()){
+        icon = QIcon(pix);
+    }
+
     ico_icon = icon;
     int_iconSize = iconSize;
 }
 
+
+QIcon IndigoPanelHandle::Icon(){
+
+    return ico_icon;
+
+}
 
 
 void IndigoPanelHandle::setExpanderState(IndigoExpanderState expanderState){
@@ -189,12 +202,12 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     wdg_handle = new IndigoPanelHandle(this);
     wdg_handle->installEventFilter(this);
 
-    lyt_normalArea = new FlowLayout(int_padding);
-    //lyt_normalArea->setSizeConstraint( QLayout::SetNoConstraint );
+//    lyt_normalArea = new FlowLayout(int_padding);
+//    lyt_normalArea->setSizeConstraint( QLayout::SetNoConstraint );
 
-   // wdg_normalContainer = new QWidget;
-   // lyt_normalArea = new QVBoxLayout(wdg_normalContainer);
-   // lyt_normalArea->setMargin(int_padding);
+    //wdg_normalContainer = new QWidget;
+    lyt_normalArea = new QVBoxLayout();//(wdg_normalContainer);
+    lyt_normalArea->setMargin(int_padding);
 
     /*  wdg_scrollArea = new QScrollArea;
     wdg_scrollArea->setWidget(wdg_normalContainer);
@@ -209,8 +222,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     lyt_main->setMargin(0);
     lyt_main->addWidget(wdg_handle);
     lyt_main->addLayout(lyt_normalArea);
-    //lyt_main->setSizeConstraint(QLayout::SetMinimumSize);
-    //lyt_main->addWidget(wdg_normalContainer);
+    lyt_main->setSizeConstraint(QLayout::SetMinimumSize);
+   // lyt_main->addWidget(wdg_normalContainer);
     // lyt_main->addWidget(wdg_scrollArea);
     lyt_main->setAlignment(Qt::AlignTop);
     setLayout(lyt_main);
@@ -408,21 +421,13 @@ QString IndigoPanel::Caption(){
 
 
 QIcon IndigoPanel::Icon(){
-    return ico_icon;
+    return wdg_handle->Icon();
 }
 
 
 
 void IndigoPanel::setIcon(QIcon icon, int iconSize){
 
-    QPixmap pix(iconSize, iconSize);
-    pix.fill(QColor(0,0,0,0));
-
-    if(icon.isNull()){
-        icon = QIcon(pix);
-    }
-
-    ico_icon = icon;
     wdg_handle->setIcon(icon, iconSize); // iconSize will used for icon in caption bar
 }
 

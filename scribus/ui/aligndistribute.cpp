@@ -54,7 +54,7 @@ AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* nam
 	currDoc=NULL;
 	guideDirection=-1;
 	setObjectName(name);
-	
+
 	//hide spare controls 
 	toolButtonDummy1->hide();
 	toolButtonDummy2->hide();
@@ -182,6 +182,9 @@ void AlignDistributePalette::init()
 
 	swapLeftToolButton->setIcon(im->loadIcon("22/swap-left.png"));
 	swapRightToolButton->setIcon(im->loadIcon("22/swap-right.png"));
+
+    // Panel icon
+    setIcon(im->loadPixmap("64/pan-alignment.png"));
 
 	QSize s(24,24);
 	alignLeftOutToolButton->setMinimumSize(s);

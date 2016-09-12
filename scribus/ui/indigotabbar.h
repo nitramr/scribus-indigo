@@ -24,18 +24,22 @@
 #ifndef INDIGOTABBAR_H
 #define INDIGOTABBAR_H
 
-#include <QtWidgets>
+//#include <QtWidgets>
 #include <QWidget>
 #include <QIcon>
+#include <QList>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QPainter>
 
-#include "scribusapi.h"
+//#include "scribusapi.h"
 
 //
 // IndigoTab
 //
 
 
-class SCRIBUS_API IndigoTab : public QWidget
+class /*SCRIBUS_API*/ IndigoTab : public QWidget
 {
     Q_OBJECT
 public:
@@ -69,7 +73,7 @@ private:
 //
 
 
-class SCRIBUS_API IndigoTabBar : public QWidget
+class /*SCRIBUS_API*/ IndigoTabBar : public QWidget
 {
     Q_OBJECT
 public:

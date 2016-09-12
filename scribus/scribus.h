@@ -114,12 +114,12 @@ class UndoPalette;
 class UndoState;
 class ViewToolBar;
 
-class IndigoDock;
+/*class IndigoDock;
 class IndigoDockManager;
 class IndigoPanel;
 class IndigoPanelHandle;
 class IndigoTab;
-class IndigoTabBar;
+class IndigoTabBar;*/
 
 extern SCRIBUS_API ScribusQApp* ScQApp;
 

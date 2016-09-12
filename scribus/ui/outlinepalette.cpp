@@ -466,6 +466,10 @@ OutlinePalette::OutlinePalette( QWidget* parent) : ScDockPalette( parent, "Tree"
 	annotTextIcon = im->loadPixmap("22/pdf-annotations.png");
 	annotLinkIcon = im->loadPixmap("goto.png");
 	annot3DIcon = im->loadPixmap("22/annot3d.png");
+
+    // Panel icon
+    setIcon(im->loadPixmap("64/pan-outline.png"));
+
 	selectionTriggered = false;
 	m_MainWindow  = NULL;
 	freeObjects   = NULL;

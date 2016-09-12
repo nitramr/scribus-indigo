@@ -31,12 +31,16 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QScrollArea>
-#include "flowlayout.h"
+#include <QString>
+#include <QIcon>
+#include <QVBoxLayout>
 
-#include "scribusapi.h"
+//#include "flowlayout.h"
+
+//#include "scribusapi.h"
 
 
-class SCRIBUS_API IndigoPanelHandle : public QWidget
+class /*SCRIBUS_API*/ IndigoPanelHandle : public QWidget
 {
         Q_OBJECT
 public:
@@ -50,6 +54,7 @@ public:
     QString Caption();
     void setCaption(QString title, int fontSize);
     void setIcon(QIcon icon, int iconSize);
+    QIcon Icon();
     void setExpanderState(IndigoExpanderState expanderState);
 
 protected:
@@ -73,7 +78,7 @@ public slots:
 
 /**********************************************************/
 
-class SCRIBUS_API IndigoPanel : public QFrame
+class /*SCRIBUS_API*/ IndigoPanel : public QFrame
 {
     Q_OBJECT
 
@@ -120,14 +125,13 @@ protected:
 
 private:   
    // QWidget *wdg_normalContainer;
-   // QVBoxLayout *lyt_normalArea;
-    FlowLayout * lyt_normalArea;
+    QVBoxLayout *lyt_normalArea;
+    //FlowLayout * lyt_normalArea;
     QVBoxLayout *lyt_main;
     QScrollArea * wdg_scrollArea;
 
 
-    QPoint pnt_relativeOffset;
-    QIcon ico_icon;    
+    QPoint pnt_relativeOffset;   
     int int_index; 
     IndigoDockState m_state;
     IndigoPanelHandle::IndigoExpanderState m_expander;

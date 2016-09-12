@@ -206,7 +206,6 @@ void IndigoDock::updatePanels(){
 }
 
 
-
 void IndigoDock::updateMinHeight(){
 
 
@@ -405,7 +404,6 @@ void IndigoDock::scrollToPanel(QString PanelName){
     }
 
 }
-
 
 
 void IndigoDock::addPlaceholder (int index){
@@ -666,6 +664,7 @@ void IndigoDock::updatePanelSize(){
     }
 
 }
+
 
 
 /**********************

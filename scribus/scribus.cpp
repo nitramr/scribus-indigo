@@ -605,15 +605,23 @@ void ScribusMainWindow::initKeyboardShortcuts()
 void ScribusMainWindow::initIndigoDock()
 {
 
+    wdg_indigoDock = new IndigoDock();
+
     // install IndigoDockManager
     wdg_indigoDockManager = new IndigoDockManager(this);
     wdg_indigoDockManager->setMinimumPanelSize(QSize(180,100));
 
-    wdg_indigoDock = new IndigoDock();
-
-
     // Add IndigoDock
     wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
+
+    IndigoPanel *pan = new IndigoPanel("Test");
+    IndigoPanel *pan2 = new IndigoPanel("Test2");
+
+    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pan);
+    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pan2);
+
+
+
 
 }
 
@@ -661,7 +669,7 @@ void ScribusMainWindow::initPalettes()
     connect( scrapbookPalette, SIGNAL(scrapbookListChanged()), this, SLOT(rebuildScrapbookMenu()));
     scrapbookPalette->installEventFilter(this);
 
-	pagePalette = new PagePalette(this);
+    pagePalette = new PagePalette(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pagePalette);
     connect( scrActions["toolsPages"], SIGNAL(toggled(bool)) , pagePalette, SLOT(setPaletteShown(bool)) );
     connect( pagePalette, SIGNAL(paletteShown(bool)), scrActions["toolsPages"], SLOT(setChecked(bool)));
@@ -685,7 +693,7 @@ void ScribusMainWindow::initPalettes()
     connect( docCheckerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsPreflightVerifier"], SLOT(setChecked(bool)));
     connect( docCheckerPalette, SIGNAL(paletteShown(bool)), this, SLOT(docCheckToggle(bool)));
     docCheckerPalette->installEventFilter(this);
-    //docCheckerPalette->hide();
+    docCheckerPalette->hide();
 
 	alignDistributePalette = new AlignDistributePalette(this, "AlignDistributePalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, alignDistributePalette);
@@ -703,7 +711,7 @@ void ScribusMainWindow::initPalettes()
     connect(symbolPalette, SIGNAL(endEdit()), this, SLOT(editSymbolEnd()));
     connect(symbolPalette, SIGNAL(objectDropped()), this, SLOT(PutToPatterns()));
     symbolPalette->installEventFilter(this);
-    //symbolPalette->hide();
+    symbolPalette->hide();
 
 	inlinePalette = new InlinePalette(this);
     inlinePalette->setMainWindow(this);
@@ -714,7 +722,7 @@ void ScribusMainWindow::initPalettes()
     connect(inlinePalette, SIGNAL(endEdit()), this, SLOT(editInlineEnd()));
     connect(inlinePalette, SIGNAL(objectDropped(QString)), this, SLOT(PutToInline(QString)));
     inlinePalette->installEventFilter(this);
-    //inlinePalette->hide();
+    inlinePalette->hide();
 
     undoPalette = new UndoPalette(this, "undoPalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, undoPalette);
@@ -7682,6 +7690,13 @@ void ScribusMainWindow::editMasterPagesEnd()
 		pagePalette->setVisible(m_pagePalVisible);
 		scrActions["toolsPages"]->setChecked(m_pagePalVisible);
     }
+
+//    if (pagePalette->isFloating())
+//    {
+//        pagePalette->setVisible(m_pagePalVisible);
+//        scrActions["toolsPages"]->setChecked(m_pagePalVisible);
+//    }
+
 	// #12857 : the number of pages may change when undoing/redoing
 	// page addition/deletion while in edit mode, so take some extra
 	// care so that storedPageNum is in appropriate range

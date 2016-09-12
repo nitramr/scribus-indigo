@@ -24,6 +24,7 @@ for which a new license (GPL+exception) is in place.
 #include "scribus.h"
 #include "scribusdoc.h"
 #include "scribusview.h"
+#include "iconmanager.h"
 
 PagePalette::PagePalette(QWidget* parent) : ScDockPalette(parent, "PagePalette", 0)
 {
@@ -45,6 +46,10 @@ PagePalette::PagePalette(QWidget* parent) : ScDockPalette(parent, "PagePalette",
 	
 	Rebuild();
 	languageChange();
+
+    // Panel icon
+    setIcon(IconManager::instance()->loadPixmap("64/pan-page.png"));
+
 }
 
 QWidget* PagePalette::currentWidget()

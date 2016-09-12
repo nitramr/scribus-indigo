@@ -29,14 +29,19 @@
 #include <QSplitter>
 #include <QtGui>
 #include <QList>
+#include <QDockWidget>
+#include <QScrollArea>
+#include <QPropertyAnimation>
+#include <QScrollBar>
 
-#include "scribusapi.h"
+
+//#include "scribusapi.h"
 
 #include "indigopanel.h"
 #include "indigotabbar.h"
 
 
-class SCRIBUS_API IndigoDock : public QDockWidget
+class /*SCRIBUS_API*/ IndigoDock : public QDockWidget
 {
     Q_OBJECT
 
