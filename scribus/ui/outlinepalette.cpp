@@ -417,7 +417,7 @@ OutlinePalette::OutlinePalette( QWidget* parent) : ScDockPalette( parent, "Tree"
 //	resize( 220, 240 );
 	setMinimumSize( QSize( 220, 240 ) );
 	setObjectName(QString::fromLocal8Bit("Tree"));
-	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
  
 	filterEdit = new QLineEdit;

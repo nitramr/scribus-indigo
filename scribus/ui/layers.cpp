@@ -42,7 +42,7 @@ for which a new license (GPL+exception) is in place.
 LayerPalette::LayerPalette(QWidget* parent) : ScDockPalette( parent, "Layers", 0 ), m_Doc(0)
 {
 	setObjectName(QString::fromLocal8Bit("Layers"));
-	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
 	LayerPaletteLayout = new QVBoxLayout();
 	LayerPaletteLayout->setMargin(2);

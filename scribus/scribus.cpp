@@ -609,7 +609,7 @@ void ScribusMainWindow::initIndigoDock()
 
     // install IndigoDockManager
     wdg_indigoDockManager = new IndigoDockManager(this);
-    wdg_indigoDockManager->setMinimumPanelSize(QSize(180,100));
+    //wdg_indigoDockManager->setMinimumPanelSize(QSize(180,100));
 
     // Add IndigoDock
     wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );

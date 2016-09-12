@@ -198,6 +198,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
                               "}"
                               );
 
+
+
     // Widgets
     wdg_handle = new IndigoPanelHandle(this);
     wdg_handle->installEventFilter(this);
@@ -472,13 +474,8 @@ void IndigoPanel::addWidget(QLayout *content){
 
 
 void IndigoPanel::setWidget(QWidget * widget)
-{
-     wdg_widget = widget;
-
-    if(!wdg_widget){
-       addWidget(widget);
-    }
-
+{  
+       addWidget(widget);  
 }
 
 
@@ -487,13 +484,13 @@ QWidget *IndigoPanel::widget() const
 {
    // QLayout *layout = qobject_cast<QLayout*>(lyt_normalArea);
 
-  //  QLayoutItem *item = lyt_normalArea->itemAt(0);
-   // return item == 0 ? 0 : item->widget();
+    QLayoutItem *item = lyt_normalArea->itemAt(0);
+    return item == 0 ? 0 : item->widget();
 
     //return lyt_normalArea->layout()->widget();
 
 
-    return wdg_widget == 0 ? 0 : new QWidget();
+    //return wdg_widget == 0 ? 0 : new QWidget();
 
 }
 

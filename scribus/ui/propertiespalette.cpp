@@ -82,7 +82,7 @@ PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, 
 	m_unitRatio = 1.0;
 
 	setObjectName(QString::fromLocal8Bit("PropertiesPalette"));
-	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 	QFont f(font());
 	f.setPointSize(f.pointSize()-1);
