@@ -85,7 +85,9 @@ PageSelector::PageSelector( QWidget* parent, int maxPg ) : QWidget( parent, 0 )
 		lastButton->setEnabled(false);
 	}
 
-	QByteArray stylesheet;
+    // replaced by Themefactory.cpp
+
+    /*QByteArray stylesheet;
 	if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
 	{
 		QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
@@ -93,7 +95,7 @@ PageSelector::PageSelector( QWidget* parent, int maxPg ) : QWidget( parent, 0 )
 		da.append(downArrow);
 		stylesheet.replace("___downArrow___", da);
 		setStyleSheet(QString(stylesheet));
-	}
+    }*/
 
 	PageSelectorLayout->addWidget( startButton );
 	PageSelectorLayout->addWidget( backButton );

@@ -628,14 +628,6 @@ void ScribusMainWindow::initIndigoDock()
     // Add IndigoDock
     wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
 
-    IndigoPanel *pan = new IndigoPanel("Test");
-    IndigoPanel *pan2 = new IndigoPanel("Test2");
-
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pan);
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pan2);
-
-
-
 
 }
 
