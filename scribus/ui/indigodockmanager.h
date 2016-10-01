@@ -6,7 +6,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -32,14 +32,11 @@
 #include <QSize>
 #include "indigodock.h"
 
-//#include "scribusapi.h"
-
-class /*SCRIBUS_API*/ IndigoDockManager: public QWidget
+class IndigoDockManager: public QWidget
 {
     Q_OBJECT
 public:
     IndigoDockManager(QMainWindow *parent = 0);
-   //~IndigoDockManager(){};
 
     void addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area = Qt::LeftDockWidgetArea);
     void addIndigoPanel(IndigoPanel * panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, bool isNewPanel = true, int tabIndex = -1);

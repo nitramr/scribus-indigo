@@ -6,7 +6,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -22,7 +22,6 @@
 
 
 #include "indigodockmanager.h"
-
 #include <QDomDocument>
 #include <QXmlStreamWriter>
 #include <QMainWindow>
@@ -59,8 +58,7 @@ void IndigoDockManager::connectPanel(IndigoPanel * panel){
 
 void IndigoDockManager::addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area){
 
-    QMainWindow* main = dynamic_cast<QMainWindow*>(parent());
-
+    QMainWindow * main = qobject_cast<QMainWindow *>(parent());
 
     if(main){
 
@@ -90,7 +88,7 @@ void IndigoDockManager::addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area)
 
 void IndigoDockManager::removeDock(IndigoDock * dock){
 
-    QMainWindow* main = dynamic_cast<QMainWindow*>(parent());
+    QMainWindow * main = qobject_cast<QMainWindow *>(parent());
 
     if(main){
 
@@ -107,7 +105,7 @@ void IndigoDockManager::removeDock(IndigoDock * dock){
 
 void IndigoDockManager::removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock){
 
-    QMainWindow* main = dynamic_cast<QMainWindow*>(parent());
+    QMainWindow * main = qobject_cast<QMainWindow *>(parent());
 
     if(main){
 
@@ -359,7 +357,7 @@ void IndigoDockManager::dropPanel(){
 
 void IndigoDockManager::loadWorkspace(QByteArray workspaceArray){
 
-   QList<IndigoDock*> lst_tmpDocks;
+    QList<IndigoDock*> lst_tmpDocks;
     QList<IndigoPanel*> lst_tmpPanels;
 
 

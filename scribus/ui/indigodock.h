@@ -6,7 +6,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -34,21 +34,26 @@
 #include <QPropertyAnimation>
 #include <QScrollBar>
 
-
-//#include "scribusapi.h"
-
 #include "indigopanel.h"
 #include "indigotabbar.h"
 
 
-class /*SCRIBUS_API*/ IndigoDock : public QDockWidget
+/*#####################
+ #
+ #
+ # IndigoDock
+ #
+ #
+ #####################*/
+
+
+class IndigoDock : public QDockWidget
 {
     Q_OBJECT
 
 public:
 
     IndigoDock(QWidget *parent = 0);
-    ~IndigoDock();
 
     void addIndigoPanel(IndigoPanel *panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, int tabIndex = -1);
     void hoverDock(IndigoPanel *pan);
@@ -76,10 +81,8 @@ private:
 
     QList<IndigoPanel*> lst_PanelList;
     QBoxLayout * lyt_dropzone;
-
     IndigoTabBar * wdg_toolbar;
     QSplitter *wdg_mainSplitter;
-    QSplitter *wdg_panelSplitter;
     QScrollArea * wdg_scrollArea_dz;
     QScrollArea * wdg_scrollArea_tb;
     QWidget *wdg_dropzone;
@@ -96,6 +99,8 @@ private:
 
     bool bool_singleMode;
 
+    void addWidget(QWidget *widget);
+    void insertWidget(int index, QWidget *widget);
     void updatePanels();
     void addPlaceholder (int index = -1);
     void removePlaceholder ();
@@ -109,7 +114,7 @@ protected:
     void resizeEvent(QResizeEvent *e);
     bool eventFilter(QObject *object, QEvent *event);
 
-signals:  
+signals:
 
     void panelDropped(int index);
     void singleMode(bool);

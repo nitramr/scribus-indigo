@@ -6,7 +6,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -34,13 +34,10 @@
 #include <QString>
 #include <QIcon>
 #include <QVBoxLayout>
+#include <QBoxLayout>
+//#include "uiwidgets/flowlayout.h"
 
-//#include "flowlayout.h"
-
-//#include "scribusapi.h"
-
-
-class /*SCRIBUS_API*/ IndigoPanelHandle : public QWidget
+class IndigoPanelHandle : public QWidget
 {
         Q_OBJECT
 public:
@@ -54,7 +51,6 @@ public:
     QString Caption();
     void setCaption(QString title, int fontSize);
     void setIcon(QIcon icon, int iconSize);
-    QIcon Icon();
     void setExpanderState(IndigoExpanderState expanderState);
 
 protected:
@@ -69,7 +65,6 @@ private:
     QToolButton * wdg_btnExpander;
 
 
-
 signals:
 
 public slots:
@@ -78,7 +73,7 @@ public slots:
 
 /**********************************************************/
 
-class /*SCRIBUS_API*/ IndigoPanel : public QFrame
+class IndigoPanel : public QFrame
 {
     Q_OBJECT
 
@@ -94,12 +89,13 @@ public:
 
 
 
-    IndigoPanel(QString name, QWidget* dock = NULL);
-    IndigoPanel(QString name, QIcon icon, int iconSize = 22, QWidget* dock = NULL);
+    IndigoPanel(QString name, QWidget* dock = 0);
+    IndigoPanel(QString name, QIcon icon, int iconSize = 22, QWidget* dock = 0);
     void addWidget(QWidget *content);
     void addWidget(QLayout *content);
+    void setWidget(QWidget * widget);
+
     QWidget *widget() const;
-    void setWidget(QWidget *content);
 
     IndigoPanelHandle * wdg_handle;
 
@@ -120,21 +116,44 @@ public:
     void setExpanderState(IndigoPanelHandle::IndigoExpanderState expanderState);
     void setExpanderState(int expanderState);
 
+    void setOrientation(Qt::Orientation orientation);
+
+    void setHandleWidth(int width);
+
+    void setGripColor(QColor color);
+
 protected:
     bool eventFilter(QObject *object, QEvent *e);
+    void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent*event);
+    void mouseReleaseEvent(QMouseEvent*event);
+    void leaveEvent(QEvent *);
+    void mouseMoveEvent(QMouseEvent*event);
+    bool mouseInGrip(QPoint mousePos);
 
-private:   
-   // QWidget *wdg_normalContainer;
+
+private:
+    QWidget * wdg_grip;
+    QColor col_grip;
     QVBoxLayout *lyt_normalArea;
-    //FlowLayout * lyt_normalArea;
-    QVBoxLayout *lyt_main;
+   // FlowLayout * lyt_normalArea;
+    QBoxLayout *lyt_main;
     QScrollArea * wdg_scrollArea;
 
+    QWidget * wdg_widget;
 
-    QPoint pnt_relativeOffset;   
-    int int_index; 
+    QPoint pnt_relativeOffset;
+    QIcon ico_icon;
+    int int_index;
     IndigoDockState m_state;
     IndigoPanelHandle::IndigoExpanderState m_expander;
+   // QSpacerItem *wdg_spacer;
+
+    Qt::Orientation m_orientation;
+    int int_handleWidth;
+    bool resizing;
+    QPoint oldPos;
+
 
 signals:
     void mouseReleased();
