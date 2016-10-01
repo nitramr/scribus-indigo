@@ -24,6 +24,7 @@ for which a new license (GPL+exception) is in place.
 #include <QEvent>
 
 #include "bookmarkpalette.h"
+#include "iconmanager.h"
 
 BookPalette::BookPalette(QWidget* parent) : ScDockPalette( parent, "Books", 0 )
 {
@@ -33,6 +34,11 @@ BookPalette::BookPalette(QWidget* parent) : ScDockPalette( parent, "Books", 0 )
 	BView->setMinimumSize(QSize(100,150));
 	setWidget( BView );
 	languageChange();
+
+    // Panel icon
+    IconManager* im = IconManager::instance();
+    setIcon(im->loadPixmap("64/pan-bookmarks.png"));
+
 }
 
 void BookPalette::changeEvent(QEvent *e)
@@ -45,5 +51,5 @@ void BookPalette::changeEvent(QEvent *e)
 
 void BookPalette::languageChange()
 {
-	setWindowTitle( tr( "Bookmarks" ) );
+    setWindowTitle( tr( "Bookmarks" ) );
 }

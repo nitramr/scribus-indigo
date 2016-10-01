@@ -117,10 +117,9 @@ public:
     void setExpanderState(int expanderState);
 
     void setOrientation(Qt::Orientation orientation);
-
     void setHandleWidth(int width);
-
     void setGripColor(QColor color);
+    void setWindowTitle(const QString &title);
 
 protected:
     bool eventFilter(QObject *object, QEvent *e);

@@ -183,9 +183,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     resizing = false;
     int_handleWidth = 2;
     col_grip = QColor(this->palette().color(QPalette::Background));
-
-
     m_orientation = Qt::Vertical;
+    QIcon icon = QIcon();
 
     // Widgets
     wdg_handle = new IndigoPanelHandle(this);
@@ -227,6 +226,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setCaption(name);
     setAccessibleName(name);
     setObjectName(name);
+    setIcon(icon, 0);
    // setHandleWidth(int_handleWidth);
 
 
@@ -587,12 +587,9 @@ void IndigoPanel::setIndex(int index){
 
 void IndigoPanel::addWidget(QWidget *content){
     wdg_widget = content;
-    lyt_normalArea->addWidget(wdg_widget);
-
     wdg_widget->setMinimumSize(this->minimumSize());
     wdg_widget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    //  setMinimumSize(this->sizeFromContent(content->size()));
-
+    lyt_normalArea->addWidget(wdg_widget);
 
 }
 
@@ -609,10 +606,7 @@ void IndigoPanel::addWidget(QLayout *content){
 
 void IndigoPanel::setWidget(QWidget * widget)
 {
-
-    if(!wdg_widget){
-        addWidget(widget);
-    }
+    addWidget(widget);
 
 }
 
@@ -677,6 +671,15 @@ void IndigoPanel::setGripColor(QColor color){
 
     col_grip = color;
     update();
+
+}
+
+
+
+void IndigoPanel::setWindowTitle(const QString &title){
+
+    QWidget::setWindowTitle(title);
+    setCaption(title);
 
 }
 
