@@ -47,7 +47,7 @@ void IndigoDockManager::connectPanel(IndigoPanel * panel){
     // reconnect
     this->connect(panel, SIGNAL(panelClosed(int)), this, SLOT(hideTab(int)));
     this->connect(panel, SIGNAL(panelShown(int)), this, SLOT(showTab(int)));
-    this->connect(panel, SIGNAL(panelShown(int)), this, SLOT(scrollToPanel(int)));
+    this->connect(panel, SIGNAL(panelShown(int)), this, SLOT(scrollToPanel()));
     this->connect(panel, SIGNAL(mouseMove()), this, SLOT(hoverDock()));
     this->connect(panel, SIGNAL(mouseReleased()), this, SLOT(dropPanel()));
     this->connect(panel, SIGNAL(isFloating()), this, SLOT(dragoutPanel()));

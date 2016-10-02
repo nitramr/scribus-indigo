@@ -186,26 +186,37 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     m_orientation = Qt::Vertical;
     QIcon icon = QIcon();
 
-    // Widgets
+
+    wdg_widget = new QWidget();
+    wdg_widget->setObjectName("IndigoPanelContentSpacer");
+
     wdg_handle = new IndigoPanelHandle(this);
     wdg_handle->installEventFilter(this);
 
     wdg_grip = new QWidget();
+    wdg_grip->setAutoFillBackground(true);
+    wdg_grip->installEventFilter(this);
+    wdg_grip->setMouseTracking(true);
 
-    //    lyt_normalArea = new FlowLayout(int_padding);
-    //    lyt_normalArea->setSizeConstraint( QLayout::SetNoConstraint );
+    lyt_content = new QVBoxLayout();
+    lyt_content->addWidget(wdg_widget);
 
-    lyt_normalArea = new QVBoxLayout();//(wdg_normalContainer);
-    lyt_normalArea->setMargin(int_padding);
-    lyt_normalArea->addWidget(wdg_handle);
+    //    lyt_content = new FlowLayout(int_padding);
+    //    lyt_content->setSizeConstraint( QLayout::SetNoConstraint );
+
+    lyt_innerArea = new QVBoxLayout();//(wdg_normalContainer);
+    lyt_innerArea->setMargin(int_padding);
+    lyt_innerArea->addWidget(wdg_handle);
+    lyt_innerArea->addLayout(lyt_content, 1);
 
     QWidget * wdg_contentHolder = new QWidget();
-    wdg_contentHolder->setLayout(lyt_normalArea);
+    wdg_contentHolder->setLayout(lyt_innerArea);
 
 
     // Layouts
     lyt_main = new QBoxLayout(QBoxLayout::TopToBottom);
     lyt_main->setMargin(0);
+    lyt_main->setSpacing(0);
     lyt_main->addWidget(wdg_contentHolder);
     lyt_main->addWidget(wdg_grip);
     lyt_main->setSizeConstraint(QLayout::SetMinimumSize);
@@ -227,6 +238,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setAccessibleName(name);
     setObjectName(name);
     setIcon(icon, 0);
+    setHandleWidth(int_handleWidth);
 
 }
 
@@ -309,133 +321,13 @@ void IndigoPanel::toggleExpander(){
 
 bool IndigoPanel::mouseInGrip(QPoint mousePos)
 {
-    switch(m_orientation){
+    QRect size = QRect(0,0, wdg_grip->width(), wdg_grip->height());
 
-    case Qt::Vertical:
-
-        qDebug() << "Pos Grip Y" << height() - int_handleWidth << "Pos Mouse Y" << mousePos.y() << endl;
-
-        if(mousePos.y() > (height() - int_handleWidth)){
-            this->setCursor(Qt::SizeVerCursor);
-            return true;
-        }
-        break;
-    case Qt::Horizontal:
-
-        if(mousePos.x() > (width() - int_handleWidth)){
-            this->setCursor(Qt::SizeHorCursor);
-            return true;
-        }
-        break;
+    if(size.contains(mousePos)){
+        return true;
     }
 
-    this->setCursor(Qt::ArrowCursor);
     return false;
-
-}
-
-
-
-void IndigoPanel::mousePressEvent(QMouseEvent*event){
-
-    if (event->buttons() == Qt::LeftButton) {
-
-        // Check if we hit the grip handle
-        if (mouseInGrip(event->pos())) {
-            oldPos = event->pos();
-            resizing = true;
-        } else {
-            resizing = false;
-        }
-
-    }
-}
-
-
-
-void IndigoPanel::mouseReleaseEvent(QMouseEvent*event){
-
-    this->setCursor(Qt::ArrowCursor);
-
-}
-
-
-
-void IndigoPanel::mouseMoveEvent(QMouseEvent*event){
-
-
-    qDebug() << "mouseMove" << endl;
-
-    mouseInGrip(event->pos());
-
-    if (event->buttons() == Qt::LeftButton) {
-
-
-        switch(m_orientation){
-
-        case Qt::Vertical:
-
-            if (resizing) {
-                QPoint delta = event->pos() - oldPos;
-                oldPos = event->pos();
-
-                setMinimumSize(width(), height()+delta.y());
-
-            }
-
-            break;
-        case Qt::Horizontal:
-
-
-
-            if (resizing) {
-                QPoint delta = event->pos() - oldPos;
-                oldPos = event->pos();
-
-                setMinimumSize(width()+delta.x(), height());
-
-            }
-
-            break;
-        }
-    }
-
-
-}
-
-
-void IndigoPanel::paintEvent(QPaintEvent *event)
-{
-    QPainter p(this);
-    QColor colBase = col_grip;
-
-
-    switch(m_orientation){
-
-    case Qt::Vertical:
-        p.fillRect(0,
-                   height()-int_handleWidth,
-                   width(),
-                   int_handleWidth,
-                   colBase);
-
-        break;
-    case Qt::Horizontal:
-        p.fillRect(width()-int_handleWidth,
-                   0,
-                   int_handleWidth,
-                   height(),
-                   colBase);
-        break;
-    }
-
-
-}
-
-
-void IndigoPanel::leaveEvent(QEvent *){
-
-    this->setCursor(Qt::ArrowCursor);
 
 }
 
@@ -451,6 +343,20 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 
         QMouseEvent *me = static_cast<QMouseEvent *>(event);
 
+        if(object == wdg_grip && me->buttons() == Qt::LeftButton){
+
+            // Check if we hit the grip handle
+            if (mouseInGrip(me->pos())) {
+
+                pnt_relativeOffset = me->globalPos();
+
+                resizing = true;
+            } else {
+                resizing = false;
+            }
+        }
+
+
         if(object == wdg_handle && me->buttons() == Qt::LeftButton){
             QPoint point = me->globalPos();
             QPoint xy = this->mapToGlobal(QPoint(0,0));
@@ -465,6 +371,47 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
     case QEvent::MouseMove:
     {
         QMouseEvent *me = static_cast<QMouseEvent *>(event);
+
+        if(object == wdg_grip){
+
+            switch(m_orientation){
+
+            case Qt::Vertical:
+                this->setCursor(Qt::SizeVerCursor);
+                break;
+            case Qt::Horizontal:
+                this->setCursor(Qt::SizeHorCursor);
+                break;
+            }
+
+            if (me->buttons() == Qt::LeftButton) {
+
+                QPoint point = me->globalPos();
+
+                QPoint delta = point - pnt_relativeOffset;
+                pnt_relativeOffset = me->globalPos();
+
+                switch(m_orientation){
+
+                case Qt::Vertical:
+
+                    if (resizing) {
+                        setMinimumSize(width(), height()+delta.y());
+                    }
+
+                    break;
+                case Qt::Horizontal:
+
+                    if (resizing) {
+                        setMinimumSize(width()+delta.x(), height());
+                    }
+
+                    break;
+                }
+            }
+
+        }
+
 
         if(object == wdg_handle && me->buttons() == Qt::LeftButton){
             // undock Panel if not already undocked
@@ -495,7 +442,6 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
             if(dockState() == IndigoPanel::Floating){
 
                 emit mouseReleased(); // activate reparenting in DropZone*
-                qDebug() << "emit: mouseReleased();" << endl;
                 update();
             }
         }
@@ -509,9 +455,24 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
         }
         break;
 
+    case QEvent::Leave:
+        if(object == wdg_grip){
+            this->setCursor(Qt::ArrowCursor);
+        }
+        break;
+    case QEvent::Paint:
+
+        if(object == wdg_grip){
+            QPainter p(wdg_grip);
+            p.fillRect(wdg_grip->rect(),col_grip);
+        }
+        break;
+
     default:
         break;
     }
+
+
 
 
 
@@ -536,6 +497,15 @@ void IndigoPanel::setCaption(const QString title, int fontSize){
 
 QString IndigoPanel::Caption(){
     return wdg_handle->Caption();
+}
+
+
+
+void IndigoPanel::setWindowTitle(const QString &title){
+
+    QWidget::setWindowTitle(title);
+    setCaption(title);
+
 }
 
 
@@ -584,10 +554,13 @@ void IndigoPanel::setIndex(int index){
 
 
 void IndigoPanel::addWidget(QWidget *content){
+
+    if(wdg_widget->objectName() == "IndigoPanelContentSpacer") wdg_widget->deleteLater();
+
     wdg_widget = content;
     wdg_widget->setMinimumSize(this->minimumSize());
     wdg_widget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    lyt_normalArea->addWidget(wdg_widget);
+    lyt_content->addWidget(wdg_widget);
 
 }
 
@@ -602,15 +575,26 @@ void IndigoPanel::addWidget(QLayout *content){
 }
 
 
+
 void IndigoPanel::setWidget(QWidget * widget)
 {
     addWidget(widget);
 
 }
 
+
+
+void IndigoPanel::addStretch(int stretch){
+
+    lyt_content->addStretch(stretch);
+
+}
+
+
+
 QWidget *IndigoPanel::widget() const
 {
-    // QLayout *layout = qobject_cast<QLayout*>(lyt_normalArea);
+    // QLayout *layout = qobject_cast<QLayout*>(lyt_content);
 
     //  QLayoutItem *item = lyt_normalArea->itemAt(0);
     // return item == 0 ? 0 : item->widget();
@@ -658,7 +642,7 @@ void IndigoPanel::setHandleWidth(int width){
         wdg_grip->setFixedWidth(int_handleWidth);
         wdg_grip->setMaximumHeight(QWIDGETSIZE_MAX);
         break;
-    } 
+    }
 
 }
 
@@ -666,16 +650,7 @@ void IndigoPanel::setHandleWidth(int width){
 void IndigoPanel::setGripColor(QColor color){
 
     col_grip = color;
-    update();
-
-}
-
-
-
-void IndigoPanel::setWindowTitle(const QString &title){
-
-    QWidget::setWindowTitle(title);
-    setCaption(title);
+    wdg_grip->update();
 
 }
 

@@ -94,6 +94,7 @@ public:
     void addWidget(QWidget *content);
     void addWidget(QLayout *content);
     void setWidget(QWidget * widget);
+    void addStretch(int stretch = 0);
 
     QWidget *widget() const;
 
@@ -123,20 +124,16 @@ public:
 
 protected:
     bool eventFilter(QObject *object, QEvent *e);
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent*event);
-    void mouseReleaseEvent(QMouseEvent*event);
-    void leaveEvent(QEvent *);
-    void mouseMoveEvent(QMouseEvent*event);
     bool mouseInGrip(QPoint mousePos);
 
 
 private:
     QWidget * wdg_grip;
     QColor col_grip;
-    QVBoxLayout *lyt_normalArea;
+    QVBoxLayout *lyt_innerArea;
    // FlowLayout * lyt_normalArea;
     QBoxLayout *lyt_main;
+    QVBoxLayout * lyt_content;
     QScrollArea * wdg_scrollArea;
 
     QWidget * wdg_widget;
