@@ -370,6 +370,9 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 
 
 	actionManager->init(this);
+
+    initIndigoDock();
+
 	initMenuBar();
 	createMenuBar();
 	initToolBars();
@@ -400,8 +403,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	connect( scrActions["windowsCascade"], SIGNAL(triggered()) , mdiArea, SLOT(cascadeSubWindows()) );
 	connect( scrActions["windowsTile"], SIGNAL(triggered()) , mdiArea, SLOT(tileSubWindows()) );
 
-    initIndigoDock();
-	initPalettes();
+    initPalettes();
 
 	m_prefsManager->setupMainWindow(this);
 
@@ -628,6 +630,13 @@ void ScribusMainWindow::initIndigoDock()
     // Add IndigoDock
     wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
 
+
+}
+
+
+IndigoDockManager *ScribusMainWindow::indigoDockManager(){
+
+    return wdg_indigoDockManager;
 
 }
 
@@ -5604,7 +5613,7 @@ void ScribusMainWindow::ToggleAllPalettes()
 		m_palettesStatus[PS_UNDO] = undoPalette->isVisible();
 		m_palettesStatus[PS_VERIFIER] = docCheckerPalette->isVisible();
 		m_palettesStatus[PS_DOWNLOADS] = downloadsPalette->isVisible();
-		propertiesPalette->hide();
+        propertiesPalette->hide();
 		outlinePalette->hide();
 		scrapbookPalette->hide();
 		bookmarkPalette->hide();

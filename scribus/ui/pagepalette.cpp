@@ -26,12 +26,12 @@ for which a new license (GPL+exception) is in place.
 #include "scribusview.h"
 #include "iconmanager.h"
 
-PagePalette::PagePalette(QWidget* parent) : ScDockPalette(parent, "PagePalette", 0)
+PagePalette::PagePalette(QWidget* parent) : ScDockPalette(parent, "PagePalette")
 {
 	m_scMW = (ScribusMainWindow*) parent;
 	m_view = 0;
 
-	setObjectName(QString::fromLocal8Bit("PagePalette"));
+    setObjectName(QString::fromLocal8Bit("PagePalette"));
 
 	QStackedWidget* stackedWidget = new QStackedWidget(this);
 	stackedWidget->setObjectName(QString::fromLocal8Bit("stackedWidget"));

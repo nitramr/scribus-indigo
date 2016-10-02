@@ -218,6 +218,7 @@ public:
 	/** \brief private doc for managing default patterns. */
 	ScribusDoc* m_doc;
 
+    IndigoDockManager *indigoDockManager();
 
 	QProgressBar* mainWindowProgressBar;
 	ScrSpinBox* zoomSpinBox; //zoom spinbox at bottom of view

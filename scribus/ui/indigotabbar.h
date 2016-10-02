@@ -32,14 +32,12 @@
 #include <QMouseEvent>
 #include <QPainter>
 
-//#include "scribusapi.h"
-
 //
 // IndigoTab
 //
 
 
-class /*SCRIBUS_API*/ IndigoTab : public QWidget
+class IndigoTab : public QWidget
 {
     Q_OBJECT
 public:
@@ -73,7 +71,7 @@ private:
 //
 
 
-class /*SCRIBUS_API*/ IndigoTabBar : public QWidget
+class IndigoTabBar : public QWidget
 {
     Q_OBJECT
 public:

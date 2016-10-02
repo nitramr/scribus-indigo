@@ -101,6 +101,9 @@ IndigoDock::IndigoDock(QWidget *parent) : QDockWidget(parent)
     connect(wdg_toolbar, SIGNAL(tabMoved(int,int)), this, SLOT(movePanel(int,int)));
     connect(wdg_toolbar, SIGNAL(tabClicked(int)), this, SLOT(scrollToPanel(int)));
 
+
+    updateMinHeight();
+
 }
 
 
@@ -257,7 +260,7 @@ void IndigoDock::updateMinHeight(){
     if(int_hiddenPanels == lst_PanelList.size()){
 
         qDebug() << "Hide Dock" << endl;
-       // hide();
+        //hide();
 
     }else{
 
@@ -296,7 +299,7 @@ void IndigoDock::updateMinHeight(){
         // reset size limit
         setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
 
-        update();
+        update();        
     }
 }
 
@@ -644,12 +647,12 @@ void IndigoDock::clear(){
 
 void IndigoDock::updatePanelSize(){
 
-    IndigoPanel * panel;
-    foreach(panel, lst_PanelList){
-        qDebug() << "Panel SizeHintHeight" << panel->sizeHint().height() << endl;
+//    IndigoPanel * panel;
+//    foreach(panel, lst_PanelList){
+//        qDebug() << "Panel SizeHintHeight" << panel->sizeHint().height() << endl;
 
-        panel->setMinimumSize(int_minPanelWidth, int_minPanelHeight);
-    }
+//        panel->setMinimumSize(int_minPanelWidth, int_minPanelHeight);
+//    }
 
 }
 

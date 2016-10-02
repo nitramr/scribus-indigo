@@ -47,8 +47,10 @@ for which a new license (GPL+exception) is in place.
 
 //TODO Distribute with 
 
-AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name, 0 )
+AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
+    visibleOnStartup = true; // override default
+
 	setupUi(this);
 	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	currDoc=NULL;

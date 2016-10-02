@@ -47,6 +47,7 @@ void IndigoDockManager::connectPanel(IndigoPanel * panel){
     // reconnect
     this->connect(panel, SIGNAL(panelClosed(int)), this, SLOT(hideTab(int)));
     this->connect(panel, SIGNAL(panelShown(int)), this, SLOT(showTab(int)));
+    this->connect(panel, SIGNAL(panelShown(int)), this, SLOT(scrollToPanel(int)));
     this->connect(panel, SIGNAL(mouseMove()), this, SLOT(hoverDock()));
     this->connect(panel, SIGNAL(mouseReleased()), this, SLOT(dropPanel()));
     this->connect(panel, SIGNAL(isFloating()), this, SLOT(dragoutPanel()));
@@ -136,6 +137,12 @@ void IndigoDockManager::removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList
 
 }
 
+
+QList<IndigoDock*> IndigoDockManager::indigoDocks() const{
+
+    return lst_Docks;
+
+}
 
 
 void IndigoDockManager::addIndigoPanel(IndigoPanel * panel, IndigoPanel::IndigoDockState dockState, bool isNewPanel, int tabIndex){
@@ -283,6 +290,16 @@ void IndigoDockManager::showTab(int index){
         }
 
     }
+}
+
+
+void IndigoDockManager::scrollToPanel(){
+
+    IndigoPanel *pan = qobject_cast<IndigoPanel *>(sender());
+    if (!pan) return;
+
+    scrollToPanel(pan->objectName());
+
 }
 
 

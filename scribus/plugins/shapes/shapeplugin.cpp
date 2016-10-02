@@ -68,6 +68,11 @@ void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
 {
 	if (sc_palette)
 	{
+        if(mw->indigoDockManager()->indigoDocks().count() > 0){
+            IndigoDock * dock = mw->indigoDockManager()->indigoDocks().at(0);
+            mw->indigoDockManager()->addIndigoPanel(dock, sc_palette, IndigoPanel::HiddenDocked);
+        }else  mw->indigoDockManager()->addIndigoPanel(sc_palette);
+
 		sc_palette->setMainWindow(mw);
 		languageChange();
 		m_actions.insert("shapeShowPalette", new ScrAction(QObject::tr("Custom Shapes"), QKeySequence(), this));
@@ -77,6 +82,7 @@ void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
 		connect(sc_palette, SIGNAL(paletteShown(bool)), m_actions["shapeShowPalette"], SLOT(setChecked(bool)));
 		mw->scrMenuMgr->addMenuItemStringAfter("shapeShowPalette", "toolsInline", "Windows");
 		mw->scrMenuMgr->addMenuItemStringstoMenuBar("Windows", m_actions);
+
 	}
 }
 

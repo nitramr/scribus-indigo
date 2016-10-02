@@ -37,13 +37,13 @@ for which a new license (GPL+exception) is in place.
 #include "scdockpalette.h"
 #include "util.h"
 
-ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, Qt::WindowFlags f)
+ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 
     : IndigoPanel(prefsContext ),
 
 	palettePrefs(0),
 	prefsContextName(QString::null),
-	visibleOnStartup(false)
+    visibleOnStartup(false)
 {
     if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
 	{
@@ -61,11 +61,9 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, Qt:
 			  		");
     }
    // originalParent=parent;
-    //tempParent=0;
-    //setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    //tempParent=0; 
    // setWindowIcon(IconManager::instance()->loadPixmap("AppIcon.png"));
     setPrefsContext(prefsContext);
-    //setObjectName(prefsContext);
     connect(PrefsManager::instance(), SIGNAL(prefsChanged()), this, SLOT(setFontSize()));
 
     // dummy icon
@@ -138,59 +136,61 @@ void ScDockPalette::hideEvent(QHideEvent* hideEvent)
 }
 
 void ScDockPalette::showEvent(QShowEvent *showEvent)
-{
-/*#if QT_VERSION < 0x050600
-	// According to Qt doc, non-spontaneous show events are sent to widgets
-	// immediately before they are shown. We want to restore geometry for those
-	// events as spontaneous events are delivered after dialog has been shown
-	if (palettePrefs && !showEvent->spontaneous() && isFloating())
-	{
-		QDesktopWidget *d = QApplication::desktop();
-		QSize gStrut = QApplication::globalStrut();
-		if (palettePrefs->contains("left"))
-		{
-			QRect scr = QApplication::desktop()->availableGeometry(this);
-			// all palettes should have enough room for 3x3 min widgets
-			int vwidth  = qMin(qMax(3*gStrut.width(), palettePrefs->getInt("width")),
-			                   d->width());
-			int vheight = qMin(qMax(3*gStrut.height(), palettePrefs->getInt("height")),
-			                   d->height());
-			// palettes should not use too much screen space
-			if (vwidth > d->width()/3 && vheight > d->height()/3)
-				vwidth = d->width()/3;
-			// and should be partly visible
-			int vleft   = qMin(qMax(scr.left() - vwidth + gStrut.width(), palettePrefs->getInt("left")),
-			                   scr.right() - gStrut.width());
-			int vtop = qMin(palettePrefs->getInt("top"), d->height() - gStrut.height());
+{   
+
+#if QT_VERSION < 0x050600
+    // According to Qt doc, non-spontaneous show events are sent to widgets
+    // immediately before they are shown. We want to restore geometry for those
+    // events as spontaneous events are delivered after dialog has been shown
+    if (palettePrefs && !showEvent->spontaneous())
+    {
+        QDesktopWidget *d = QApplication::desktop();
+        QSize gStrut = QApplication::globalStrut();
+        if (palettePrefs->contains("left"))
+        {
+            QRect scr = QApplication::desktop()->availableGeometry(this);
+            // all palettes should have enough room for 3x3 min widgets
+            int vwidth  = qMin(qMax(3*gStrut.width(), palettePrefs->getInt("width")),
+                               d->width());
+            int vheight = qMin(qMax(3*gStrut.height(), palettePrefs->getInt("height")),
+                               d->height());
+            // palettes should not use too much screen space
+            if (vwidth > d->width()/3 && vheight > d->height()/3)
+                vwidth = d->width()/3;
+            // and should be partly visible
+            int vleft   = qMin(qMax(scr.left() - vwidth + gStrut.width(), palettePrefs->getInt("left")),
+                               scr.right() - gStrut.width());
+            int vtop = qMin(palettePrefs->getInt("top"), d->height() - gStrut.height());
 #if defined(Q_OS_MAC) || defined(_WIN32)
-			// on Mac and Windows you're dead if the titlebar is not on screen
-			vtop    = qMax(64, vtop);
+            // on Mac and Windows you're dead if the titlebar is not on screen
+            vtop    = qMax(64, vtop);
 #else
-			vtop    = qMax(-vheight + gStrut.height(), vtop);
+            vtop    = qMax(-vheight + gStrut.height(), vtop);
 #endif
-			// Check values against current screen size
-			if ( vleft <= scr.left() )
-				vleft = scr.left();
-			if ( vleft >= scr.right() )
-				vleft = scr.left();
-			if ( vtop >= scr.bottom() )
-				vtop = 64;
-			if ( vtop <= scr.top() )
-				vtop = scr.top();
-			if ( vwidth >= scr.width() )
-				vwidth = qMax( gStrut.width(), scr.width() - vleft );
-			if ( vheight >= scr.height() )
-				vheight = qMax( gStrut.height(), scr.height() - vtop );
+            // Check values against current screen size
+            if ( vleft <= scr.left() )
+                vleft = scr.left();
+            if ( vleft >= scr.right() )
+                vleft = scr.left();
+            if ( vtop >= scr.bottom() )
+                vtop = 64;
+            if ( vtop <= scr.top() )
+                vtop = scr.top();
+            if ( vwidth >= scr.width() )
+                vwidth = qMax( gStrut.width(), scr.width() - vleft );
+            if ( vheight >= scr.height() )
+                vheight = qMax( gStrut.height(), scr.height() - vtop );
 //			qDebug() << QString("root %1x%2 %7 palette %3x%4 @ (%5,%6)").arg(d->width()).arg(d->height())
 //				.arg(vwidth).arg(vheight).arg(vleft).arg(vtop).arg(name());
 //			setGeometry(vleft, vtop, vwidth, vheight);
-			resize(vwidth, vheight);
-			move(vleft, vtop);
-		}
-		storeDockState();
-		storeVisibility(true);
-	}
-#endif*/
+            resize(vwidth, vheight);
+            move(vleft, vtop);
+        }
+        storeDockState();
+        storeVisibility(true);
+    }
+#endif
+
     IndigoPanel::showEvent(showEvent);
 }
 
@@ -209,30 +209,30 @@ void ScDockPalette::hide()
 
 void ScDockPalette::storePosition()
 {
-//    if (palettePrefs)
-//	{
-//		QPoint geo = pos();
-//		palettePrefs->set("left", geo.x());
-//		palettePrefs->set("top", geo.y());
-//    }
+    if (palettePrefs)
+    {
+        QPoint geo = pos();
+        palettePrefs->set("left", geo.x());
+        palettePrefs->set("top", geo.y());
+    }
 }
 
 void ScDockPalette::storePosition(int newX, int newY)
 {
-//    if (palettePrefs)
-//	{
-//		palettePrefs->set("left", newX);
-//		palettePrefs->set("top", newY);
-//    }
+    if (palettePrefs)
+    {
+        palettePrefs->set("left", newX);
+        palettePrefs->set("top", newY);
+    }
 }
 
 void ScDockPalette::storeSize()
 {
-//    if (palettePrefs)
-//	{
-//		palettePrefs->set("width", width());
-//		palettePrefs->set("height", height());
-//    }
+    if (palettePrefs)
+    {
+        palettePrefs->set("width", width());
+        palettePrefs->set("height", height());
+    }
 }
 
 void ScDockPalette::storeVisibility(bool vis)

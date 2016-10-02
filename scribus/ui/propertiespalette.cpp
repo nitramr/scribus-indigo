@@ -72,8 +72,10 @@ for which a new license (GPL+exception) is in place.
 
 //using namespace std;
 
-PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties", 0)
+PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties")
 {
+    visibleOnStartup = true; // override default
+
 	undoManager = UndoManager::instance();
 	m_ScMW=0;
 	m_doc=0;
@@ -81,7 +83,7 @@ PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, 
 	m_haveItem = false;
 	m_unitRatio = 1.0;
 
-	setObjectName(QString::fromLocal8Bit("PropertiesPalette"));
+    setObjectName(QString::fromLocal8Bit("PropertiesPalette"));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 	QFont f(font());
@@ -169,11 +171,11 @@ void PropertiesPalette::closeEvent(QCloseEvent *closeEvent)
 void PropertiesPalette::setMainWindow(ScribusMainWindow* mw)
 {
 	m_ScMW=mw;
-	QPoint p1 = mapToGlobal(pos());
-	QPoint p2 = m_ScMW->mapFromGlobal(p1);
-	//Qt4 reparent(m_ScMW, this->getWFlags(), p2);
-    //setParent(m_ScMW);
-    //move(p2);
+//	QPoint p1 = mapToGlobal(pos());
+//	QPoint p2 = m_ScMW->mapFromGlobal(p1);
+//  Qt4 reparent(m_ScMW, this->getWFlags(), p2);
+//  setParent(m_ScMW);
+//  move(p2);
 
 	this->xyzPal->setMainWindow(mw);
 	this->shadowPal->setMainWindow(mw);

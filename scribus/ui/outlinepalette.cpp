@@ -412,11 +412,11 @@ bool OutlineWidget::viewportEvent(QEvent *event)
 	return QTreeWidget::viewportEvent(event);
 }
 
-OutlinePalette::OutlinePalette( QWidget* parent) : ScDockPalette( parent, "Tree", 0)
+OutlinePalette::OutlinePalette( QWidget* parent) : ScDockPalette( parent, "Tree")
 {
 //	resize( 220, 240 );
-	setMinimumSize( QSize( 220, 240 ) );
-	setObjectName(QString::fromLocal8Bit("Tree"));
+    //setMinimumSize( QSize( 220, 240 ) );
+    setObjectName(QString::fromLocal8Bit("Tree"));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
  

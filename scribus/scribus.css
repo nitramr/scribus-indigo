@@ -46,7 +46,7 @@ ColorFormat
 	hsva(360,100,100,100);
 
 */
-Palette::light {
+/*Palette::light {
 	[all]		alternate-base:		rgb(235,235,235);
 	[all]		base:			rgb(210,210,210);
 	[all]		bright-text:		rgb(255,0,0);
@@ -63,7 +63,7 @@ Palette::light {
 	[all]		tooltip-text:		rgb(34,34,34);
 	[all]		window:			rgb(235,235,235);
 	[all]		window-text: 		rgb(34,34,34);
-}
+}*/
 /*Palette::dark {
 	[all]		alternate-base:		rgb(53,53,53);
 	[all]		base:			rgb(25,25,25);

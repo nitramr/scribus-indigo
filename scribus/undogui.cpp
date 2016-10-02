@@ -38,7 +38,7 @@ for which a new license (GPL+exception) is in place.
 #include "undogui.h"
 
 
-UndoGui::UndoGui(QWidget* parent, const char* name, Qt::WindowFlags f) : ScDockPalette(parent, name, f)
+UndoGui::UndoGui(QWidget* parent, const char* name, Qt::WindowFlags f) : ScDockPalette(parent, name)
 {
 	setWindowTitle( tr("Action History"));
 }

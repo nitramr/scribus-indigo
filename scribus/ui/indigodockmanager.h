@@ -44,6 +44,8 @@ public:
     void scrollToPanel(QString name);
     void removePanel(IndigoPanel * panel);
 
+    QList<IndigoDock*> indigoDocks() const;
+
     QByteArray saveWorkspace();
     void loadWorkspace(QByteArray workspaceArray);
 
@@ -74,6 +76,8 @@ public slots:
     void dragoutPanel();
     void showTab(int);
     void hideTab(int);
+    void scrollToPanel();
+
 };
 
 #endif // INDIGODOCKMANAGER_H

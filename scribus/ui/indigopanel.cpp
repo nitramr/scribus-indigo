@@ -181,7 +181,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     int int_padding = 5;
 
     resizing = false;
-    int_handleWidth = 2;
+    int_handleWidth = 6;
     col_grip = QColor(this->palette().color(QPalette::Background));
     m_orientation = Qt::Vertical;
     QIcon icon = QIcon();
@@ -227,8 +227,6 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setAccessibleName(name);
     setObjectName(name);
     setIcon(icon, 0);
-   // setHandleWidth(int_handleWidth);
-
 
 }
 
@@ -315,16 +313,16 @@ bool IndigoPanel::mouseInGrip(QPoint mousePos)
 
     case Qt::Vertical:
 
-        qDebug() << "Pos Grip Y" << height() - int_handleWidth -2 << "Pos Mouse Y" << mousePos.y() << endl;
+        qDebug() << "Pos Grip Y" << height() - int_handleWidth << "Pos Mouse Y" << mousePos.y() << endl;
 
-        if(mousePos.y() > (height() - int_handleWidth -2)){
+        if(mousePos.y() > (height() - int_handleWidth)){
             this->setCursor(Qt::SizeVerCursor);
             return true;
         }
         break;
     case Qt::Horizontal:
 
-        if(mousePos.x() > (width() - int_handleWidth -2)){
+        if(mousePos.x() > (width() - int_handleWidth)){
             this->setCursor(Qt::SizeHorCursor);
             return true;
         }
@@ -660,9 +658,7 @@ void IndigoPanel::setHandleWidth(int width){
         wdg_grip->setFixedWidth(int_handleWidth);
         wdg_grip->setMaximumHeight(QWIDGETSIZE_MAX);
         break;
-    }
-
-  //  wdg_grip = new QSpacerItem(int_handleWidth, int_handleWidth);
+    } 
 
 }
 
