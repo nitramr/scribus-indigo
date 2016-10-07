@@ -61,14 +61,10 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 			  		");
     }
    // originalParent=parent;
-    //tempParent=0; 
-   // setWindowIcon(IconManager::instance()->loadPixmap("AppIcon.png"));
+    //tempParent=0;
     setPrefsContext(prefsContext);
     connect(PrefsManager::instance(), SIGNAL(prefsChanged()), this, SLOT(setFontSize()));
 
-    // dummy icon
-   // if(Icon().isNull())
-    //    setIcon(IconManager::instance()->loadPixmap("64/pan-image.png"));
 }
 
 void ScDockPalette::setPrefsContext(QString context)
@@ -79,11 +75,22 @@ void ScDockPalette::setPrefsContext(QString context)
 		if (!prefsContextName.isEmpty())
 		{
 			palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);
-			if (palettePrefs)
+            if (palettePrefs){
 				visibleOnStartup = palettePrefs->getBool("visible");
+                int width = palettePrefs->getInt("width");
+                int height= palettePrefs->getInt("height");
+               // setMinimumSize(width,height);
+                setFixedSize(width, height);
+                setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+//                setGeometry(QRect(0,0,width, height));
+               //resize(width, height);
+
+            }
 		}
-		else
+        else{
 			palettePrefs = NULL;
+        }
     }
 }
 
@@ -102,7 +109,7 @@ void ScDockPalette::startup()
 void ScDockPalette::setPaletteShown(bool visible)
 {
     storeVisibility(visible);
-    storeDockState();
+ //   storeDockState();
 	if (!visible)
 		hide();
 	else if (!isVisible())
@@ -129,16 +136,16 @@ void ScDockPalette::closeEvent(QCloseEvent *closeEvent)
 
 void ScDockPalette::hideEvent(QHideEvent* hideEvent)
 {
-    storePosition();
+//    storePosition();
 	storeSize();
-    storeDockState();
+ //   storeDockState();
     IndigoPanel::hideEvent(hideEvent);
 }
 
 void ScDockPalette::showEvent(QShowEvent *showEvent)
 {   
 
-#if QT_VERSION < 0x050600
+/*#if QT_VERSION < 0x050600
     // According to Qt doc, non-spontaneous show events are sent to widgets
     // immediately before they are shown. We want to restore geometry for those
     // events as spontaneous events are delivered after dialog has been shown
@@ -189,6 +196,17 @@ void ScDockPalette::showEvent(QShowEvent *showEvent)
         storeDockState();
         storeVisibility(true);
     }
+#endif*/
+
+
+#if QT_VERSION < 0x050600
+    // According to Qt doc, non-spontaneous show events are sent to widgets
+    // immediately before they are shown. We want to restore geometry for those
+    // events as spontaneous events are delivered after dialog has been shown
+    if (palettePrefs && !showEvent->spontaneous())
+    {
+        storeVisibility(true);
+    }
 #endif
 
     IndigoPanel::showEvent(showEvent);
@@ -198,33 +216,33 @@ void ScDockPalette::hide()
 {
     if (isVisible())
 	{
-		storePosition();
+//		storePosition();
 		storeSize();
-		storeDockState();
+//		storeDockState();
         IndigoPanel::hide();
     }
 
    // IndigoPanel::hide();
 }
 
-void ScDockPalette::storePosition()
-{
-    if (palettePrefs)
-    {
-        QPoint geo = pos();
-        palettePrefs->set("left", geo.x());
-        palettePrefs->set("top", geo.y());
-    }
-}
+//void ScDockPalette::storePosition()
+//{
+//    if (palettePrefs)
+//    {
+//        QPoint geo = pos();
+//        palettePrefs->set("left", geo.x());
+//        palettePrefs->set("top", geo.y());
+//    }
+//}
 
-void ScDockPalette::storePosition(int newX, int newY)
-{
-    if (palettePrefs)
-    {
-        palettePrefs->set("left", newX);
-        palettePrefs->set("top", newY);
-    }
-}
+//void ScDockPalette::storePosition(int newX, int newY)
+//{
+//    if (palettePrefs)
+//    {
+//        palettePrefs->set("left", newX);
+//        palettePrefs->set("top", newY);
+//    }
+//}
 
 void ScDockPalette::storeSize()
 {
@@ -241,18 +259,20 @@ void ScDockPalette::storeVisibility(bool vis)
         palettePrefs->set("visible", vis);
 }
 
-void ScDockPalette::storeDockState()
-{
-	if (palettePrefs)
-	{
+//void ScDockPalette::storeDockState()
+//{
+//	if (palettePrefs)
+//	{
 
-        // TODO: add IndigoPanel Properties here!
 
-        /*palettePrefs->set("floating", isFloating());
-		Qt::DockWidgetArea area = Qt::NoDockWidgetArea;
-		QMainWindow* mainWindow = dynamic_cast<QMainWindow*>(parent());
-		if (mainWindow)
-			area = mainWindow->dockWidgetArea(this);
-        palettePrefs->set("area", (int) area);*/
-	}
-}
+
+//        // TODO: add IndigoPanel Properties here!
+
+//        /*palettePrefs->set("floating", isFloating());
+//		Qt::DockWidgetArea area = Qt::NoDockWidgetArea;
+//		QMainWindow* mainWindow = dynamic_cast<QMainWindow*>(parent());
+//		if (mainWindow)
+//			area = mainWindow->dockWidgetArea(this);
+//        palettePrefs->set("area", (int) area);*/
+//	}
+//}

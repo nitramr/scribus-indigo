@@ -168,7 +168,9 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
 
     panel->installEventFilter(this);
     panel->setOrientation(m_orientation);
-    // panel->setMinimumSize(QSize(int_minPanelWidth, int_minPanelHeight));
+    panel->setMinimumResizeHeight(int_minPanelHeight);
+    panel->setMinimumResizeWidth(int_minPanelWidth);
+   // panel->setMinimumSize(QSize(int_minPanelWidth, int_minPanelHeight));
 
 
     updatePanels();
@@ -736,6 +738,7 @@ void IndigoDock::setMinimumPanelWidth(int width){
 
     wdg_dropzone->setMinimumWidth(int_minWidth);
     wdg_scrollArea_dz->setMinimumWidth(wdg_dropzone->minimumWidth() + 20); //scrollbar fix
+
 
 }
 

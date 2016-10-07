@@ -121,6 +121,12 @@ public:
     void setHandleWidth(int width);
     void setGripColor(QColor color);
     void setWindowTitle(const QString &title);
+    void setVisible(bool visible);
+
+    void setMinimumResizeHeight(int height);
+    void setMinimumResizeWidth(int width);
+    int minimumResizeHeight();
+    int minimumResizeWidth();
 
 protected:
     bool eventFilter(QObject *object, QEvent *e);
@@ -143,12 +149,14 @@ private:
     int int_index;
     IndigoDockState m_state;
     IndigoPanelHandle::IndigoExpanderState m_expander;
-   // QSpacerItem *wdg_spacer;
 
     Qt::Orientation m_orientation;
     int int_handleWidth;
     bool resizing;
     QPoint oldPos;
+
+    int int_minWidth;
+    int int_minHeight;
 
 
 signals:

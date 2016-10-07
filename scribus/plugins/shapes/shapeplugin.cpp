@@ -70,10 +70,11 @@ void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
 	{
         if(mw->indigoDockManager()->indigoDocks().count() > 0){
             IndigoDock * dock = mw->indigoDockManager()->indigoDocks().at(0);
-            mw->indigoDockManager()->addIndigoPanel(dock, sc_palette, IndigoPanel::HiddenDocked);
+            mw->indigoDockManager()->addIndigoPanel(dock, sc_palette);
         }else  mw->indigoDockManager()->addIndigoPanel(sc_palette);
 
 		sc_palette->setMainWindow(mw);
+        sc_palette->hide();
 		languageChange();
 		m_actions.insert("shapeShowPalette", new ScrAction(QObject::tr("Custom Shapes"), QKeySequence(), this));
 		m_actions["shapeShowPalette"]->setToggleAction(true);

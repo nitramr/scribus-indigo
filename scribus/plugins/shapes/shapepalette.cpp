@@ -279,6 +279,7 @@ void ShapeView::updateShapeList()
 
 ShapePalette::ShapePalette( QWidget* parent) : ScDockPalette( parent, "Shap")
 {
+
 	setMinimumSize( QSize( 220, 240 ) );
 	setObjectName(QString::fromLocal8Bit("Shap"));
 	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));

@@ -52,7 +52,7 @@ AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* nam
     visibleOnStartup = true; // override default
 
 	setupUi(this);
-	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	currDoc=NULL;
 	guideDirection=-1;
 	setObjectName(name);

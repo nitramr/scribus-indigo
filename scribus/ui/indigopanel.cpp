@@ -182,6 +182,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 
     resizing = false;
     int_handleWidth = 6;
+    int_minHeight = 50;
+    int_minWidth = 50;
     col_grip = QColor(this->palette().color(QPalette::Background));
     m_orientation = Qt::Vertical;
     QIcon icon = QIcon();
@@ -200,6 +202,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 
     lyt_content = new QVBoxLayout();
     lyt_content->addWidget(wdg_widget);
+    lyt_content->setSizeConstraint(QLayout::SetDefaultConstraint);
+    lyt_content->setAlignment(Qt::AlignTop);
 
     //    lyt_content = new FlowLayout(int_padding);
     //    lyt_content->setSizeConstraint( QLayout::SetNoConstraint );
@@ -208,18 +212,14 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     lyt_innerArea->setMargin(int_padding);
     lyt_innerArea->addWidget(wdg_handle);
     lyt_innerArea->addLayout(lyt_content, 1);
-
-    QWidget * wdg_contentHolder = new QWidget();
-    wdg_contentHolder->setLayout(lyt_innerArea);
-
+    lyt_innerArea->setAlignment(Qt::AlignTop);
 
     // Layouts
     lyt_main = new QBoxLayout(QBoxLayout::TopToBottom);
     lyt_main->setMargin(0);
     lyt_main->setSpacing(0);
-    lyt_main->addWidget(wdg_contentHolder);
-    lyt_main->addWidget(wdg_grip);
-    lyt_main->setSizeConstraint(QLayout::SetMinimumSize);
+    lyt_main->addLayout(lyt_innerArea,1);
+    lyt_main->addWidget(wdg_grip);    
     lyt_main->setAlignment(Qt::AlignTop);
     setLayout(lyt_main);
 
@@ -396,14 +396,28 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
                 case Qt::Vertical:
 
                     if (resizing) {
-                        setMinimumSize(width(), height()+delta.y());
+                       setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
+
+                        int _height = height()+delta.y();
+                        if(_height <= minimumResizeHeight()) _height = minimumResizeHeight();
+
+                        setFixedHeight(_height);
+                        //setMinimumSize(width(), _height);
+                        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
                     }
 
                     break;
                 case Qt::Horizontal:
 
                     if (resizing) {
-                        setMinimumSize(width()+delta.x(), height());
+                        setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
+
+                        int _width = width()+delta.x();
+                        if(_width <= minimumResizeWidth()) _width = minimumResizeWidth();
+
+                        setFixedWidth(_width);
+                        //setMinimumSize(_width, height());
+                        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
                     }
 
                     break;
@@ -555,10 +569,11 @@ void IndigoPanel::setIndex(int index){
 
 void IndigoPanel::addWidget(QWidget *content){
 
-    if(wdg_widget->objectName() == "IndigoPanelContentSpacer") wdg_widget->deleteLater();
+   // if(wdg_widget->objectName() == "IndigoPanelContentSpacer") wdg_widget->deleteLater();
 
     wdg_widget = content;
-    wdg_widget->setMinimumSize(this->minimumSize());
+   // wdg_widget->setMinimumSize(this->minimumSize());
+   // wdg_widget->setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
     wdg_widget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     lyt_content->addWidget(wdg_widget);
 
@@ -759,3 +774,60 @@ void IndigoPanel::setDockState(int state){
 
     }
 }
+
+
+
+void IndigoPanel::setVisible(bool visible){
+
+//    if(visible){
+//        switch(dockState()){
+//        case IndigoPanel::HiddenDocked:
+//            setDockState(IndigoPanel::Docked);
+//            emit panelShown(Index()); // used for tab
+//            break;
+//        }
+//    }else{
+//        switch(dockState()){
+//        case IndigoPanel::Docked:
+//            setDockState(IndigoPanel::HiddenDocked);
+//            emit panelClosed(Index()); // used for tab
+//            break;
+//        }
+//    }
+
+    QFrame::setVisible(visible);
+
+}
+
+
+
+void IndigoPanel::setMinimumResizeHeight(int height){
+
+    int_minHeight = height;
+
+}
+
+
+
+void IndigoPanel::setMinimumResizeWidth(int width){
+
+    int_minWidth = width;
+
+}
+
+
+
+int IndigoPanel::minimumResizeHeight(){
+    return int_minHeight;
+
+}
+
+
+
+int IndigoPanel::minimumResizeWidth(){
+
+    return int_minWidth;
+}
+
+
+
