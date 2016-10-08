@@ -76,6 +76,7 @@ public:
     QSize minimumPanelSize();
     void setMovableTabs(bool allow);
     bool movableTabs();
+    void updateMinHeight();
 
 private:
 
@@ -107,8 +108,6 @@ private:
     void calculateSize();
     void updatePanelSize();
     void toggleSingleMode();
-    void updateMinHeight();
-
 
 protected:
     void resizeEvent(QResizeEvent *e);
@@ -124,7 +123,6 @@ public slots:
     void scrollToPanel(int PanelIndex);
     void scrollToPanel(QString PanelName);
     void movePanel(int oldIndex, int newIndex);
-
 
 private slots:
      void updateTabPosition(Qt::DockWidgetArea area);

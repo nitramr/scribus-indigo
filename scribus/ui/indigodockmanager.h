@@ -77,6 +77,7 @@ public slots:
     void showTab(int);
     void hideTab(int);
     void scrollToPanel();
+    void updateDockSize();
 
 };
 

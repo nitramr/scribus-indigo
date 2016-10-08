@@ -170,7 +170,7 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     panel->setOrientation(m_orientation);
     panel->setMinimumResizeHeight(int_minPanelHeight);
     panel->setMinimumResizeWidth(int_minPanelWidth);
-   // panel->setMinimumSize(QSize(int_minPanelWidth, int_minPanelHeight));
+    //panel->setMinimumSize(QSize(int_minPanelWidth, int_minPanelHeight));
 
 
     updatePanels();
@@ -560,12 +560,15 @@ void IndigoDock::calculateSize(){
     foreach(IndigoPanel *pan, lst_PanelList)
     {
         pan->setOrientation(m_orientation);
+        pan->updateSize();
     }
 
     // qDebug() << "Toolbar Size: Height" << wdg_toolbar->height() << "Width" << wdg_toolbar->width() << "MaxSize"<< wdg_toolbar->maximumSize()<< endl;
 
     wdg_dropzone->setMinimumWidth(int_minWidth);
     wdg_dropzone->setMinimumHeight(int_minHeight);
+
+    updateMinHeight();
 
 }
 
@@ -681,7 +684,7 @@ bool IndigoDock::eventFilter(QObject *object, QEvent *event)
     switch( event->type() )
     {
     case QEvent::Hide:
-    case QEvent::Resize:
+//    case QEvent::Resize:
     {
         updateMinHeight();
         break;

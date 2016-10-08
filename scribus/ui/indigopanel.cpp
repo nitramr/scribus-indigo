@@ -183,7 +183,9 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     resizing = false;
     int_handleWidth = 6;
     int_minHeight = 50;
-    int_minWidth = 50;
+    int_minWidth = 80;
+    int_dockHeight = 50;
+    int_dockWidth = 80;
     col_grip = QColor(this->palette().color(QPalette::Background));
     m_orientation = Qt::Vertical;
     QIcon icon = QIcon();
@@ -202,13 +204,12 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 
     lyt_content = new QVBoxLayout();
     lyt_content->addWidget(wdg_widget);
-    lyt_content->setSizeConstraint(QLayout::SetDefaultConstraint);
     lyt_content->setAlignment(Qt::AlignTop);
 
     //    lyt_content = new FlowLayout(int_padding);
     //    lyt_content->setSizeConstraint( QLayout::SetNoConstraint );
 
-    lyt_innerArea = new QVBoxLayout();//(wdg_normalContainer);
+    lyt_innerArea = new QVBoxLayout();
     lyt_innerArea->setMargin(int_padding);
     lyt_innerArea->addWidget(wdg_handle);
     lyt_innerArea->addLayout(lyt_content, 1);
@@ -219,7 +220,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     lyt_main->setMargin(0);
     lyt_main->setSpacing(0);
     lyt_main->addLayout(lyt_innerArea,1);
-    lyt_main->addWidget(wdg_grip);    
+    lyt_main->addWidget(wdg_grip);
     lyt_main->setAlignment(Qt::AlignTop);
     setLayout(lyt_main);
 
@@ -232,7 +233,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setMouseTracking(true);
     setAutoFillBackground( true );
     setBackgroundRole(QPalette::Background);
-    setMinimumWidth(150);
+    // setMinimumWidth(150);
     setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
     setCaption(name);
     setAccessibleName(name);
@@ -309,6 +310,28 @@ void IndigoPanel::toggleExpander(){
         qDebug() << "emit: isNormal();" << endl;
         break;
     }
+}
+
+
+
+void IndigoPanel::updateSize(){
+
+    switch(m_orientation){
+
+    case Qt::Vertical:
+
+        setFixedHeight(int_dockHeight);
+        setMinimumWidth(minimumResizeWidth());
+        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+        break;
+    case Qt::Horizontal:
+        setFixedWidth(int_dockWidth);
+        setMinimumHeight(minimumResizeHeight());
+        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+        break;
+    }
+
 }
 
 
@@ -391,37 +414,49 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
                 QPoint delta = point - pnt_relativeOffset;
                 pnt_relativeOffset = me->globalPos();
 
-                switch(m_orientation){
+                if (resizing) {
 
-                case Qt::Vertical:
+                    switch(m_orientation){
 
-                    if (resizing) {
-                       setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
+                    case Qt::Vertical:{
+
+
+                        //setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
 
                         int _height = height()+delta.y();
                         if(_height <= minimumResizeHeight()) _height = minimumResizeHeight();
 
+                        int_dockHeight = _height;
                         setFixedHeight(_height);
+                        setMinimumWidth(minimumResizeWidth());
                         //setMinimumSize(width(), _height);
                         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+
+                        break;
                     }
+                    case Qt::Horizontal:
+                    {
 
-                    break;
-                case Qt::Horizontal:
-
-                    if (resizing) {
-                        setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
+                        //setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
 
                         int _width = width()+delta.x();
                         if(_width <= minimumResizeWidth()) _width = minimumResizeWidth();
 
+                        int_dockWidth = _width;
                         setFixedWidth(_width);
+                        setMinimumHeight(minimumResizeHeight());
                         //setMinimumSize(_width, height());
                         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+                        break;
+                    }
                     }
 
-                    break;
+                    emit handleMove();
                 }
+
+
             }
 
         }
@@ -569,11 +604,11 @@ void IndigoPanel::setIndex(int index){
 
 void IndigoPanel::addWidget(QWidget *content){
 
-   // if(wdg_widget->objectName() == "IndigoPanelContentSpacer") wdg_widget->deleteLater();
+    if(wdg_widget->objectName() == "IndigoPanelContentSpacer") wdg_widget->deleteLater();
 
     wdg_widget = content;
-   // wdg_widget->setMinimumSize(this->minimumSize());
-   // wdg_widget->setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
+    // wdg_widget->setMinimumSize(this->minimumSize());
+    // wdg_widget->setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
     wdg_widget->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     lyt_content->addWidget(wdg_widget);
 
@@ -617,7 +652,7 @@ QWidget *IndigoPanel::widget() const
     //return lyt_normalArea->layout()->widget();
 
 
-    return wdg_widget == 0 ? 0 : new QWidget();
+    return wdg_widget;// == 0 ? 0 : new QWidget();
 
 }
 
@@ -779,21 +814,21 @@ void IndigoPanel::setDockState(int state){
 
 void IndigoPanel::setVisible(bool visible){
 
-//    if(visible){
-//        switch(dockState()){
-//        case IndigoPanel::HiddenDocked:
-//            setDockState(IndigoPanel::Docked);
-//            emit panelShown(Index()); // used for tab
-//            break;
-//        }
-//    }else{
-//        switch(dockState()){
-//        case IndigoPanel::Docked:
-//            setDockState(IndigoPanel::HiddenDocked);
-//            emit panelClosed(Index()); // used for tab
-//            break;
-//        }
-//    }
+    //    if(visible){
+    //        switch(dockState()){
+    //        case IndigoPanel::HiddenDocked:
+    //            setDockState(IndigoPanel::Docked);
+    //            emit panelShown(Index()); // used for tab
+    //            break;
+    //        }
+    //    }else{
+    //        switch(dockState()){
+    //        case IndigoPanel::Docked:
+    //            setDockState(IndigoPanel::HiddenDocked);
+    //            emit panelClosed(Index()); // used for tab
+    //            break;
+    //        }
+    //    }
 
     QFrame::setVisible(visible);
 
@@ -830,4 +865,16 @@ int IndigoPanel::minimumResizeWidth(){
 }
 
 
+
+void IndigoPanel::setDockWidth(int width){
+
+    int_dockWidth = width;
+}
+
+
+
+void IndigoPanel::setDockHeight(int height){
+
+    int_dockHeight = height;
+}
 

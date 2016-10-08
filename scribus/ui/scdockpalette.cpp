@@ -79,12 +79,9 @@ void ScDockPalette::setPrefsContext(QString context)
 				visibleOnStartup = palettePrefs->getBool("visible");
                 int width = palettePrefs->getInt("width");
                 int height= palettePrefs->getInt("height");
-               // setMinimumSize(width,height);
-                setFixedSize(width, height);
-                setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-
-//                setGeometry(QRect(0,0,width, height));
-               //resize(width, height);
+                setDockHeight(height);
+                setDockWidth(width);
+                updateSize();
 
             }
 		}
@@ -95,7 +92,7 @@ void ScDockPalette::setPrefsContext(QString context)
 }
 
 void ScDockPalette::startup()
-{
+{    
 	setFontSize();
     if (visibleOnStartup)
 	{

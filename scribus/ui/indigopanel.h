@@ -128,6 +128,11 @@ public:
     int minimumResizeHeight();
     int minimumResizeWidth();
 
+    void setDockWidth(int width);
+    void setDockHeight(int height);
+
+    void updateSize();
+
 protected:
     bool eventFilter(QObject *object, QEvent *e);
     bool mouseInGrip(QPoint mousePos);
@@ -158,6 +163,9 @@ private:
     int int_minWidth;
     int int_minHeight;
 
+    int int_dockWidth;
+    int int_dockHeight;
+
 
 signals:
     void mouseReleased();
@@ -167,6 +175,7 @@ signals:
     void panelShown(int index);
     void isAdvanced();
     void isNormal();
+    void handleMove();
 
 public slots:
     void show();

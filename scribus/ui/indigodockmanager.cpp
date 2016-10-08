@@ -51,6 +51,7 @@ void IndigoDockManager::connectPanel(IndigoPanel * panel){
     this->connect(panel, SIGNAL(mouseMove()), this, SLOT(hoverDock()));
     this->connect(panel, SIGNAL(mouseReleased()), this, SLOT(dropPanel()));
     this->connect(panel, SIGNAL(isFloating()), this, SLOT(dragoutPanel()));
+    this->connect(panel, SIGNAL(handleMove()), this, SLOT(updateDockSize()));
 
 
 }
@@ -291,6 +292,28 @@ void IndigoDockManager::showTab(int index){
 
     }
 }
+
+
+
+void IndigoDockManager::updateDockSize(){
+
+    IndigoPanel *pan = qobject_cast<IndigoPanel *>(sender());
+    if (!pan) return;
+
+
+    IndigoDock * dock;
+    foreach(dock, lst_Docks){
+
+        if(dock->getPanels().contains(pan)){
+
+            dock->updateMinHeight();
+
+            return;
+        }
+
+    }
+}
+
 
 
 void IndigoDockManager::scrollToPanel(){

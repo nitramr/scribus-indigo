@@ -280,10 +280,12 @@ void ShapeView::updateShapeList()
 ShapePalette::ShapePalette( QWidget* parent) : ScDockPalette( parent, "Shap")
 {
 
-	setMinimumSize( QSize( 220, 240 ) );
+    setMinimumSize( QSize( 220, 240 ) );
+   // setMinimumSize(minimumResizeWidth(),minimumResizeHeight());
+    //resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
 	setObjectName(QString::fromLocal8Bit("Shap"));
-	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
-	containerWidget = new QWidget(this);
+    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+	containerWidget = new QWidget(this);   
 	vLayout = new QVBoxLayout( containerWidget );
 	vLayout->setSpacing( 0 );
 	vLayout->setMargin( 0 );
@@ -305,6 +307,7 @@ ShapePalette::ShapePalette( QWidget* parent) : ScDockPalette( parent, "Shap")
 	vLayout->addLayout( buttonLayout );
 	Frame3 = new QToolBox( this );
 	vLayout->addWidget(Frame3);
+
 	setWidget(containerWidget);
 
 	unsetDoc();
@@ -312,6 +315,8 @@ ShapePalette::ShapePalette( QWidget* parent) : ScDockPalette( parent, "Shap")
 	languageChange();
 	connect(importButton, SIGNAL(clicked()), this, SLOT(Import()));
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(closeTab()));
+
+
 }
 
 void ShapePalette::writeToPrefs()

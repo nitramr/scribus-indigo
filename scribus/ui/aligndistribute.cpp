@@ -69,7 +69,7 @@ AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* nam
 	alignGuideLabel->setBuddy( alignGuideLineEdit );
 	distributeDistLabel->setBuddy( distributeDistSpinBox );
 	
-	resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
+    //resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
 	languageChange();
 	init();
 	setDoc(NULL);
