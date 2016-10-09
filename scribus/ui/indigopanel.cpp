@@ -75,6 +75,7 @@ IndigoPanelHandle::IndigoPanelHandle(QWidget *parent) :
 
     // Actions
     connect(wdg_btnClose, SIGNAL (clicked()), parent, SLOT (hide()));
+    connect(wdg_btnClose, SIGNAL (clicked()), parent, SLOT (clickCloseButton()));
     connect(wdg_btnExpander, SIGNAL (clicked()), parent, SLOT (toggleExpander()));
 
 }
@@ -254,6 +255,34 @@ IndigoPanel::IndigoPanel(QString name, QIcon icon, int iconSize, QWidget *dock) 
 
 
 
+void IndigoPanel::updateSize(){
+
+    switch(m_orientation){
+
+    case Qt::Vertical:
+
+        setFixedHeight(int_dockHeight);
+        setMinimumWidth(minimumResizeWidth());
+        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+        break;
+    case Qt::Horizontal:
+        setFixedWidth(int_dockWidth);
+        setMinimumHeight(minimumResizeHeight());
+        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+        break;
+    }
+
+}
+
+
+/**********************
+ *
+ * Slots
+ *
+ * *******************/
+
+
 void IndigoPanel::hide(){
 
 //    switch(dockState()){
@@ -319,24 +348,9 @@ void IndigoPanel::toggleExpander(){
 
 
 
-void IndigoPanel::updateSize(){
+void IndigoPanel::clickCloseButton(){
 
-    switch(m_orientation){
-
-    case Qt::Vertical:
-
-        setFixedHeight(int_dockHeight);
-        setMinimumWidth(minimumResizeWidth());
-        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-
-        break;
-    case Qt::Horizontal:
-        setFixedWidth(int_dockWidth);
-        setMinimumHeight(minimumResizeHeight());
-        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-        break;
-    }
-
+    emit panelClosedByButton();
 }
 
 
@@ -820,8 +834,6 @@ void IndigoPanel::setVisible(bool visible){
 QFrame::setVisible(visible);
 
         if(visible){
-//            m_state = IndigoPanel::Docked;
-//            emit panelShown(Index()); // used for tab
 
             switch(dockState()){
             case IndigoPanel::HiddenDocked:
@@ -832,9 +844,6 @@ QFrame::setVisible(visible);
             }
         }else{
 
-//            m_state = IndigoPanel::HiddenDocked;
-//            emit panelClosed(Index()); // used for tab
-
             switch(dockState()){
             case IndigoPanel::Docked:
                 setDockState(IndigoPanel::HiddenDocked);
@@ -843,8 +852,6 @@ QFrame::setVisible(visible);
                 break;
             }
         }
-
-
 
 }
 
@@ -892,3 +899,16 @@ void IndigoPanel::setDockHeight(int height){
     int_dockHeight = height;
 }
 
+
+
+int IndigoPanel::dockHeight(){
+    return int_dockHeight;
+
+}
+
+
+
+int IndigoPanel::dockWidth(){
+
+    return int_dockWidth;
+}

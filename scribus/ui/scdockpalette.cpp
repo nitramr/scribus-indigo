@@ -64,8 +64,11 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, boo
     //tempParent=0;
     setPrefsContext(prefsContext);
     connect(PrefsManager::instance(), SIGNAL(prefsChanged()), this, SLOT(setFontSize()));
+    connect(this, SIGNAL(panelClosedByButton()), this, SLOT(panelClose()));
 
 }
+
+
 
 void ScDockPalette::setPrefsContext(QString context)
 {
@@ -99,7 +102,6 @@ void ScDockPalette::startup()
     if (visibleOnStartup)
 	{
         show();
-        //setDockState(IndigoPanel::Docked);
 	}
 	else
         hide();
@@ -107,18 +109,22 @@ void ScDockPalette::startup()
 	emit paletteShown(visibleOnStartup);
 }
 
+
+
 void ScDockPalette::setPaletteShown(bool visible)
 {
     storeVisibility(visible);
- //   storeDockState();
+
 	if (!visible)
-		hide();
+        hide();
 	else if (!isVisible())
 	{
 		show();
 		activateWindow();
 	}
 }
+
+
 
 void ScDockPalette::setFontSize()
 {
@@ -128,20 +134,25 @@ void ScDockPalette::setFontSize()
 }
 
 
+
 void ScDockPalette::closeEvent(QCloseEvent *closeEvent)
 {
-    emit paletteShown(false);
-    closeEvent->ignore();
-    hide();
+//    emit paletteShown(false);
+//    closeEvent->ignore();
+//    hide();
 }
+
+
 
 void ScDockPalette::hideEvent(QHideEvent* hideEvent)
 {
-//    storePosition();
+
 	storeSize();
- //   storeDockState();
+
     IndigoPanel::hideEvent(hideEvent);
 }
+
+
 
 void ScDockPalette::showEvent(QShowEvent *showEvent)
 {   
@@ -213,52 +224,40 @@ void ScDockPalette::showEvent(QShowEvent *showEvent)
     IndigoPanel::showEvent(showEvent);
 }
 
+
+
 void ScDockPalette::hide()
 {
 
     if (isVisible())
 	{
-//		storePosition();
 		storeSize();
-//		storeDockState();
 
         IndigoPanel::hide();
        // setDockState(IndigoPanel::HiddenDocked);
-       // emit paletteShown(false);
+
     }
 
-
-
-   // IndigoPanel::hide();
 }
 
-//void ScDockPalette::storePosition()
-//{
-//    if (palettePrefs)
-//    {
-//        QPoint geo = pos();
-//        palettePrefs->set("left", geo.x());
-//        palettePrefs->set("top", geo.y());
-//    }
-//}
 
-//void ScDockPalette::storePosition(int newX, int newY)
-//{
-//    if (palettePrefs)
-//    {
-//        palettePrefs->set("left", newX);
-//        palettePrefs->set("top", newY);
-//    }
-//}
+void ScDockPalette::panelClose(){
+
+    emit paletteShown(false);
+
+}
+
 
 void ScDockPalette::storeSize()
 {
     if (palettePrefs)
     {
-        palettePrefs->set("width", width());
-        palettePrefs->set("height", height());
+        palettePrefs->set("width", dockWidth());
+        palettePrefs->set("height", dockHeight());
     }
 }
+
+
 
 void ScDockPalette::storeVisibility(bool vis)
 {
@@ -266,20 +265,3 @@ void ScDockPalette::storeVisibility(bool vis)
         palettePrefs->set("visible", vis);
 }
 
-//void ScDockPalette::storeDockState()
-//{
-//	if (palettePrefs)
-//	{
-
-
-
-//        // TODO: add IndigoPanel Properties here!
-
-//        /*palettePrefs->set("floating", isFloating());
-//		Qt::DockWidgetArea area = Qt::NoDockWidgetArea;
-//		QMainWindow* mainWindow = dynamic_cast<QMainWindow*>(parent());
-//		if (mainWindow)
-//			area = mainWindow->dockWidgetArea(this);
-//        palettePrefs->set("area", (int) area);*/
-//	}
-//}

@@ -130,6 +130,8 @@ public:
 
     void setDockWidth(int width);
     void setDockHeight(int height);
+    int dockHeight();
+    int dockWidth();
 
     void updateSize();
 
@@ -171,6 +173,7 @@ signals:
     void mouseReleased();
     void mouseMove();
     void isFloating();
+    void panelClosedByButton();
     void panelClosed(int index);
     void panelShown(int index);
     void isAdvanced();
@@ -179,8 +182,11 @@ signals:
 
 public slots:
     void show();
-    void hide();
+    void hide();    
     void toggleExpander();
+
+private slots:
+    void clickCloseButton();
 };
 
 #endif // INDIGOPANEL_H

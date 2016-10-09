@@ -52,6 +52,9 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 	public slots:
 		virtual void setPaletteShown(bool);
 		virtual void setFontSize();
+
+    private slots:
+        void panelClose();
 		
 	signals:
         /** @brief Let the action for this palette know when something changes and it hasn't caused it */
