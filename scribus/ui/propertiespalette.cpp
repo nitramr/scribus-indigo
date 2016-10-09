@@ -72,7 +72,7 @@ for which a new license (GPL+exception) is in place.
 
 //using namespace std;
 
-PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties", true)
+PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties")
 {
 	undoManager = UndoManager::instance();
 	m_ScMW=0;

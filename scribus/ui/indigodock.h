@@ -56,8 +56,8 @@ public:
     IndigoDock(QWidget *parent = 0);
 
     void addIndigoPanel(IndigoPanel *panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, int tabIndex = -1);
-    void hoverDock(IndigoPanel *pan);
-    void dropPanel(IndigoPanel *pan);
+    bool hoverDock(IndigoPanel *pan);
+    bool dropPanel(IndigoPanel *pan);
     void removePanel(int index);
     QList<IndigoPanel*>getPanels();
     void clear();

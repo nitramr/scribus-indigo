@@ -41,7 +41,7 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 	Q_OBJECT
 
 	public:
-        ScDockPalette( QWidget * parent = NULL, const QString& prefsContext = QString::null, bool visible = false);
+        ScDockPalette(QWidget * parent = NULL, const QString& prefsContext = QString::null);
         ~ScDockPalette() {};
         /** @brief Sample way to grab keystrokes, simply calls superclass at this point */
 		//virtual void keyPressEvent(QKeyEvent *keyEvent);
@@ -63,24 +63,12 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 	protected:
         /** @brief Set the Preferences context to be used for storage of startup visibility and position and size */
 		virtual void setPrefsContext(QString context);
-//		void storePosition();
-//		void storePosition(int newX, int newY);
 		void storeSize();
 		void storeVisibility(bool);
-//		void storeDockState();
+        void storeIndex();
 
-        /** @brief Restore the geometry of the window when showing it. */
-		virtual void showEvent(QShowEvent *showEvent);
-        /** @brief Captures the close event and changes it to hide */
-		virtual void closeEvent(QCloseEvent *closeEvent);
-        /** @brief Stores the geometry of the window when hiding. */
-		virtual void hideEvent(QHideEvent* hideEvent);
-		
 		PrefsContext* palettePrefs;
 		QString prefsContextName;
         bool visibleOnStartup;
-
-        //QWidget* originalParent;
-        //QWidget* tempParent;
 };
 #endif

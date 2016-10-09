@@ -321,7 +321,18 @@ void IndigoDockManager::scrollToPanel(){
     IndigoPanel *pan = qobject_cast<IndigoPanel *>(sender());
     if (!pan) return;
 
-    scrollToPanel(pan->objectName());
+    IndigoDock * dock;
+    foreach(dock, lst_Docks){
+
+        if(dock->getPanels().contains(pan)){
+
+            dock->scrollToPanel(pan->objectName());
+
+            return;
+        }
+
+
+    }
 
 }
 
@@ -334,6 +345,7 @@ void IndigoDockManager::scrollToPanel(QString name){
     foreach(dock, lst_Docks){
 
         dock->scrollToPanel(name);
+
     }
 
 }
@@ -349,7 +361,7 @@ void IndigoDockManager::hoverDock(){
     IndigoDock * dock;
     foreach(dock, lst_Docks){
 
-        dock->hoverDock(pan);
+        if(dock->hoverDock(pan)) break;
     }
 
 
@@ -365,7 +377,7 @@ void IndigoDockManager::dropPanel(){
     IndigoDock * dock;
     foreach(dock, lst_Docks){
 
-        dock->dropPanel(pan);
+        if(dock->dropPanel(pan)) break;
 
     }
 

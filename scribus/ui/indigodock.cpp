@@ -161,22 +161,28 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     // add panel to DropZone
     insertWidget(tabIndex, panel);
 
-
-    // Panel settings
-    if(dockState == IndigoPanel::Docked || dockState == IndigoPanel::HiddenDocked){
-        panel->setDockState(dockState);
-    }else panel->setDockState(IndigoPanel::Docked);
-
     panel->installEventFilter(this);
     panel->setOrientation(m_orientation);
     panel->setMinimumResizeHeight(int_minPanelHeight);
     panel->setMinimumResizeWidth(int_minPanelWidth);
     //panel->setMinimumSize(QSize(int_minPanelWidth, int_minPanelHeight));
 
+    // Panel settings
+    if(dockState == IndigoPanel::Docked || dockState == IndigoPanel::HiddenDocked){
+        panel->setDockState(dockState);
+    }else{
+        panel->setDockState(IndigoPanel::Docked);
+    }
 
     updatePanels();
 
     wdg_toolbar->insertTab(panel->Icon(), panel->Index(), panel->Caption());
+
+
+    // Panel settings
+    if(dockState != IndigoPanel::Docked){
+        wdg_toolbar->hideTab(panel->Index());
+    }
 
 }
 
@@ -577,9 +583,9 @@ void IndigoDock::calculateSize(){
 
 
 
-void IndigoDock::hoverDock(IndigoPanel * pan){
+bool IndigoDock::hoverDock(IndigoPanel * pan){
 
-    if (!pan || isHidden()) return;
+    if (!pan || isHidden()) return false;
 
     QPoint cursor = this->mapFromGlobal(QCursor::pos());
 
@@ -604,6 +610,7 @@ void IndigoDock::hoverDock(IndigoPanel * pan){
                     if (panRect.contains(cursor) ) {
 
                         index = panel->Index();
+                        break;
 
                     }
                 }
@@ -615,8 +622,12 @@ void IndigoDock::hoverDock(IndigoPanel * pan){
 
             this->addPlaceholder(index);
 
+            return true;
+
     }else{
         this->removePlaceholder();
+
+        return false;
     }
 
 
@@ -624,9 +635,9 @@ void IndigoDock::hoverDock(IndigoPanel * pan){
 
 
 
-void IndigoDock::dropPanel(IndigoPanel *panel){
+bool IndigoDock::dropPanel(IndigoPanel *panel){
 
-    if (!panel || isHidden()) return;
+    if (!panel || isHidden()) return false;
 
     QPoint cursor = this->mapFromGlobal(QCursor::pos());
 
@@ -636,7 +647,11 @@ void IndigoDock::dropPanel(IndigoPanel *panel){
 
         addIndigoPanel(panel, IndigoPanel::Docked, panel->Index());
 
+        return true;
+
     }
+
+    return false;
 }
 
 

@@ -29,6 +29,7 @@
 #include <QStyleOptionDockWidget>
 
 
+
 /*#####################
  #
  #
@@ -784,7 +785,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
 
     switch(state){
     case IndigoPanel::HiddenDocked:
-        QFrame::hide();
+        QFrame::hide();        
         break;
 
     case IndigoPanel::Floating:
@@ -796,7 +797,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
     case IndigoPanel::Docked:
     case IndigoPanel::None:
     default:
-        QFrame::show();
+        QFrame::show();        
         break;
     }
 
@@ -838,7 +839,6 @@ QFrame::setVisible(visible);
             switch(dockState()){
             case IndigoPanel::HiddenDocked:
                 setDockState(IndigoPanel::Docked);
-                //m_state = IndigoPanel::Docked;
                 emit panelShown(Index()); // used for tab
                 break;
             }
@@ -847,7 +847,6 @@ QFrame::setVisible(visible);
             switch(dockState()){
             case IndigoPanel::Docked:
                 setDockState(IndigoPanel::HiddenDocked);
-                //m_state = IndigoPanel::HiddenDocked;
                 emit panelClosed(Index()); // used for tab
                 break;
             }
