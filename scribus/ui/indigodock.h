@@ -124,8 +124,10 @@ public slots:
     void scrollToPanel(QString PanelName);
     void movePanel(int oldIndex, int newIndex);
 
+
 private slots:
      void updateTabPosition(Qt::DockWidgetArea area);
+     void toggelPanelVisibility(bool visibility);
 
 
 };

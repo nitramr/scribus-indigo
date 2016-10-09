@@ -37,14 +37,14 @@ for which a new license (GPL+exception) is in place.
 #include "scdockpalette.h"
 #include "util.h"
 
-ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
+ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, bool visible)
 
     : IndigoPanel(prefsContext ),
-
 	palettePrefs(0),
-	prefsContextName(QString::null),
-    visibleOnStartup(false)
+    prefsContextName(QString::null)
 {
+    visibleOnStartup = visible;
+
     if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
 	{
 		setStyleSheet("	QToolButton { margin: 1px; padding: 0px; font-size: 10px; } \
@@ -91,15 +91,19 @@ void ScDockPalette::setPrefsContext(QString context)
     }
 }
 
+
+
 void ScDockPalette::startup()
 {    
 	setFontSize();
     if (visibleOnStartup)
 	{
         show();
+        //setDockState(IndigoPanel::Docked);
 	}
 	else
         hide();
+
 	emit paletteShown(visibleOnStartup);
 }
 
@@ -126,9 +130,9 @@ void ScDockPalette::setFontSize()
 
 void ScDockPalette::closeEvent(QCloseEvent *closeEvent)
 {
-	emit paletteShown(false);
-	closeEvent->ignore();
-	hide();
+    emit paletteShown(false);
+    closeEvent->ignore();
+    hide();
 }
 
 void ScDockPalette::hideEvent(QHideEvent* hideEvent)
@@ -211,13 +215,19 @@ void ScDockPalette::showEvent(QShowEvent *showEvent)
 
 void ScDockPalette::hide()
 {
+
     if (isVisible())
 	{
 //		storePosition();
 		storeSize();
 //		storeDockState();
+
         IndigoPanel::hide();
+       // setDockState(IndigoPanel::HiddenDocked);
+       // emit paletteShown(false);
     }
+
+
 
    // IndigoPanel::hide();
 }

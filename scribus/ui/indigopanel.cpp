@@ -256,35 +256,40 @@ IndigoPanel::IndigoPanel(QString name, QIcon icon, int iconSize, QWidget *dock) 
 
 void IndigoPanel::hide(){
 
-    switch(dockState()){
-    case IndigoPanel::Docked:
-        setDockState(IndigoPanel::HiddenDocked);
-        emit panelClosed(Index()); // used for tab
-        qDebug() << "emit: panelClosed(...);" << endl;
-        break;
-    default:
-        QFrame::hide();
-        break;
+//    switch(dockState()){
+//    case IndigoPanel::Docked:
+//        setDockState(IndigoPanel::HiddenDocked);
+//        emit panelClosed(Index()); // used for tab
+//        qDebug() << "emit: panelClosed(...);" << endl;
+//        break;
+//    default:
+//        QFrame::hide();
+//        break;
 
-    }
+//    }
+
+    setVisible(false);
+
 }
 
 
 
 void IndigoPanel::show(){
 
-    switch(dockState()){
-    case IndigoPanel::HiddenDocked:
-        setDockState(IndigoPanel::Docked);
-        emit panelShown(Index()); // used for tab
-        qDebug() << "emit: panelShow(...);" << endl;
-        break;
-    default:
-        QFrame::show();
-        break;
-    }
+//    switch(dockState()){
+//    case IndigoPanel::HiddenDocked:
+//        setDockState(IndigoPanel::Docked);
+//        emit panelShown(Index()); // used for tab
+//        qDebug() << "emit: panelShow(...);" << endl;
+//        break;
+//    default:
+//        QFrame::show();
+//        break;
+//    }
 
-    update();
+//    update();
+
+    setVisible(true);
 }
 
 
@@ -781,8 +786,6 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
         break;
     }
 
-    update();
-
 }
 
 
@@ -814,23 +817,34 @@ void IndigoPanel::setDockState(int state){
 
 void IndigoPanel::setVisible(bool visible){
 
-    //    if(visible){
-    //        switch(dockState()){
-    //        case IndigoPanel::HiddenDocked:
-    //            setDockState(IndigoPanel::Docked);
-    //            emit panelShown(Index()); // used for tab
-    //            break;
-    //        }
-    //    }else{
-    //        switch(dockState()){
-    //        case IndigoPanel::Docked:
-    //            setDockState(IndigoPanel::HiddenDocked);
-    //            emit panelClosed(Index()); // used for tab
-    //            break;
-    //        }
-    //    }
+QFrame::setVisible(visible);
 
-    QFrame::setVisible(visible);
+        if(visible){
+//            m_state = IndigoPanel::Docked;
+//            emit panelShown(Index()); // used for tab
+
+            switch(dockState()){
+            case IndigoPanel::HiddenDocked:
+                setDockState(IndigoPanel::Docked);
+                //m_state = IndigoPanel::Docked;
+                emit panelShown(Index()); // used for tab
+                break;
+            }
+        }else{
+
+//            m_state = IndigoPanel::HiddenDocked;
+//            emit panelClosed(Index()); // used for tab
+
+            switch(dockState()){
+            case IndigoPanel::Docked:
+                setDockState(IndigoPanel::HiddenDocked);
+                //m_state = IndigoPanel::HiddenDocked;
+                emit panelClosed(Index()); // used for tab
+                break;
+            }
+        }
+
+
 
 }
 

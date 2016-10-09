@@ -41,7 +41,6 @@ for which a new license (GPL+exception) is in place.
 
 LayerPalette::LayerPalette(QWidget* parent) : ScDockPalette( parent, "Layers"), m_Doc(0)
 {
-    visibleOnStartup = true; // override default
 
 	setObjectName(QString::fromLocal8Bit("Layers"));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));

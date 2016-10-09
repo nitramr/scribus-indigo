@@ -41,12 +41,13 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 	Q_OBJECT
 
 	public:
-        ScDockPalette( QWidget * parent = NULL, const QString& prefsContext = QString::null);
+        ScDockPalette( QWidget * parent = NULL, const QString& prefsContext = QString::null, bool visible = false);
         ~ScDockPalette() {};
         /** @brief Sample way to grab keystrokes, simply calls superclass at this point */
 		//virtual void keyPressEvent(QKeyEvent *keyEvent);
 		virtual void hide();
 		void startup();
+
 
 	public slots:
 		virtual void setPaletteShown(bool);
@@ -74,7 +75,8 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 		
 		PrefsContext* palettePrefs;
 		QString prefsContextName;
-		bool visibleOnStartup;
+        bool visibleOnStartup;
+
         //QWidget* originalParent;
         //QWidget* tempParent;
 };

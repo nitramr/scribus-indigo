@@ -72,10 +72,8 @@ for which a new license (GPL+exception) is in place.
 
 //using namespace std;
 
-PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties")
+PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties", true)
 {
-    visibleOnStartup = true; // override default
-
 	undoManager = UndoManager::instance();
 	m_ScMW=0;
 	m_doc=0;

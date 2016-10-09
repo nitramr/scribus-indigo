@@ -100,6 +100,7 @@ IndigoDock::IndigoDock(QWidget *parent) : QDockWidget(parent)
     connect(this, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(updateTabPosition(Qt::DockWidgetArea)));
     connect(wdg_toolbar, SIGNAL(tabMoved(int,int)), this, SLOT(movePanel(int,int)));
     connect(wdg_toolbar, SIGNAL(tabClicked(int)), this, SLOT(scrollToPanel(int)));
+    connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(toggelPanelVisibility(bool)));
 
 
     updateMinHeight();
@@ -262,7 +263,7 @@ void IndigoDock::updateMinHeight(){
     if(int_hiddenPanels == lst_PanelList.size()){
 
         qDebug() << "Hide Dock" << endl;
-        //hide();
+       // hide();
 
     }else{
 
@@ -354,11 +355,13 @@ void IndigoDock::scrollToPanel(int PanelIndex){
 
     if (!panel) return;
 
+    this->show();
+
     panel->show();
 
     updateMinHeight();
 
-    this->show();
+
 
     int offset = int_padding;
     QPoint panPos = wdg_dropzone->mapFromGlobal(panel->mapToGlobal( QPoint( 0, 0 ) ));
@@ -658,6 +661,22 @@ void IndigoDock::updatePanelSize(){
 
 //        panel->setMinimumSize(int_minPanelWidth, int_minPanelHeight);
 //    }
+
+}
+
+
+void IndigoDock::toggelPanelVisibility(bool visibility){
+
+//    if(visibility == false){
+//        IndigoPanel * pan;
+
+//        foreach(pan, lst_PanelList){
+
+//            pan->hide();
+
+//        }
+//    }
+
 
 }
 

@@ -647,12 +647,19 @@ void ScribusMainWindow::initPalettes()
 
 	//CB TODO hide the publicly available members of some palettes
 	// these must be filtered too as they take control of the palettes events
-	outlinePalette = new OutlinePalette(this);
+
+    // Outline
+    outlinePalette = new OutlinePalette(this);
     outlinePalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, outlinePalette);
     connect( scrActions["toolsOutline"], SIGNAL(toggled(bool)) , outlinePalette, SLOT(setPaletteShown(bool)) );
     connect( outlinePalette, SIGNAL(paletteShown(bool)), scrActions["toolsOutline"], SLOT(setChecked(bool)));
+    connect(outlinePalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
+    connect(outlinePalette, SIGNAL(editElementByItem(PageItem *)), this, SLOT(editItemsFromOutlines(PageItem *)));
+    connect(outlinePalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
+    connect(outlinePalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
 
+    // Properties
     propertiesPalette = new PropertiesPalette(this);
     propertiesPalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, propertiesPalette);
@@ -661,21 +668,32 @@ void ScribusMainWindow::initPalettes()
     emit UpdateRequest(reqDefFontListUpdate);
     propertiesPalette->installEventFilter(this);
 
+    // Node
     nodePalette = new NodePalette(this);
     nodePalette->installEventFilter(this);
+    connect(nodePalette, SIGNAL(paletteClosed()), this, SLOT(slotSelect()));
+    connect(nodePalette, SIGNAL(DocChanged()), this, SLOT(slotDocCh()));
 
-	layerPalette = new LayerPalette(this);
-
+    // Guides
 	guidePalette = new GuideManager(this);
+    connect(scrActions["pageManageGuides"], SIGNAL(toggled(bool)), guidePalette, SLOT(setPaletteShown(bool)));
+    connect(guidePalette, SIGNAL(paletteShown(bool)), scrActions["pageManageGuides"], SLOT(setChecked(bool)));
 
+    // Chars
 	charPalette = new CharSelect(this);
+    connect(scrActions["insertGlyph"], SIGNAL(toggled(bool)), charPalette, SLOT(setPaletteShown(bool)));
+    connect(charPalette, SIGNAL(paletteShown(bool)), scrActions["insertGlyph"], SLOT(setChecked(bool)));
 
+    // Layers
+    layerPalette = new LayerPalette(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, layerPalette);
     connect( scrActions["toolsLayers"], SIGNAL(toggled(bool)) , layerPalette, SLOT(setPaletteShown(bool)) );
     connect( layerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsLayers"], SLOT(setChecked(bool)));
     layerPalette->installEventFilter(this);
     layerPalette->Table->installEventFilter(this);
+    connect(layerPalette, SIGNAL(LayerChanged()), this, SLOT(showLayer()));
 
+    // Scapebook
     scrapbookPalette = new Biblio(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, scrapbookPalette);
     connect( scrActions["toolsScrapbook"], SIGNAL(toggled(bool)) , scrapbookPalette, SLOT(setPaletteShown(bool)) );
@@ -684,24 +702,31 @@ void ScribusMainWindow::initPalettes()
     connect( scrapbookPalette, SIGNAL(scrapbookListChanged()), this, SLOT(rebuildScrapbookMenu()));
     scrapbookPalette->installEventFilter(this);
 
+    // Pages
     pagePalette = new PagePalette(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pagePalette);
     connect( scrActions["toolsPages"], SIGNAL(toggled(bool)) , pagePalette, SLOT(setPaletteShown(bool)) );
     connect( pagePalette, SIGNAL(paletteShown(bool)), scrActions["toolsPages"], SLOT(setChecked(bool)));
     pagePalette->installEventFilter(this);
 
+    // Bookmarks
 	bookmarkPalette = new BookPalette(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, bookmarkPalette);
     connect( scrActions["toolsBookmarks"], SIGNAL(toggled(bool)) , bookmarkPalette, SLOT(setPaletteShown(bool)) );
     connect( bookmarkPalette, SIGNAL(paletteShown(bool)), scrActions["toolsBookmarks"], SLOT(setChecked(bool)));
     bookmarkPalette->installEventFilter(this);
+    connect(bookmarkPalette->BView, SIGNAL(MarkMoved()), this, SLOT(StoreBookmarks()));
+    connect(bookmarkPalette->BView, SIGNAL(changed()), this, SLOT(slotDocCh()));
+    connect(bookmarkPalette->BView, SIGNAL(SelectElement(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
 
+    // Download
     downloadsPalette = new DownloadsPalette(this);
     connect( scrActions["toolsDownloads"], SIGNAL(toggled(bool)) , downloadsPalette, SLOT(setPaletteShown(bool)) );
     connect( downloadsPalette, SIGNAL(paletteShown(bool)), scrActions["toolsDownloads"], SLOT(setChecked(bool)));
     downloadsPalette->installEventFilter(this);
     connect( scrActions["toolsMeasurements"], SIGNAL(toggledData(bool, int)) , this, SLOT(setAppModeByToggle(bool, int)) );
 
+    // DockChecker
 	docCheckerPalette = new CheckDocument(this, false);   
     connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , docCheckerPalette, SLOT(setPaletteShown(bool)) );
     connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , this, SLOT(docCheckToggle(bool)) );
@@ -709,7 +734,12 @@ void ScribusMainWindow::initPalettes()
     connect( docCheckerPalette, SIGNAL(paletteShown(bool)), this, SLOT(docCheckToggle(bool)));
     docCheckerPalette->installEventFilter(this);
     docCheckerPalette->hide();
+    connect(docCheckerPalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
+    connect(docCheckerPalette, SIGNAL(selectElement(PageItem *, bool, int)), this, SLOT(selectItemFromOutlines(PageItem *, bool, int)));
+    connect(docCheckerPalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
+    connect(docCheckerPalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
 
+    // Aligment
 	alignDistributePalette = new AlignDistributePalette(this, "AlignDistributePalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, alignDistributePalette);
     connect( scrActions["toolsAlignDistribute"], SIGNAL(toggled(bool)) , alignDistributePalette, SLOT(setPaletteShown(bool)) );
@@ -717,6 +747,7 @@ void ScribusMainWindow::initPalettes()
     connect( alignDistributePalette, SIGNAL(documentChanged()), this, SLOT(slotDocCh()));
     alignDistributePalette->installEventFilter(this);
 
+    // Symbol
 	symbolPalette = new SymbolPalette(this);
     symbolPalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, symbolPalette);
@@ -726,8 +757,9 @@ void ScribusMainWindow::initPalettes()
     connect(symbolPalette, SIGNAL(endEdit()), this, SLOT(editSymbolEnd()));
     connect(symbolPalette, SIGNAL(objectDropped()), this, SLOT(PutToPatterns()));
     symbolPalette->installEventFilter(this);
-    symbolPalette->hide();
+    //symbolPalette->hide();
 
+    // Inline
 	inlinePalette = new InlinePalette(this);
     inlinePalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, inlinePalette);
@@ -737,8 +769,9 @@ void ScribusMainWindow::initPalettes()
     connect(inlinePalette, SIGNAL(endEdit()), this, SLOT(editInlineEnd()));
     connect(inlinePalette, SIGNAL(objectDropped(QString)), this, SLOT(PutToInline(QString)));
     inlinePalette->installEventFilter(this);
-    inlinePalette->hide();
+   // inlinePalette->hide();
 
+    // Undo
     undoPalette = new UndoPalette(this, "undoPalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, undoPalette);
     undoPalette->installEventFilter(this);
@@ -770,30 +803,6 @@ void ScribusMainWindow::initPalettes()
     connect( nsEditor, SIGNAL(paletteShown(bool)), scrActions["editNotesStyles"], SLOT(setChecked(bool)));
     nsEditor->installEventFilter(this);
 
-    connect(docCheckerPalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
-	connect(docCheckerPalette, SIGNAL(selectElement(PageItem *, bool, int)), this, SLOT(selectItemFromOutlines(PageItem *, bool, int)));
-	connect(docCheckerPalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
-	connect(docCheckerPalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
-
-	connect(outlinePalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
-	connect(outlinePalette, SIGNAL(editElementByItem(PageItem *)), this, SLOT(editItemsFromOutlines(PageItem *)));
-	connect(outlinePalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
-	connect(outlinePalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
-
-	connect(nodePalette, SIGNAL(paletteClosed()), this, SLOT(slotSelect()));
-	connect(nodePalette, SIGNAL(DocChanged()), this, SLOT(slotDocCh()));
-
-	connect(layerPalette, SIGNAL(LayerChanged()), this, SLOT(showLayer()));
-
-	connect(bookmarkPalette->BView, SIGNAL(MarkMoved()), this, SLOT(StoreBookmarks()));
-	connect(bookmarkPalette->BView, SIGNAL(changed()), this, SLOT(slotDocCh()));
-	connect(bookmarkPalette->BView, SIGNAL(SelectElement(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
-	// guides
-	connect(scrActions["pageManageGuides"], SIGNAL(toggled(bool)), guidePalette, SLOT(setPaletteShown(bool)));
-	connect(guidePalette, SIGNAL(paletteShown(bool)), scrActions["pageManageGuides"], SLOT(setChecked(bool)));
-	// char palette
-	connect(scrActions["insertGlyph"], SIGNAL(toggled(bool)), charPalette, SLOT(setPaletteShown(bool)));
-    connect(charPalette, SIGNAL(paletteShown(bool)), scrActions["insertGlyph"], SLOT(setChecked(bool)));
 }
 
 
