@@ -564,15 +564,6 @@ void ShapePalette::setMainWindow(ScribusMainWindow *mw)
 		ShapeViewWidget->scMW = mw;
 	}
 
-    bool pan_vis = isVisible();
-
-    if(mw->indigoDockManager()->indigoDocks().count() > 0){
-        IndigoDock * dock = mw->indigoDockManager()->indigoDocks().at(0);
-        mw->indigoDockManager()->addIndigoPanel(dock, this);
-    }else  mw->indigoDockManager()->addIndigoPanel(this);
-
-    setVisible(pan_vis);
-
 }
 
 void ShapePalette::setDoc(ScribusDoc *newDoc)

@@ -102,9 +102,6 @@ IndigoDock::IndigoDock(QWidget *parent) : QDockWidget(parent)
     connect(wdg_toolbar, SIGNAL(tabClicked(int)), this, SLOT(scrollToPanel(int)));
     connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(toggelPanelVisibility(bool)));
 
-
-    updateMinHeight();
-
 }
 
 
@@ -161,7 +158,7 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     // add panel to DropZone
     insertWidget(tabIndex, panel);
 
-    panel->installEventFilter(this);
+    //panel->installEventFilter(this);
     panel->setOrientation(m_orientation);
     panel->setMinimumResizeHeight(int_minPanelHeight);
     panel->setMinimumResizeWidth(int_minPanelWidth);
@@ -269,10 +266,12 @@ void IndigoDock::updateMinHeight(){
     if(int_hiddenPanels == lst_PanelList.size()){
 
         qDebug() << "Hide Dock" << endl;
-       // hide();
+        hide();
+        return;
 
     }else{
 
+        show();
 
         int minSize = 0;
         int spacer = 0;
@@ -332,7 +331,7 @@ void IndigoDock::toggleSingleMode(){
     }
 
     emit singleMode(bool_singleMode);
-    qDebug() << "emit: Dock singleMode" << bool_singleMode << endl;
+  //  qDebug() << "emit: Dock singleMode" << bool_singleMode << endl;
 
 
 }
@@ -452,7 +451,10 @@ void IndigoDock::removePlaceholder (){
 
 void IndigoDock::updateTabPosition(Qt::DockWidgetArea area){
 
-    qDebug() << "updateTabPosition()" << area <<  this->accessibleName() << this << endl;
+    //qDebug() << "updateTabPosition()" << area <<  this->accessibleName() << this << endl;
+
+    // toggle single mode
+    toggleSingleMode();
 
     switch(area){
     case Qt::LeftDockWidgetArea:{
@@ -512,8 +514,7 @@ void IndigoDock::updateTabPosition(Qt::DockWidgetArea area){
 
     }
 
-    // toggle single mode
-    toggleSingleMode();
+
 
 }
 
@@ -715,18 +716,18 @@ void IndigoDock::resizeEvent(QResizeEvent *e){
 bool IndigoDock::eventFilter(QObject *object, QEvent *event)
 {
 
-    switch( event->type() )
-    {
-    case QEvent::Hide:
-//    case QEvent::Resize:
-    {
-        updateMinHeight();
-        break;
-    }
+//    switch( event->type() )
+//    {
+//    case QEvent::Hide:
+////    case QEvent::Resize:
+//    {
+//        updateMinHeight();
+//        break;
+//    }
 
-    default:
-        break;
-    }
+//    default:
+//        break;
+//    }
 
 
     return QWidget::eventFilter(object, event);

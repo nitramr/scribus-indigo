@@ -34,93 +34,103 @@ for which a new license (GPL+exception) is in place.
 
 int shapeplugin_getPluginAPIVersion()
 {
-	return PLUGIN_API_VERSION;
+    return PLUGIN_API_VERSION;
 }
 
 ScPlugin* shapeplugin_getPlugin()
 {
-	ShapePlugin* plug = new ShapePlugin();
-	Q_CHECK_PTR(plug);
-	return plug;
+    ShapePlugin* plug = new ShapePlugin();
+    Q_CHECK_PTR(plug);
+    return plug;
 }
 
 void shapeplugin_freePlugin(ScPlugin* plugin)
 {
-	ShapePlugin* plug = dynamic_cast<ShapePlugin*>(plugin);
-	Q_ASSERT(plug);
-	delete plug;
+    ShapePlugin* plug = dynamic_cast<ShapePlugin*>(plugin);
+    Q_ASSERT(plug);
+    delete plug;
 }
 
 ShapePlugin::ShapePlugin() : ScPersistentPlugin()
 {
-	sc_palette = NULL;
+    sc_palette = NULL;
 }
 
 ShapePlugin::~ShapePlugin() {};
 
 void ShapePlugin::languageChange()
 {
-	if (sc_palette)
-		sc_palette->languageChange();
+    if (sc_palette)
+        sc_palette->languageChange();
 }
 
 void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
 {
-	if (sc_palette)
-	{
-
-
-       // sc_palette->startup();
-        //sc_palette->hide();
-		languageChange();
-		m_actions.insert("shapeShowPalette", new ScrAction(QObject::tr("Custom Shapes"), QKeySequence(), this));
-		m_actions["shapeShowPalette"]->setToggleAction(true);
-		m_actions["shapeShowPalette"]->setChecked(false);
-		connect(m_actions["shapeShowPalette"], SIGNAL(toggled(bool)), sc_palette, SLOT(setPaletteShown(bool)));
-		connect(sc_palette, SIGNAL(paletteShown(bool)), m_actions["shapeShowPalette"], SLOT(setChecked(bool)));
+    if (sc_palette)
+    {
 
         sc_palette->setMainWindow(mw);
-		mw->scrMenuMgr->addMenuItemStringAfter("shapeShowPalette", "toolsInline", "Windows");
+        languageChange();
+        m_actions.insert("shapeShowPalette", new ScrAction(QObject::tr("Custom Shapes"), QKeySequence(), this));
+        m_actions["shapeShowPalette"]->setToggleAction(true);
+        m_actions["shapeShowPalette"]->setChecked(false);
+        connect(m_actions["shapeShowPalette"], SIGNAL(toggled(bool)), sc_palette, SLOT(setPaletteShown(bool)));
+        connect(sc_palette, SIGNAL(paletteShown(bool)), m_actions["shapeShowPalette"], SLOT(setChecked(bool)));
+
+
+        mw->scrMenuMgr->addMenuItemStringAfter("shapeShowPalette", "toolsInline", "Windows");
         mw->scrMenuMgr->addMenuItemStringstoMenuBar("Windows", m_actions);
 
-	}
+       // bool vis = sc_palette->isVisible();
+
+//        if(mw->indigoDockManager()->indigoDocks().count() > 0){
+//            IndigoDock * dock = mw->indigoDockManager()->indigoDocks().at(0);
+//            mw->indigoDockManager()->addIndigoPanel(dock, sc_palette);
+//        }else  mw->indigoDockManager()->addIndigoPanel(sc_palette);
+
+        //sc_palette->setVisible(false);
+
+    }
 }
 
 const QString ShapePlugin::fullTrName() const
 {
-	return QObject::tr("Custom Shapes");
+    return QObject::tr("Custom Shapes");
 }
 
 const ScActionPlugin::AboutData* ShapePlugin::getAboutData() const
 {
-	AboutData* about = new AboutData;
-	Q_CHECK_PTR(about);
-	about->authors = QString::fromUtf8("Franz Schmid <franz@scribus.info>, ");
-	about->shortDescription = tr("Palette for Photoshop Custom Shapes.");
-	return about;
+    AboutData* about = new AboutData;
+    Q_CHECK_PTR(about);
+    about->authors = QString::fromUtf8("Franz Schmid <franz@scribus.info>, ");
+    about->shortDescription = tr("Palette for Photoshop Custom Shapes.");
+    return about;
 }
 
 void ShapePlugin::deleteAboutData(const AboutData* about) const
 {
-	Q_ASSERT(about);
-	delete about;
+    Q_ASSERT(about);
+    delete about;
 }
 
 bool ShapePlugin::initPlugin()
 {
-	sc_palette = new ShapePalette(ScCore->primaryMainWindow());
-	sc_palette->startup();
-	sc_palette->readFromPrefs();
-	return true;
+    ScribusMainWindow * main = ScCore->primaryMainWindow();
+
+    sc_palette = new ShapePalette(main);
+    sc_palette->startup();
+    sc_palette->readFromPrefs();
+
+    return true;
 }
 
 bool ShapePlugin::cleanupPlugin()
 {
-	if (sc_palette)
-	{
-		sc_palette->writeToPrefs();
-		delete sc_palette;
-		sc_palette = NULL;
-	}
-	return true;
+    if (sc_palette)
+    {
+        sc_palette->writeToPrefs();
+        delete sc_palette;
+        sc_palette = NULL;
+    }
+    return true;
 }

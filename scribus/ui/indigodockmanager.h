@@ -32,6 +32,8 @@
 #include <QSize>
 #include "indigodock.h"
 
+class PrefsContext;
+
 class IndigoDockManager: public QWidget
 {
     Q_OBJECT
@@ -46,8 +48,8 @@ public:
 
     QList<IndigoDock*> indigoDocks() const;
 
-    QByteArray saveWorkspace();
-    void loadWorkspace(QByteArray workspaceArray);
+    void saveWorkspace();
+    void loadWorkspace();
 
     /* Settings */
     void setMinimumPanelHeight(int height);
@@ -58,7 +60,6 @@ public:
 private:
     QList<IndigoDock*> lst_Docks;
     QList<IndigoDock*> lst_removeDocks;
-    QString version;
     void connectPanel(IndigoPanel *panel);
     void removeDock(IndigoDock *dock);
     void removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock);
@@ -66,6 +67,11 @@ private:
     int int_minimumPanelHeight;
     int int_minimumPanelWidth;
     int int_fadeSpeed;
+
+protected:
+    virtual void setPrefsContext(QString context);
+    PrefsContext* palettePrefs;
+    QString prefsContextName;
 
 
 signals:

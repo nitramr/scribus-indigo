@@ -37,6 +37,14 @@
 #include <QBoxLayout>
 //#include "uiwidgets/flowlayout.h"
 
+//#include <QCloseEvent>
+//#include <QHideEvent>
+//#include <QKeySequence>
+//#include <QShowEvent>
+
+//#include "scribusapi.h"
+class PrefsContext;
+
 class IndigoPanelHandle : public QWidget
 {
         Q_OBJECT
@@ -135,9 +143,20 @@ public:
 
     void updateSize();
 
+    bool visibleOnStartup();
+
 protected:
     bool eventFilter(QObject *object, QEvent *e);
     bool mouseInGrip(QPoint mousePos);
+
+    /** @brief Set the Preferences context to be used for storage of startup visibility and position and size */
+    virtual void setPrefsContext(QString context);
+    void storeSize();
+    void storeVisibility(bool);
+
+    PrefsContext* palettePrefs;
+    QString prefsContextName;
+    bool bool_visibleOnStartup;
 
 
 private:

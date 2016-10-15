@@ -39,10 +39,7 @@ for which a new license (GPL+exception) is in place.
 
 ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 
-    : IndigoPanel(prefsContext ),
-	palettePrefs(0),
-    prefsContextName(QString::null),
-    visibleOnStartup(false)
+    : IndigoPanel(prefsContext )
 {
 
     if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
@@ -60,54 +57,24 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 						QToolBox::tab { font-size: 10px; padding: 0px; margin: 0px; } \
 			  		");
     }
-   // originalParent=parent;
-    //tempParent=0;
-    setPrefsContext(prefsContext);
+
     connect(PrefsManager::instance(), SIGNAL(prefsChanged()), this, SLOT(setFontSize()));
     connect(this, SIGNAL(panelClosedByButton()), this, SLOT(panelClose()));
 
 }
 
 
-
-void ScDockPalette::setPrefsContext(QString context)
-{
-    if (prefsContextName.isEmpty())
-	{
-		prefsContextName=context;
-		if (!prefsContextName.isEmpty())
-		{
-			palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);
-            if (palettePrefs){
-				visibleOnStartup = palettePrefs->getBool("visible");
-                int width = palettePrefs->getInt("width");
-                int height= palettePrefs->getInt("height");
-                setDockHeight(height);
-                setDockWidth(width);
-                setIndex(palettePrefs->getBool("index"));
-                updateSize();
-
-            }
-		}
-        else{
-			palettePrefs = NULL;
-        }
-    }
-}
-
-
-
 void ScDockPalette::startup()
 {    
 	setFontSize();
-    if (visibleOnStartup)
+    if (visibleOnStartup())
 	{
         show();
 	}
 	else
         hide();
 
-	emit paletteShown(visibleOnStartup);
+    emit paletteShown(visibleOnStartup());
 }
 
 
@@ -136,48 +103,9 @@ void ScDockPalette::setFontSize()
 
 
 
-void ScDockPalette::hide()
-{
-
-    if (isVisible())
-	{
-		storeSize();
-
-        IndigoPanel::hide();
-    }
-
-}
-
-
 void ScDockPalette::panelClose(){
 
     emit paletteShown(false);
 
-}
-
-
-void ScDockPalette::storeSize()
-{
-    if (palettePrefs)
-    {
-        palettePrefs->set("width", dockWidth());
-        palettePrefs->set("height", dockHeight());
-    }
-}
-
-
-
-void ScDockPalette::storeVisibility(bool vis)
-{
-    if (palettePrefs)
-        palettePrefs->set("visible", vis);
-}
-
-
-
-void ScDockPalette::storeIndex()
-{
-    if (palettePrefs)
-        palettePrefs->set("index", Index());
 }
 

@@ -29,15 +29,38 @@
 #include <QPropertyAnimation>
 #include <QStyle>
 
-IndigoDockManager::IndigoDockManager(QMainWindow *parent) : QWidget(parent){
+#include "prefscontext.h"
+#include "prefsfile.h"
+#include "prefsmanager.h"
 
-    version = "1.0"; // workspace manager version
+IndigoDockManager::IndigoDockManager(QMainWindow *parent) : QWidget(parent),
+    palettePrefs(0),
+    prefsContextName(QString::null)
+{
+
     int_minimumPanelHeight = 50;
     int_minimumPanelWidth = 100;
     int_fadeSpeed = 100;
 
     setFixedSize(0,0);
+    setPrefsContext("IndigoDockManager");
+}
 
+
+
+void IndigoDockManager::setPrefsContext(QString context)
+{
+    if (prefsContextName.isEmpty())
+    {
+        prefsContextName=context;
+        if (!prefsContextName.isEmpty())
+        {
+            palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);           
+        }
+        else{
+            palettePrefs = NULL;
+        }
+    }
 }
 
 
@@ -51,6 +74,7 @@ void IndigoDockManager::connectPanel(IndigoPanel * panel){
     this->connect(panel, SIGNAL(mouseMove()), this, SLOT(hoverDock()));
     this->connect(panel, SIGNAL(mouseReleased()), this, SLOT(dropPanel()));
     this->connect(panel, SIGNAL(isFloating()), this, SLOT(dragoutPanel()));
+    this->connect(panel, SIGNAL(panelClosed(int)), this, SLOT(updateDockSize()));
     this->connect(panel, SIGNAL(handleMove()), this, SLOT(updateDockSize()));
 
 
@@ -78,8 +102,6 @@ void IndigoDockManager::addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area)
 
             main->addDockWidget(area,dock);
 
-        }else{
-            qDebug() << "Dock exists in DockManager list" << dock << endl;
         }
 
     }
@@ -331,7 +353,6 @@ void IndigoDockManager::scrollToPanel(){
             return;
         }
 
-
     }
 
 }
@@ -407,148 +428,118 @@ void IndigoDockManager::dropPanel(){
 
 
 
-void IndigoDockManager::loadWorkspace(QByteArray workspaceArray){
+void IndigoDockManager::loadWorkspace(){
+
+     if (palettePrefs){
+
+     QString value = palettePrefs->get("IndigoDocks");
+
+     if(value == "") return;
+
 
     QList<IndigoDock*> lst_tmpDocks;
     QList<IndigoPanel*> lst_tmpPanels;
 
-
-    QDomDocument doc;
-    doc.setContent(workspaceArray);
-
-    QDomElement root = doc.documentElement();
-    QDomElement indigoDock;
-    QDomElement floatingPanels;
-
-    QString fileVersion = root.attribute("version", "1.0");
-
-    if(fileVersion > version){
-        QMessageBox::warning(0, "Workspace could not load!", "Workspace file version ("+fileVersion+") is newer than " + version + ".");
-
-        return;
-    }
-
-
-    indigoDock = root.firstChildElement("IndigoDock");
-    floatingPanels = root.firstChildElement("FloatingPanels");
-
     // remove all dock and save copies to restore
     removeAllDocks(lst_tmpPanels, lst_tmpDocks);
 
-
     int i = 0;
 
-    // restore dock layout and docked panels
-    while(!indigoDock.isNull())
-    {
+
+    // Value Format: Shap;AlignDistributePalette;PagePalette;Layers;Tree;Inline;Books;Symb;Sclib;undoPalette||1|PropertiesPalette
+    // | = dock divider
+    // ; = panel divider
 
 
-        if(lst_tmpDocks.size() > 0){
-
-            IndigoDock * newDock;
-
-            if(i < lst_tmpDocks.size()){
-                newDock = lst_tmpDocks.at(i);
-            }else newDock = new IndigoDock(this);
+    QStringList valueList = value.split('|');
 
 
-            // add sorted panels
-            QDomElement indigoPanel = indigoDock.firstChildElement("IndigoPanel");
+    QString s_docks;
+    foreach(s_docks, valueList){
 
-            while(!indigoPanel.isNull())
-            {
+        IndigoDock * newDock;
 
-                IndigoPanel * sortPanel;
-                foreach(sortPanel, lst_tmpPanels){
+        if(i < lst_tmpDocks.size()){
+            newDock = lst_tmpDocks.at(i);
+        }else newDock = new IndigoDock(this);
 
-                    if (sortPanel->objectName() == indigoPanel.attribute("name", "")){
+        // add dock property
+        addIndigoDock(newDock, Qt::RightDockWidgetArea);
 
-                        newDock->addIndigoPanel(sortPanel);
+        // get panel names
+        QStringList panels = s_docks.split(';');
+        QString panelNames;
 
-                        //add attribute
-                        sortPanel->setExpanderState(indigoPanel.attribute("expanderState", "-1").toInt());
-                        sortPanel->setDockState(indigoPanel.attribute("dockState", "-1").toInt());
+        foreach(panelNames, panels){
 
-                    }
+            IndigoPanel * sortPanel;
+
+            foreach(sortPanel, lst_tmpPanels){
+
+                if (sortPanel->objectName() == panelNames){
+
+                    newDock->addIndigoPanel(sortPanel);
+
                 }
-
-                indigoPanel = indigoPanel.nextSiblingElement("IndigoPanel");
-
             }
-
-
-            addIndigoDock(newDock, Qt::LeftDockWidgetArea);
-
-            i++;
 
         }
 
-
-        // next dock
-        indigoDock = indigoDock.nextSiblingElement("IndigoDock");
-
+        i++;
     }
 
 
     lst_tmpDocks.clear();
     lst_tmpPanels.clear();
 
+     }
+
 }
 
 
 
+void IndigoDockManager::saveWorkspace(){
 
-QByteArray IndigoDockManager::saveWorkspace(){
+    if (palettePrefs){
 
+        QString value = "";
 
-    QByteArray qba_panels;
+        int d = 0;
+        IndigoDock * dock;
+        foreach(dock, lst_Docks){
 
+            QString dockEnd = "";
 
-    QXmlStreamWriter xmlWriter(&qba_panels);
+            int p = 0;
+            IndigoPanel *panel;
+            foreach(panel, dock->getPanels()){
 
-    xmlWriter.setAutoFormatting(true);
+                QString panEnd = "";
+                if(dock->getPanels().count() > p+1){
+                    panEnd = ";";
+                }
 
+                value += panel->objectName() + panEnd;
+                p++;
+            }
 
-    xmlWriter.writeStartDocument();
+            if(lst_Docks.count() > d+1){
+                dockEnd = "|";
+            }
 
-    xmlWriter.writeStartElement("IndigoDockManager");
-    xmlWriter.writeAttribute("version",version);
+            value += dockEnd;
 
-    // Docks
-    IndigoDock * dock;
-    foreach(dock, lst_Docks){
-
-        xmlWriter.writeStartElement("IndigoDock");
-        //xmlWriter.writeAttribute("id",QString::number(i));
-        xmlWriter.writeAttribute("name",dock->objectName());
-
-        IndigoPanel * panel;
-        foreach(panel, dock->getPanels()){
-
-            xmlWriter.writeStartElement("IndigoPanel");
-            xmlWriter.writeAttribute("id",QString::number(panel->Index()));
-            xmlWriter.writeAttribute("name",panel->objectName());
-            xmlWriter.writeAttribute("expanderState",QString::number(panel->expanderState()));
-            xmlWriter.writeAttribute("dockState",QString::number(panel->dockState())); // only Docked & HiddenDocked will be available
-            xmlWriter.writeEndElement();
+            d++;
 
         }
 
+        palettePrefs->set("IndigoDocks", value );
 
-        xmlWriter.writeEndElement();
+
 
     }
 
-
-    xmlWriter.writeEndElement();
-    xmlWriter.writeEndDocument();
-
-
-
-
-    return qba_panels;
 }
-
 
 
 /**********************

@@ -23,11 +23,22 @@
 
 #include "indigopanel.h"
 #include <QPushButton>
-#include "qapplication.h"
 #include <QDrag>
 #include <QStyle>
 #include <QStyleOptionDockWidget>
 
+
+#include <QApplication>
+#include <QCloseEvent>
+#include <QDesktopWidget>
+#include <QHideEvent>
+#include <QPoint>
+
+#include "iconmanager.h"
+#include "prefscontext.h"
+#include "prefsfile.h"
+#include "prefsmanager.h"
+#include "util.h"
 
 
 /*#####################
@@ -178,7 +189,10 @@ void IndigoPanelHandle::setExpanderState(IndigoExpanderState expanderState){
 
 
 IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
-    QFrame(dock)
+    QFrame(dock),
+    palettePrefs(0),
+    prefsContextName(QString::null),
+    bool_visibleOnStartup(false)
 {
     int int_padding = 5;
 
@@ -243,6 +257,33 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setIcon(icon, 0);
     setHandleWidth(int_handleWidth);
 
+    setPrefsContext(name);
+}
+
+
+
+void IndigoPanel::setPrefsContext(QString context)
+{
+    if (prefsContextName.isEmpty())
+    {
+        prefsContextName=context;
+        if (!prefsContextName.isEmpty())
+        {
+            palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);
+            if (palettePrefs){
+                bool_visibleOnStartup = palettePrefs->getBool("visible");
+                int width = palettePrefs->getInt("width", 0);
+                int height= palettePrefs->getInt("height", 0);
+                setDockHeight(height);
+                setDockWidth(width);
+                updateSize();
+
+            }
+        }
+        else{
+            palettePrefs = NULL;
+        }
+    }
 }
 
 
@@ -277,6 +318,33 @@ void IndigoPanel::updateSize(){
 }
 
 
+
+void IndigoPanel::storeSize()
+{
+    if (palettePrefs)
+    {
+        palettePrefs->set("width", dockWidth());
+        palettePrefs->set("height", dockHeight());
+
+    }
+}
+
+
+
+void IndigoPanel::storeVisibility(bool vis)
+{
+    if (palettePrefs)
+        palettePrefs->set("visible", vis);
+}
+
+
+
+bool IndigoPanel::visibleOnStartup(){
+
+    return bool_visibleOnStartup;
+}
+
+
 /**********************
  *
  * Slots
@@ -298,7 +366,14 @@ void IndigoPanel::hide(){
 
 //    }
 
-    setVisible(false);
+   // if (isVisible())
+   // {
+        storeSize();
+
+        setVisible(false);
+  //  }
+
+
 
 }
 
@@ -440,16 +515,12 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 
                     case Qt::Vertical:{
 
-
-                        //setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
-
                         int _height = height()+delta.y();
                         if(_height <= minimumResizeHeight()) _height = minimumResizeHeight();
 
                         int_dockHeight = _height;
                         setFixedHeight(_height);
                         setMinimumWidth(minimumResizeWidth());
-                        //setMinimumSize(width(), _height);
                         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
 
@@ -458,15 +529,12 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
                     case Qt::Horizontal:
                     {
 
-                        //setMinimumSize(minimumResizeWidth(), minimumResizeHeight());
-
                         int _width = width()+delta.x();
                         if(_width <= minimumResizeWidth()) _width = minimumResizeWidth();
 
                         int_dockWidth = _width;
                         setFixedWidth(_width);
                         setMinimumHeight(minimumResizeHeight());
-                        //setMinimumSize(_width, height());
                         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
                         break;
@@ -489,8 +557,6 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 
                 setDockState(IndigoPanel::Floating);
             }
-
-            //  setWindowState(Qt::WindowActive);
 
             QPoint point = me->globalPos();
             move(point - pnt_relativeOffset);

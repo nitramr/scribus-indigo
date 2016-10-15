@@ -78,6 +78,7 @@ public:
     bool movableTabs();
     void updateMinHeight();
 
+
 private:
 
     QList<IndigoPanel*> lst_PanelList;
@@ -123,6 +124,7 @@ public slots:
     void scrollToPanel(int PanelIndex);
     void scrollToPanel(QString PanelName);
     void movePanel(int oldIndex, int newIndex);
+
 
 
 private slots:

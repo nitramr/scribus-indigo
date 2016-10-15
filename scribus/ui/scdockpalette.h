@@ -26,11 +26,7 @@ for which a new license (GPL+exception) is in place.
 #ifndef SCDOCKPALETTE_H
 #define SCDOCKPALETTE_H
 
-#include <QCloseEvent>
-//#include <QDockWidget>
-#include <QHideEvent>
 #include <QKeySequence>
-#include <QShowEvent>
 
 #include "scribusapi.h"
 #include "indigopanel.h"
@@ -45,7 +41,6 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
         ~ScDockPalette() {};
         /** @brief Sample way to grab keystrokes, simply calls superclass at this point */
 		//virtual void keyPressEvent(QKeyEvent *keyEvent);
-		virtual void hide();
 		void startup();
 
 
@@ -59,16 +54,6 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
 	signals:
         /** @brief Let the action for this palette know when something changes and it hasn't caused it */
 		void paletteShown(bool);
-		
-	protected:
-        /** @brief Set the Preferences context to be used for storage of startup visibility and position and size */
-		virtual void setPrefsContext(QString context);
-		void storeSize();
-		void storeVisibility(bool);
-        void storeIndex();
 
-		PrefsContext* palettePrefs;
-		QString prefsContextName;
-        bool visibleOnStartup;
 };
 #endif
