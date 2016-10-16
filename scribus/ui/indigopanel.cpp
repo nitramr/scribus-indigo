@@ -856,7 +856,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
 
     case IndigoPanel::Floating:
         setWindowFlags(Qt::Tool | Qt::CustomizeWindowHint);
-        this->adjustSize();
+        //this->adjustSize();
         QFrame::show();
         break;
 

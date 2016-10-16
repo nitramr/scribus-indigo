@@ -768,6 +768,9 @@ Biblio::Biblio( QWidget* parent) : ScDockPalette( parent, "Sclib")
 	BiblioLayout->addWidget( Frame3 );
 	setWidget( containerWidget );
 
+    IconManager* im = IconManager::instance();
+    setIcon(im->loadPixmap("64/pan-library.png"));
+
 	languageChange();
 	prefs = PrefsManager::instance()->prefsFile->getContext("Scrapbook");
 	conf_HideDirs->setChecked(prefs->getBool("hideDirs", false));

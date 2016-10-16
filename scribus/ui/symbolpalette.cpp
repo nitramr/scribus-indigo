@@ -21,6 +21,7 @@ for which a new license (GPL+exception) is in place.
  *                                                                         *
  ***************************************************************************/
 #include "symbolpalette.h"
+#include "iconmanager.h"
 #include <QPainter>
 #include <QByteArray>
 #include <QDrag>
@@ -158,6 +159,9 @@ SymbolPalette::SymbolPalette( QWidget* parent) : ScDockPalette( parent, "Symb")
 	SymbolViewWidget = new SymbolView(this);
 	SymbolViewWidget->clear();
 	setWidget( SymbolViewWidget );
+
+    IconManager* im = IconManager::instance();
+    setIcon(im->loadPixmap("64/pan-symbol.png"));
 
 	unsetDoc();
 	m_scMW  = NULL;

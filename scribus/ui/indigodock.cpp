@@ -162,7 +162,7 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     panel->setOrientation(m_orientation);
     panel->setMinimumResizeHeight(int_minPanelHeight);
     panel->setMinimumResizeWidth(int_minPanelWidth);
-    //panel->setMinimumSize(QSize(int_minPanelWidth, int_minPanelHeight));
+    panel->updateSize();
 
     // Panel settings
     if(dockState == IndigoPanel::Docked || dockState == IndigoPanel::HiddenDocked){
@@ -170,6 +170,7 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     }else{
         panel->setDockState(IndigoPanel::Docked);
     }
+
 
     updatePanels();
 
@@ -230,8 +231,7 @@ void IndigoDock::updateMinHeight(){
     int totalPanelSize = 0;
 
 
-    IndigoPanel * panel;
-    foreach(panel, lst_PanelList){
+    foreach(IndigoPanel *panel, lst_PanelList){
 
         switch(panel->dockState()){
 
@@ -400,8 +400,7 @@ void IndigoDock::scrollToPanel(int PanelIndex){
 
 void IndigoDock::scrollToPanel(QString PanelName){
 
-    IndigoPanel * panel;
-    foreach(panel, lst_PanelList){
+    foreach(IndigoPanel * panel, lst_PanelList){
 
        if(panel->dockState() == IndigoPanel::Docked || panel->dockState() == IndigoPanel::HiddenDocked){
            if(panel->objectName() == PanelName){
@@ -453,8 +452,6 @@ void IndigoDock::updateTabPosition(Qt::DockWidgetArea area){
 
     //qDebug() << "updateTabPosition()" << area <<  this->accessibleName() << this << endl;
 
-    // toggle single mode
-    toggleSingleMode();
 
     switch(area){
     case Qt::LeftDockWidgetArea:{
@@ -514,7 +511,8 @@ void IndigoDock::updateTabPosition(Qt::DockWidgetArea area){
 
     }
 
-
+    // toggle single mode
+    toggleSingleMode();
 
 }
 
@@ -595,8 +593,7 @@ bool IndigoDock::hoverDock(IndigoPanel * pan){
             int index = -1;
 
 
-            IndigoPanel * panel;
-            foreach(panel, lst_PanelList )
+            foreach(IndigoPanel *panel, lst_PanelList )
             {
 
                 if(panel->dockState() == IndigoPanel::Docked || panel->dockState() == IndigoPanel::HiddenDocked){
