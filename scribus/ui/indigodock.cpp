@@ -307,7 +307,7 @@ void IndigoDock::updateMinHeight(){
         // reset size limit
         setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
 
-        update();        
+        update();
     }
 }
 

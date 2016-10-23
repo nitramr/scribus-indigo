@@ -226,6 +226,8 @@ void IndigoTabBar::insertTab(QIcon icon, int index, QString toolTip){
 
 void IndigoTabBar::removeTab(int index){
 
+    if(lst_TabList.size() == 0) return;
+
     if(index >= 0 && index <= lst_TabList.size()){
         lst_TabList.removeAt(index);
 
@@ -255,6 +257,8 @@ void IndigoTabBar::moveTab(){
 
 void IndigoTabBar::hideTab(int index){
 
+    if(lst_TabList.size() == 0) return;
+
     if(index >= 0 && index <= lst_TabList.size()){
         lst_TabList.at(index)->setDisplayState(IndigoTab::Hidden);
         calculateSize();
@@ -265,6 +269,8 @@ void IndigoTabBar::hideTab(int index){
 
 
 void IndigoTabBar::showTab(int index){
+
+    if(lst_TabList.size() == 0) return;
 
     if(index >= 0 && index <= lst_TabList.size()){
         lst_TabList.at(index)->setDisplayState(IndigoTab::Visible);

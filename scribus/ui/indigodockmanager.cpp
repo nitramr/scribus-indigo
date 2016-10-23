@@ -55,7 +55,7 @@ void IndigoDockManager::setPrefsContext(QString context)
         prefsContextName=context;
         if (!prefsContextName.isEmpty())
         {
-            palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);           
+            palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);
         }
         else{
             palettePrefs = NULL;

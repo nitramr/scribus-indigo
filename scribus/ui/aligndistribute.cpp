@@ -53,7 +53,7 @@ AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* nam
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	currDoc=NULL;
 	guideDirection=-1;
-	setObjectName(name);
+    setObjectName(name);
 
 	//hide spare controls 
 	toolButtonDummy1->hide();

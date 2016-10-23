@@ -60,6 +60,7 @@ public:
     void setCaption(QString title, int fontSize);
     void setIcon(QIcon icon, int iconSize);
     void setExpanderState(IndigoExpanderState expanderState);
+    void enableExpander(bool visible);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -71,6 +72,7 @@ private:
     int int_fontSize;
     QToolButton * wdg_btnClose;
     QToolButton * wdg_btnExpander;
+    bool bool_showExpander;
 
 
 signals:
@@ -88,12 +90,12 @@ class IndigoPanel : public QFrame
 public:
     enum IndigoDockState{
 
-        HiddenDocked = 0,
-        Floating = 1,
-        Docked = 2,
-        None = 3
+            HiddenDocked = 0,
+            Floating = 1,
+            Docked = 2,
+            None = 3
 
-    };
+        };
 
 
 
@@ -124,6 +126,7 @@ public:
     IndigoPanelHandle::IndigoExpanderState expanderState();
     void setExpanderState(IndigoPanelHandle::IndigoExpanderState expanderState);
     void setExpanderState(int expanderState);
+    void enableExpander(bool visible);
 
     void setOrientation(Qt::Orientation orientation);
     void setHandleWidth(int width);
@@ -175,6 +178,7 @@ private:
     int int_index;
     IndigoDockState m_state;
     IndigoPanelHandle::IndigoExpanderState m_expander;
+    bool bool_showExpander;
 
     Qt::Orientation m_orientation;
     int int_handleWidth;

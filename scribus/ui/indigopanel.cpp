@@ -84,6 +84,7 @@ IndigoPanelHandle::IndigoPanelHandle(QWidget *parent) :
 
     setLayout(mainLayout);
     setObjectName("IndigoPanelHandle");
+    enableExpander(false);
 
     // Actions
     connect(wdg_btnClose, SIGNAL (clicked()), parent, SLOT (hide()));
@@ -179,6 +180,17 @@ void IndigoPanelHandle::setExpanderState(IndigoExpanderState expanderState){
 }
 
 
+
+void IndigoPanelHandle::enableExpander(bool visible){
+    bool_showExpander = visible;
+
+    if(bool_showExpander){
+        wdg_btnExpander->show();
+    }else wdg_btnExpander->hide();
+
+}
+
+
 /*#####################
  #
  #
@@ -192,7 +204,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     QFrame(dock),
     palettePrefs(0),
     prefsContextName(QString::null),
-    bool_visibleOnStartup(false)
+    bool_visibleOnStartup(false),
+    bool_showExpander(false)
 {
     int int_padding = 5;
 
@@ -242,7 +255,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 
     // Extended Properties
     int_index = -1;
-    m_state = IndigoPanel::None;
+    m_state = IndigoPanel::Docked;
     m_expander = IndigoPanelHandle::Normal;
 
     // General Properties
@@ -256,6 +269,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setObjectName(name);
     setIcon(icon, 0);
     setHandleWidth(int_handleWidth);
+    enableExpander(bool_showExpander);
 
     setPrefsContext(name);
 }
@@ -851,7 +865,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
 
     switch(state){
     case IndigoPanel::HiddenDocked:
-        QFrame::hide();        
+        QFrame::hide();
         break;
 
     case IndigoPanel::Floating:
@@ -863,7 +877,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
     case IndigoPanel::Docked:
     case IndigoPanel::None:
     default:
-        QFrame::show();        
+        QFrame::show();
         break;
     }
 
@@ -976,4 +990,13 @@ int IndigoPanel::dockHeight(){
 int IndigoPanel::dockWidth(){
 
     return int_dockWidth;
+}
+
+
+
+void IndigoPanel::enableExpander(bool visible)
+{
+    bool_showExpander = visible;
+    wdg_handle->enableExpander(visible);
+
 }

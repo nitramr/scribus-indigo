@@ -20,56 +20,45 @@ For Bugs and patches: please send them to the [Scribus Bugtracker](http://bugs.s
 |IRC | irc://scribus@chat.freenode.net |  
 
 
-## IndigoDock integration
+## Source Code Compiling (Linux)
 
-Following files has been updated to integrate the IndigoDock
+The best way to compile Scribus is via Cmake.  
 
-ui/scdockpalette.h  
-ui/scdockpalette.cpp  
-- change type to IndigoPanel  
+If Cmake is not installed on your system open terminal and type in following command and press enter (you have to input your admin password afterwards):  
 
 ```C++
-ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext, Qt::WindowFlags f)
-
-    : IndigoPanel(prefsContext ),
-
-	palettePrefs(0),
-	prefsContextName(QString::null),
-	visibleOnStartup(false)
-{
-...
+sudo apt-get install cmake
 ```
 
-scribus.h  
-scribus.cpp  
-- add function initIndigoDock()  
-- add Panels to Indigodock in initPalettes()  
+If Cmake is already installed do following steps.  
+1. Download Scribus-Indigo to your local system or clone the git repository  
+2. Create a new folder "Scribus" on your desktop  
+3. Unzip the downloaded project into your Scribus folder on desktop (Desktop/Scribus/scribus-indigo-master)  
+4. Create a new folder "bin" in your Scribus folder on desktop (Desktop/Scribus/bin)  
+5. Open terminal and enter following commands to compile the source code:  
+
 
 ```C++
-void ScribusMainWindow::initIndigoDock()
-{
-
-    // install IndigoDockManager
-    wdg_indigoDockManager = new IndigoDockManager(this);
-    wdg_indigoDockManager->setMinimumPanelSize(QSize(180,100));
-
-    wdg_indigoDock = new IndigoDock();
-
-
-    // Add IndigoDock
-    wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
-
-}
+cd ~/Desktop/Scribus/bin
+cmake --debug-output ../scribus-indigo-master
+make -j4
 ```
+
+After compiling was successfully you have to install the compiled file and necessary resources. Enter following command:  
+
+
 ```C++
-void ScribusMainWindow::initPalettes()
-{
-
-
-	//CB TODO hide the publicly available members of some palettes
-	// these must be filtered too as they take control of the palettes events
-	outlinePalette = new OutlinePalette(this);
-    outlinePalette->setMainWindow(this);
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, outlinePalette);
-...
+sudo make install
 ```
+
+You can find Scribus in following location:  
+./user/local/bin/  
+
+
+For uninstalling use following commands:  
+```C++
+cd ~/Desktop/Scribus/bin
+sudo make uninstall
+```
+
+
