@@ -1,12 +1,16 @@
 Scribus - Open Source Desktop Publishing 
 ==============================
-[![Build Status](https://travis-ci.org/scribusproject/scribus.svg?branch=master)](https://travis-ci.org/scribusproject/scribus) [![Coverity Scan Build Status](https://scan.coverity.com/projects/216/badge.svg)](https://scan.coverity.com/projects/scribus)
+[![Build Status](https://travis-ci.org/nitramr/scribus-indigo.svg?branch=master)](https://travis-ci.org/nitramr/scribus-indigo) 
 
 ## Status
-This README.md file is geared toward the Scribus github repository which serves as a mirror for the Scribus Subversion repository `svn://scribus.net/trunk/Scribus`. The Scribus development team prefer svn over git. This mirror is updated manually.
+This is a experimental build of the Scribus DTP software that introduces and integrages [indigoDock](https://github.com/nitramr/indigoDock) in to Scribus trunk. 
 
 ## Contributing
-For Bugs and patches: please send them to the [Scribus Bugtracker](http://bugs.scribus.net) to be evaluated. If you do send a PR here, someone will either ask you to do the same or submit the PR as a patch to the bugtracker for you.
+For Bugs: please open an issue in this repo [issue queue](https://github.com/nitramr/scribus-indigo/issues)
+For Patches: submit a PR 
+
+## Discussion 
+Most of the dicussion is occuring at in the [Scribus UI/UX subforum](http://forums.scribus.net/index.php/topic,1617.0.html)
 
 ## Links
 |Resource | Address |  
