@@ -3,7 +3,7 @@ Scribus - Open Source Desktop Publishing
 [![Build Status](https://travis-ci.org/nitramr/scribus-indigo.svg?branch=master)](https://travis-ci.org/nitramr/scribus-indigo) 
 
 ## Status
-This is a experimental build of the Scribus DTP software that introduces and integrages [indigoDock](https://github.com/nitramr/indigoDock) in to Scribus trunk. 
+This is a experimental build of the Scribus DTP software that introduces and integrates [indigoDock](https://github.com/nitramr/indigoDock) in to Scribus trunk. 
 
 ## Contributing
 For Bugs: please open an issue in this repo [issue queue](https://github.com/nitramr/scribus-indigo/issues)
