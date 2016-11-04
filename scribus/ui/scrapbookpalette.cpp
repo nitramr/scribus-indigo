@@ -698,10 +698,10 @@ void BibView::ReadContents(QString name)
 }
 
 /* This is the main Dialog-Class for the Scrapbook */
-Biblio::Biblio( QWidget* parent) : ScDockPalette( parent, "Sclib")
+Biblio::Biblio( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 //	resize( 230, 190 );
-	setObjectName(QString::fromLocal8Bit("Sclib"));
+    setObjectName(QString::fromLocal8Bit(name));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
 	BiblioLayout = new QVBoxLayout( containerWidget );

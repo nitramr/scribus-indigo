@@ -53,7 +53,7 @@ class SCRIBUS_API PropertiesPalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-	PropertiesPalette(QWidget* parent);
+    PropertiesPalette(QWidget* parent, const char *name);
 	~PropertiesPalette() {};
 
 	virtual void changeEvent(QEvent *e);

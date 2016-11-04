@@ -92,8 +92,7 @@ public:
 
             HiddenDocked = 0,
             Floating = 1,
-            Docked = 2,
-            None = 3
+            Docked = 2
 
         };
 

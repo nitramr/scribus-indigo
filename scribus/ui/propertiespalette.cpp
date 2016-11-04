@@ -72,7 +72,7 @@ for which a new license (GPL+exception) is in place.
 
 //using namespace std;
 
-PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, "Properties")
+PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 	undoManager = UndoManager::instance();
 	m_ScMW=0;
@@ -81,7 +81,7 @@ PropertiesPalette::PropertiesPalette( QWidget* parent) : ScDockPalette( parent, 
 	m_haveItem = false;
 	m_unitRatio = 1.0;
 
-    setObjectName(QString::fromLocal8Bit("PropertiesPalette"));
+    setObjectName(QString::fromLocal8Bit(name));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 	QFont f(font());

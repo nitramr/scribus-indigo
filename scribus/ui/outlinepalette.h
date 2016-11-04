@@ -58,7 +58,7 @@ class SCRIBUS_API OutlinePalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-	OutlinePalette( QWidget* parent );
+    OutlinePalette(QWidget* parent , const char *name);
 	
 	virtual void changeEvent(QEvent *e);
 	

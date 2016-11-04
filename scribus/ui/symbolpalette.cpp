@@ -151,10 +151,10 @@ bool SymbolView::viewportEvent(QEvent *event)
 	clearSelection();
 }
 
-SymbolPalette::SymbolPalette( QWidget* parent) : ScDockPalette( parent, "Symb")
+SymbolPalette::SymbolPalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
     //setMinimumSize( QSize( 220, 240 ) );
-	setObjectName(QString::fromLocal8Bit("Symb"));
+    setObjectName(QString::fromLocal8Bit(name));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	SymbolViewWidget = new SymbolView(this);
 	SymbolViewWidget->clear();

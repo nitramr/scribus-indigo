@@ -117,7 +117,7 @@ bool ShapePlugin::initPlugin()
 {
     ScribusMainWindow * main = ScCore->primaryMainWindow();
 
-    sc_palette = new ShapePalette(main);
+    sc_palette = new ShapePalette(main, "Shap");
     sc_palette->startup();
     sc_palette->readFromPrefs();
 

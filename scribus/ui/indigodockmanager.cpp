@@ -348,7 +348,8 @@ void IndigoDockManager::scrollToPanel(){
 
         if(dock->getPanels().contains(pan)){
 
-            dock->scrollToPanel(pan->objectName());
+            //dock->scrollToPanel(pan->objectName());
+            dock->scrollToPanel(pan->Index());
 
             return;
         }

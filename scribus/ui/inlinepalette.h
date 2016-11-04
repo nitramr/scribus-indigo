@@ -72,7 +72,7 @@ class SCRIBUS_API InlinePalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-	InlinePalette(QWidget* parent);
+    InlinePalette(QWidget* parent, const char *name);
 	~InlinePalette() {};
 	void setMainWindow(ScribusMainWindow *mw);
 	void setDoc(ScribusDoc *);

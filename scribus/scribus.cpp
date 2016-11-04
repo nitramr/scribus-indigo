@@ -649,7 +649,7 @@ void ScribusMainWindow::initPalettes()
 	// these must be filtered too as they take control of the palettes events
 
     // Properties
-    propertiesPalette = new PropertiesPalette(this);
+    propertiesPalette = new PropertiesPalette(this, "Properties");
     propertiesPalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, propertiesPalette);
     connect( scrActions["toolsProperties"], SIGNAL(toggled(bool)) , propertiesPalette, SLOT(setPaletteShown(bool)) );
@@ -666,14 +666,14 @@ void ScribusMainWindow::initPalettes()
     alignDistributePalette->installEventFilter(this);
 
     // Pages
-    pagePalette = new PagePalette(this);
+    pagePalette = new PagePalette(this, "PagePalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pagePalette);
     connect( scrActions["toolsPages"], SIGNAL(toggled(bool)) , pagePalette, SLOT(setPaletteShown(bool)) );
     connect( pagePalette, SIGNAL(paletteShown(bool)), scrActions["toolsPages"], SLOT(setChecked(bool)));
     pagePalette->installEventFilter(this);
 
     // Layers
-    layerPalette = new LayerPalette(this);
+    layerPalette = new LayerPalette(this, "Layers");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, layerPalette);
     connect( scrActions["toolsLayers"], SIGNAL(toggled(bool)) , layerPalette, SLOT(setPaletteShown(bool)) );
     connect( layerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsLayers"], SLOT(setChecked(bool)));
@@ -682,7 +682,7 @@ void ScribusMainWindow::initPalettes()
     connect(layerPalette, SIGNAL(LayerChanged()), this, SLOT(showLayer()));
 
     // Outline
-    outlinePalette = new OutlinePalette(this);
+    outlinePalette = new OutlinePalette(this, "Tree");
     outlinePalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, outlinePalette);
     connect( scrActions["toolsOutline"], SIGNAL(toggled(bool)) , outlinePalette, SLOT(setPaletteShown(bool)) );
@@ -693,7 +693,7 @@ void ScribusMainWindow::initPalettes()
     connect(outlinePalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
 
     // Inline
-    inlinePalette = new InlinePalette(this);
+    inlinePalette = new InlinePalette(this, "Inline");
     inlinePalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, inlinePalette);
     connect(scrActions["toolsInline"], SIGNAL(toggled(bool)), inlinePalette, SLOT(setPaletteShown(bool)));
@@ -704,7 +704,7 @@ void ScribusMainWindow::initPalettes()
     inlinePalette->installEventFilter(this);
 
     // Bookmarks
-    bookmarkPalette = new BookPalette(this);
+    bookmarkPalette = new BookPalette(this, "Books");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, bookmarkPalette);
     connect( scrActions["toolsBookmarks"], SIGNAL(toggled(bool)) , bookmarkPalette, SLOT(setPaletteShown(bool)) );
     connect( bookmarkPalette, SIGNAL(paletteShown(bool)), scrActions["toolsBookmarks"], SLOT(setChecked(bool)));
@@ -714,7 +714,7 @@ void ScribusMainWindow::initPalettes()
     connect(bookmarkPalette->BView, SIGNAL(SelectElement(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
 
     // Symbol
-    symbolPalette = new SymbolPalette(this);
+    symbolPalette = new SymbolPalette(this, "Symb");
     symbolPalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, symbolPalette);
     connect(scrActions["toolsSymbols"], SIGNAL(toggled(bool)), symbolPalette, SLOT(setPaletteShown(bool)));
@@ -725,7 +725,7 @@ void ScribusMainWindow::initPalettes()
     symbolPalette->installEventFilter(this);
 
     // Scapebook
-    scrapbookPalette = new Biblio(this);
+    scrapbookPalette = new Biblio(this, "Sclib");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, scrapbookPalette);
     connect( scrActions["toolsScrapbook"], SIGNAL(toggled(bool)) , scrapbookPalette, SLOT(setPaletteShown(bool)) );
     connect( scrapbookPalette, SIGNAL(paletteShown(bool)), scrActions["toolsScrapbook"], SLOT(setChecked(bool)));

@@ -71,7 +71,7 @@ class SCRIBUS_API Biblio : public ScDockPalette
 	Q_OBJECT
 
 public:
-	Biblio( QWidget* parent);
+    Biblio(QWidget* parent, const char *name);
 	~Biblio() {};
 	
 	virtual void changeEvent(QEvent *e);

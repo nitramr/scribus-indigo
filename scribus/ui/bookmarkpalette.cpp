@@ -26,9 +26,9 @@ for which a new license (GPL+exception) is in place.
 #include "bookmarkpalette.h"
 #include "iconmanager.h"
 
-BookPalette::BookPalette(QWidget* parent) : ScDockPalette( parent, "Books")
+BookPalette::BookPalette(QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
-	setObjectName(QString::fromLocal8Bit("Books"));
+    setObjectName(QString::fromLocal8Bit(name));
 	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	BView = new BookMView(this);
 	BView->setMinimumSize(QSize(100,150));
