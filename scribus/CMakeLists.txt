@@ -25,7 +25,6 @@ IF(WIN32)
 ENDIF(WIN32)
 
 ADD_SUBDIRECTORY(dtd)
-ADD_SUBDIRECTORY(manpages)
 ADD_SUBDIRECTORY(colormgmt)
 ADD_SUBDIRECTORY(desaxe)
 ADD_SUBDIRECTORY(fonts)
@@ -345,7 +344,6 @@ SET(SCRIBUS_MOC_CLASSES
 	ui/effectsdialog.h
 	ui/extimageprops.h
 	ui/filedialogeventcatcher.h
-	ui/flowlayout.h
 	ui/fontcombo.h
 	ui/fontlistview.h
 	ui/fontreplacedialog.h
@@ -360,7 +358,7 @@ SET(SCRIBUS_MOC_CLASSES
 	ui/hruler.h
 	ui/hyask.h
 	ui/imageinfodialog.h
-        ui/indigodock.h
+	ui/indigodock.h
         ui/indigodockmanager.h
 	ui/indigopanel.h
 	ui/indigotabbar.h
@@ -814,7 +812,6 @@ SET(SCRIBUS_SOURCES
 	ui/effectsdialog.cpp
 	ui/extimageprops.cpp
 	ui/filedialogeventcatcher.cpp
-	ui/flowlayout.cpp
 	ui/fontcombo.cpp
 	ui/fontlistview.cpp
 	ui/fontreplacedialog.cpp

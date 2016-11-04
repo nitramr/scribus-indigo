@@ -155,6 +155,10 @@ ENDIF (ARCH_X86_64 EQUAL 1 OR ARCH_HPPA EQUAL 1 OR ARCH_MIPS EQUAL 1 OR ARCH_MIP
 ## Do our Apple OSX version setup
 IF (APPLE AND CMAKE_SIZEOF_VOID_P EQUAL 8 AND (ARCH_X86 EQUAL 1 OR ARCH_X86_64 EQUAL 1))
 	STRING(REGEX REPLACE ".*-darwin([0-9]+).*" "\\1" _apple_ver "${MACHINE}")
+	IF (_apple_ver EQUAL "16")
+	    MESSAGE(STATUS "Found macOS Sierra Target: Apple, 64 bit, X86")
+		SET(APPLE_10_12_X 1 CACHE TYPE BOOL)
+	ENDIF (_apple_ver EQUAL "16")
 	IF (_apple_ver EQUAL "15")
 		MESSAGE(STATUS "Found OSX El Capitan Target: Apple, 64 bit, X86")
 		SET(APPLE_10_11_X 1 CACHE TYPE BOOL)
@@ -380,12 +384,6 @@ ELSE (APPLEBUNDLE)
 ENDIF (APPLEBUNDLE)
 ADD_DEFINITIONS("-DLIBDIR=\\\"${CMAKE_INSTALL_PREFIX}/${LIBDIR}\\\"")
 
-#C++11 Support
-IF(WANT_CPP11)
-	MESSAGE(STATUS "Enabling C++11 compiler features")
-	set(CMAKE_CXX_STANDARD 11)
-ENDIF(WANT_CPP11)
-
 #PLUGINS
 IF(WIN32)
 	SET(PLUGINDIR "plugins")
@@ -433,6 +431,16 @@ ENDIF(NOT WANT_DEBUG AND NOT WANT_RELEASEWITHDEBUG)
 
 #Based on our build type, setup our build options
 IF(APPLE)
+    IF(APPLE_10_12_X)
+	    SET(OSXMINVER "10.12" CACHE TYPE STRING)
+		IF (WANT_OSX_SDK)
+		    IF(EXISTS("/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk"))
+			    SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk")
+			ELSEIF(EXISTS("/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk"))
+			    SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk")
+			ENDIF()
+		ENDIF (WANT_OSX_SDK)
+	ENDIF(APPLE_10_12_X)
 	IF(APPLE_10_11_X)
 		SET(OSXMINVER "10.11" CACHE TYPE STRING)
 		IF (WANT_OSX_SDK)
@@ -503,15 +511,15 @@ IF(APPLE)
 			IF (WANT_OSX_SDK)
 				SET(CMAKE_OSX_DEPLOYMENT_TARGET "${OSXMINVER}")
 			ENDIF (WANT_OSX_SDK)
-			IF(APPLE_10_6_X OR APPLE_10_7_X OR APPLE_10_8_X OR APPLE_10_9_X OR APPLE_10_10_X OR APPLE_10_11_X)
+			IF(APPLE_10_6_X OR APPLE_10_7_X OR APPLE_10_8_X OR APPLE_10_9_X OR APPLE_10_10_X OR APPLE_10_11_X OR APPLE_10_12_X)
 				MESSAGE("Setting x86_64 Architecture for OSX Build/Bundle")
 				SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
 				SET(CMAKE_TRY_COMPILE_OSX_ARCHITECTURES "x86_64" )
-			ELSE(APPLE_10_6_X OR APPLE_10_7_X OR APPLE_10_8_X OR APPLE_10_9_X OR APPLE_10_10_X OR APPLE_10_11_X)
+			ELSE(APPLE_10_6_X OR APPLE_10_7_X OR APPLE_10_8_X OR APPLE_10_9_X OR APPLE_10_10_X OR APPLE_10_11_X OR APPLE_10_12_X)
 				MESSAGE("Setting i386 Architecture for OSX Build/Bundle")
 				SET(CMAKE_OSX_ARCHITECTURES "i386" )
 				SET(CMAKE_TRY_COMPILE_OSX_ARCHITECTURES "i386" )
-			ENDIF(APPLE_10_6_X OR APPLE_10_7_X OR APPLE_10_8_X OR APPLE_10_9_X OR APPLE_10_10_X OR APPLE_10_11_X)
+			ENDIF(APPLE_10_6_X OR APPLE_10_7_X OR APPLE_10_8_X OR APPLE_10_9_X OR APPLE_10_10_X OR APPLE_10_11_X OR APPLE_10_12_X)
 		ENDIF(ARCH_PPC OR ARCH_PPC_64)
 	ENDIF(WANT_UNIVERSAL_BUNDLE)
 	MESSAGE(STATUS "${CMAKE_OSX_ARCHITECTURES} ${CMAKE_OSX_SYSROOT}")
@@ -647,9 +655,17 @@ ADD_DEFINITIONS(${Qt5PrintSupport_DEFINITIONS})
 
 MESSAGE(STATUS "Qt VERSION: ${Qt5Widgets_VERSION}")
 IF (NOT WANT_CPP11 AND Qt5Widgets_VERSION_MAJOR EQUAL 5 AND Qt5Widgets_VERSION_MINOR GREATER 6)
-    MESSAGE(FATAL_ERROR "Your Qt version is at least 5.7.0, please set CMake command line option -DWANT_CPP11=1 for C++ 11 and Qt 5.7.0 support")
+	MESSAGE(STATUS "Your Qt version is 5.7.0 or superior, enabling C++11 compiler features")
+	SET(WANT_CPP11 1)
 ENDIF (NOT WANT_CPP11 AND Qt5Widgets_VERSION_MAJOR EQUAL 5 AND Qt5Widgets_VERSION_MINOR GREATER 6)
 #>> Qt
+
+
+#C++11 Support
+IF(WANT_CPP11)
+	MESSAGE(STATUS "Enabling C++11 compiler features")
+	set(CMAKE_CXX_STANDARD 11)
+ENDIF(WANT_CPP11)
 
 #<< ZLIB, PNG
 IF (WIN32)
@@ -874,6 +890,10 @@ IF (LIBREVENGE_FOUND)
 	ENDIF (LIBREVENGE_STREAM_FOUND)
 ENDIF (LIBREVENGE_FOUND)
 
+# CTL support
+#pkg_check_modules(HARFBUZZ REQUIRED harfbuzz>=0.9.42 harfbuzz-icu)
+#pkg_check_modules(ICU REQUIRED icu-uc)
+
 ##############################################################################################################
 ########## Include Setup                                                                            ##########
 
@@ -962,6 +982,7 @@ ADD_SUBDIRECTORY(resources/editorconfig)
 ADD_SUBDIRECTORY(resources/iconsets)
 ADD_SUBDIRECTORY(resources/keysets)
 ADD_SUBDIRECTORY(resources/loremipsum)
+ADD_SUBDIRECTORY(resources/manpages)
 ADD_SUBDIRECTORY(resources/profiles)
 ADD_SUBDIRECTORY(resources/swatches)
 ADD_SUBDIRECTORY(resources/templates)
@@ -999,22 +1020,33 @@ IF (APPLE)
 ENDIF (APPLE)
 
 #Install the .desktop file
+CONFIGURE_FILE(
+	${CMAKE_CURRENT_SOURCE_DIR}/scribus.desktop.in
+	${CMAKE_CURRENT_SOURCE_DIR}/scribus.desktop
+)
 INSTALL(FILES
 	scribus.desktop
+	RENAME scribus${TAG_VERSION}.desktop
 	DESTINATION ${DESKTOPDIR}
 )
 
 #Install our MIME data
 INSTALL(FILES
 	scribus.xml
+	RENAME scribus${TAG_VERSION}.xml
 	DESTINATION ${MIMEDIR}
 )
 
 
 #Install the appdata file
+CONFIGURE_FILE(
+	${CMAKE_CURRENT_SOURCE_DIR}/scribus.appdata.xml.in
+	${CMAKE_CURRENT_SOURCE_DIR}/scribus.appdata.xml
+)
 INSTALL(FILES
-scribus.appdata.xml
-DESTINATION ${APPDATADIR}
+	scribus.appdata.xml
+	RENAME scribus${TAG_VERSION}.appdata.xml
+	DESTINATION ${APPDATADIR}
 )
 
 

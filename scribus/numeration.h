@@ -8,10 +8,13 @@
 typedef enum 
 {
 	Type_1_2_3,
+	Type_1_2_3_ar,
 	Type_i_ii_iii,
 	Type_I_II_III,
 	Type_a_b_c,
 	Type_A_B_C,
+	Type_Alphabet_ar,
+	Type_Abjad_ar,
 	Type_asterix,
 	Type_CJK,
 	Type_None=99
@@ -58,8 +61,6 @@ QString getStringFromNum(NumFormat format, int num, QChar leadingChar='0', int c
 //convert passed num to string with custom chars
 QString getAsterixStringFromNum(int num, QString asterix, QChar leadingChar='_', int charsLen=0);
 //return numeration name from type
-QString getFormatName(int format);
-QStringList getFormatList();
 QStringList getFormatListTr();
 
 #endif // NUMERATION_H

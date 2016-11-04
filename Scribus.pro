@@ -7,16 +7,6 @@ TEMPLATE = app
 TARGET = Scribus
 INCLUDEPATH += .
 
-QT       += core widgets gui designer
-CONFIG   += plugin debug_and_release
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += core widgets gui designer
-} else {
-    CONFIG += designer
-}
-
-
 # Input
 HEADERS += scribus/actionmanager.h \
            scribus/annotation.h \
@@ -234,6 +224,7 @@ HEADERS += scribus/actionmanager.h \
            scribus/tablepainter.h \
            scribus/tableutils.h \
            scribus/textwriter.h \
+           scribus/themefactory.h \
            scribus/tocgenerator.h \
            scribus/transaction.h \
            scribus/undogui.h \
@@ -417,6 +408,10 @@ HEADERS += scribus/actionmanager.h \
            scribus/ui/hruler.h \
            scribus/ui/hyask.h \
            scribus/ui/imageinfodialog.h \
+	   scribus/ui/indigodock.h \
+           scribus/ui/indigodockmanager.h \
+           scribus/ui/indigopanel.h \
+           scribus/ui/indigotabbar.h \
            scribus/ui/inlinepalette.h \
            scribus/ui/insertaframe.h \
            scribus/ui/insertTable.h \
@@ -963,13 +958,7 @@ HEADERS += scribus/actionmanager.h \
            scribus/plugins/tools/2geomtools/meshdistortion/meshdistortion.h \
            scribus/plugins/tools/2geomtools/meshdistortion/meshdistortiondialog.h \
            scribus/plugins/tools/2geomtools/pathalongpath/pathalongpath.h \
-           scribus/plugins/tools/2geomtools/pathalongpath/pathdialog.h \
-    scribus/ui/flowlayout.h \
-    scribus/ui/indigodock.h \
-    scribus/ui/indigodockmanager.h \
-    scribus/ui/indigopanel.h \
-    scribus/ui/indigotabbar.h \
-    scribus/themefactory.h
+           scribus/plugins/tools/2geomtools/pathalongpath/pathdialog.h
 FORMS += scribus/ui/aboutplugins.ui \
          scribus/ui/aligndistribute.ui \
          scribus/ui/annot.ui \
@@ -1311,6 +1300,7 @@ SOURCES += scribus/actionmanager.cpp \
            scribus/tablecell.cpp \
            scribus/tableutils.cpp \
            scribus/textwriter.cpp \
+           scribus/themefactory.cpp \
            scribus/tocgenerator.cpp \
            scribus/transaction.cpp \
            scribus/translationdummy.cpp \
@@ -1479,6 +1469,10 @@ SOURCES += scribus/actionmanager.cpp \
            scribus/ui/hruler.cpp \
            scribus/ui/hyask.cpp \
            scribus/ui/imageinfodialog.cpp \
+           scribus/ui/indigodock.cpp \
+           scribus/ui/indigodockmanager.cpp \
+           scribus/ui/indigopanel.cpp \
+           scribus/ui/indigotabbar.cpp \
            scribus/ui/inlinepalette.cpp \
            scribus/ui/insertaframe.cpp \
            scribus/ui/insertTable.cpp \
@@ -2050,13 +2044,7 @@ SOURCES += scribus/actionmanager.cpp \
            scribus/plugins/tools/2geomtools/meshdistortion/meshdistortion.cpp \
            scribus/plugins/tools/2geomtools/meshdistortion/meshdistortiondialog.cpp \
            scribus/plugins/tools/2geomtools/pathalongpath/pathalongpath.cpp \
-           scribus/plugins/tools/2geomtools/pathalongpath/pathdialog.cpp \
-    scribus/ui/flowlayout.cpp \
-    scribus/ui/indigodock.cpp \
-    scribus/ui/indigodockmanager.cpp \
-    scribus/ui/indigopanel.cpp \
-    scribus/ui/indigotabbar.cpp \
-    scribus/themefactory.cpp
+           scribus/plugins/tools/2geomtools/pathalongpath/pathdialog.cpp
 RESOURCES += scribus/plugins/scripter/python/sceditor/dockwidget_icons.qrc
 TRANSLATIONS += resources/translations/scribus.af.ts \
                 resources/translations/scribus.ar.ts \

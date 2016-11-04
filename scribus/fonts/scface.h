@@ -303,7 +303,7 @@ public:
 	bool hasNames()    const { return m_m->hasNames(); }
 
 	/// tells if the font is a CID font
-	virtual bool isCIDKeyed() const { return m_m->isCIDFont; }
+	bool isCIDKeyed() const { return m_m->isCIDFont; }
 
 	/// tells if this font is an outline font
 	bool isStroked()   const { return m_m->isStroked; }

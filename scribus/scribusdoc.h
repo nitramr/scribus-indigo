@@ -813,7 +813,7 @@ public:
 	 */
 	void itemAddDetails(const PageItem::ItemType itemType, const PageItem::ItemFrameType frameType, PageItem* newItem);
 
-	uint getItemNrfromUniqueID(uint unique);
+	int getItemNrfromUniqueID(uint unique);
 	//return pointer to item
 	PageItem* getItemFromName(QString name);
 	//itemDelete
@@ -1458,8 +1458,8 @@ public slots:
 	void itemSelection_Rotate(double angle, Selection* customSelection = 0);
 	void itemSelection_DoHyphenate();
 	void itemSelection_DoDeHyphenate();
-	void itemSelection_UnlinkTextFrameWithText(Selection *customSelection=0, bool cutText=false);
-	void itemSelection_UnlinkTextFrameWithTextCut(Selection *customSelection=0);
+	void itemSelection_UnlinkTextFrameAndKeepText(Selection *customSelection=0, bool cutText=false);
+	void itemSelection_UnlinkTextFrameAndCutText(Selection *customSelection=0);
 	void itemSelection_SendToLayer(int layerID);
 	void itemSelection_SetImageOffset(double x, double y, Selection* customSelection=0);
 	void itemSelection_SetImageScale(double x, double y, Selection* customSelection=0);

@@ -264,7 +264,6 @@ for which a new license (GPL+exception) is in place.
 #include "util_math.h"
 #include "themefactory.h"
 
-
 #ifdef HAVE_OSG
 	#include "ui/osgeditor.h"
 	#include <osgDB/ReaderWriter>
@@ -307,9 +306,6 @@ ScribusMainWindow::ScribusMainWindow()
 	//ScQApp->setAttribute(Qt::AA_DontShowIconsInMenus);
 	//noIcon = IconManager::instance()->loadPixmap("noicon.xpm");
 #endif
-
-
-
 }
 
 /*
@@ -362,7 +358,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	m_tocGenerator = new TOCGenerator();
 	m_marksCount = 0;
 
-    initIndigoDock();
+	initIndigoDock();
 
 	initDefaultValues();
 
@@ -372,7 +368,6 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 
 
 	actionManager->init(this);
-
 	initMenuBar();
 	createMenuBar();
 	initToolBars();
@@ -402,8 +397,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	//Connect windows cascade and tile actions to the workspace after its created. Only depends on mdiArea created.
 	connect( scrActions["windowsCascade"], SIGNAL(triggered()) , mdiArea, SLOT(cascadeSubWindows()) );
 	connect( scrActions["windowsTile"], SIGNAL(triggered()) , mdiArea, SLOT(tileSubWindows()) );
-
-    initPalettes();
+	initPalettes();
 
 	m_prefsManager->setupMainWindow(this);
 
@@ -510,44 +504,41 @@ void ScribusMainWindow::initToolBars()
 
 void ScribusMainWindow::setStyleSheet()
 {
-    ThemeFactory *sf = new ThemeFactory();
-	QByteArray stylesheet;
-
-	if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
-	{
-		QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
-		QByteArray da;
-		da.append(downArrow);
-		stylesheet.replace("___downArrow___", da);
-		QString toolbararrow(IconManager::instance()->pathForIcon("stylesheet/down_arrow.png"));
-		QByteArray tba;
-		tba.append(toolbararrow);
-		stylesheet.replace("___tb_menu_arrow___", tba);
-
+	 ThemeFactory *sf = new ThemeFactory();
+    QByteArray stylesheet;
+ 
+    if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
+    {
+        QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
+        QByteArray da;
+        da.append(downArrow);
+        stylesheet.replace("___downArrow___", da);
+        QString toolbararrow(IconManager::instance()->pathForIcon("stylesheet/down_arrow.png"));
+        QByteArray tba;
+        tba.append(toolbararrow);
+        stylesheet.replace("___tb_menu_arrow___", tba);
+ 
         QString style(stylesheet);
-
+ 
         sf->parseString(style);
-
+ 
         qApp->setPalette(sf->palette());
         qApp->setStyleSheet(style);
-
-	}
-
+ 
+    }
+ 
     /*layerMenu->setStyleSheet(stylesheet);
-	unitSwitcher->setStyleSheet(stylesheet);
-	zoomDefaultToolbarButton->setStyleSheet(stylesheet);
-	zoomInToolbarButton->setStyleSheet(stylesheet);
-	zoomOutToolbarButton->setStyleSheet(stylesheet);
-	zoomSpinBox->setStyleSheet(stylesheet);
-
-	fileToolBar->setStyleSheet(stylesheet);
-	editToolBar->setStyleSheet(stylesheet);
-	modeToolBar->setStyleSheet(stylesheet);
-	pdfToolBar->setStyleSheet(stylesheet);
+    unitSwitcher->setStyleSheet(stylesheet);
+    zoomDefaultToolbarButton->setStyleSheet(stylesheet);
+    zoomInToolbarButton->setStyleSheet(stylesheet);
+    zoomOutToolbarButton->setStyleSheet(stylesheet);
+    zoomSpinBox->setStyleSheet(stylesheet);
+ 
+    fileToolBar->setStyleSheet(stylesheet);
+    editToolBar->setStyleSheet(stylesheet);
+    modeToolBar->setStyleSheet(stylesheet);
+    pdfToolBar->setStyleSheet(stylesheet);
     viewToolBar->setStyleSheet(stylesheet);*/
-
-
-
 }
 
 
@@ -620,35 +611,36 @@ void ScribusMainWindow::initKeyboardShortcuts()
 
 void ScribusMainWindow::initIndigoDock()
 {
-
+ 
     wdg_indigoDock = new IndigoDock();
-
+ 
     // install IndigoDockManager
     wdg_indigoDockManager = new IndigoDockManager(this);
     wdg_indigoDockManager->setMinimumPanelSize(QSize(180,100));
-
+ 
     // Add IndigoDock
     wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
-
-
+ 
+ 
 }
-
-
+ 
+ 
 IndigoDockManager *ScribusMainWindow::indigoDockManager(){
-
+ 
     return wdg_indigoDockManager;
-
+ 
 }
 
 
 void ScribusMainWindow::initPalettes()
 {
-
-
-	//CB TODO hide the publicly available members of some palettes
-	// these must be filtered too as they take control of the palettes events
-
+ 
+ 
+    //CB TODO hide the publicly available members of some palettes
+    // these must be filtered too as they take control of the palettes events
+ 
     // Properties
+ 
     propertiesPalette = new PropertiesPalette(this, "Properties");
     propertiesPalette->setMainWindow(this);
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, propertiesPalette);
@@ -656,7 +648,7 @@ void ScribusMainWindow::initPalettes()
     connect( propertiesPalette, SIGNAL(paletteShown(bool)), scrActions["toolsProperties"], SLOT(setChecked(bool)));
     emit UpdateRequest(reqDefFontListUpdate);
     propertiesPalette->installEventFilter(this);
-
+ 
     // Aligment
     alignDistributePalette = new AlignDistributePalette(this, "AlignDistributePalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, alignDistributePalette);
@@ -664,14 +656,14 @@ void ScribusMainWindow::initPalettes()
     connect( alignDistributePalette, SIGNAL(paletteShown(bool)), scrActions["toolsAlignDistribute"], SLOT(setChecked(bool)));
     connect( alignDistributePalette, SIGNAL(documentChanged()), this, SLOT(slotDocCh()));
     alignDistributePalette->installEventFilter(this);
-
+ 
     // Pages
     pagePalette = new PagePalette(this, "PagePalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pagePalette);
     connect( scrActions["toolsPages"], SIGNAL(toggled(bool)) , pagePalette, SLOT(setPaletteShown(bool)) );
     connect( pagePalette, SIGNAL(paletteShown(bool)), scrActions["toolsPages"], SLOT(setChecked(bool)));
     pagePalette->installEventFilter(this);
-
+ 
     // Layers
     layerPalette = new LayerPalette(this, "Layers");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, layerPalette);
@@ -680,7 +672,7 @@ void ScribusMainWindow::initPalettes()
     layerPalette->installEventFilter(this);
     layerPalette->Table->installEventFilter(this);
     connect(layerPalette, SIGNAL(LayerChanged()), this, SLOT(showLayer()));
-
+ 
     // Outline
     outlinePalette = new OutlinePalette(this, "Tree");
     outlinePalette->setMainWindow(this);
@@ -691,7 +683,7 @@ void ScribusMainWindow::initPalettes()
     connect(outlinePalette, SIGNAL(editElementByItem(PageItem *)), this, SLOT(editItemsFromOutlines(PageItem *)));
     connect(outlinePalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
     connect(outlinePalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
-
+ 
     // Inline
     inlinePalette = new InlinePalette(this, "Inline");
     inlinePalette->setMainWindow(this);
@@ -702,7 +694,7 @@ void ScribusMainWindow::initPalettes()
     connect(inlinePalette, SIGNAL(endEdit()), this, SLOT(editInlineEnd()));
     connect(inlinePalette, SIGNAL(objectDropped(QString)), this, SLOT(PutToInline(QString)));
     inlinePalette->installEventFilter(this);
-
+ 
     // Bookmarks
     bookmarkPalette = new BookPalette(this, "Books");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, bookmarkPalette);
@@ -712,7 +704,7 @@ void ScribusMainWindow::initPalettes()
     connect(bookmarkPalette->BView, SIGNAL(MarkMoved()), this, SLOT(StoreBookmarks()));
     connect(bookmarkPalette->BView, SIGNAL(changed()), this, SLOT(slotDocCh()));
     connect(bookmarkPalette->BView, SIGNAL(SelectElement(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
-
+ 
     // Symbol
     symbolPalette = new SymbolPalette(this, "Symb");
     symbolPalette->setMainWindow(this);
@@ -723,7 +715,7 @@ void ScribusMainWindow::initPalettes()
     connect(symbolPalette, SIGNAL(endEdit()), this, SLOT(editSymbolEnd()));
     connect(symbolPalette, SIGNAL(objectDropped()), this, SLOT(PutToPatterns()));
     symbolPalette->installEventFilter(this);
-
+ 
     // Scapebook
     scrapbookPalette = new Biblio(this, "Sclib");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, scrapbookPalette);
@@ -732,7 +724,7 @@ void ScribusMainWindow::initPalettes()
     connect( scrapbookPalette, SIGNAL(pasteToActualPage(QString)), this, SLOT(pasteFromScrapbook(QString)));
     connect( scrapbookPalette, SIGNAL(scrapbookListChanged()), this, SLOT(rebuildScrapbookMenu()));
     scrapbookPalette->installEventFilter(this);
-
+ 
     // Undo
     undoPalette = new UndoPalette(this, "undoPalette");
     wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, undoPalette);
@@ -740,71 +732,73 @@ void ScribusMainWindow::initPalettes()
     m_undoManager->registerGui(undoPalette);
     connect(undoPalette, SIGNAL(paletteShown(bool)), this, SLOT(setUndoPalette(bool)));
     connect(undoPalette, SIGNAL(objectMode(bool)), this, SLOT(setUndoMode(bool)));
-
+ 
     // Node
     nodePalette = new NodePalette(this);
     nodePalette->installEventFilter(this);
     connect(nodePalette, SIGNAL(paletteClosed()), this, SLOT(slotSelect()));
     connect(nodePalette, SIGNAL(DocChanged()), this, SLOT(slotDocCh()));
-
+ 
     // Guides
-	guidePalette = new GuideManager(this);
+    guidePalette = new GuideManager(this);
     connect(scrActions["pageManageGuides"], SIGNAL(toggled(bool)), guidePalette, SLOT(setPaletteShown(bool)));
     connect(guidePalette, SIGNAL(paletteShown(bool)), scrActions["pageManageGuides"], SLOT(setChecked(bool)));
-
+ 
     // Chars
-	charPalette = new CharSelect(this);
+    charPalette = new CharSelect(this);
     connect(scrActions["insertGlyph"], SIGNAL(toggled(bool)), charPalette, SLOT(setPaletteShown(bool)));
     connect(charPalette, SIGNAL(paletteShown(bool)), scrActions["insertGlyph"], SLOT(setChecked(bool)));
-
+ 
     // Download
     downloadsPalette = new DownloadsPalette(this);
     connect( scrActions["toolsDownloads"], SIGNAL(toggled(bool)) , downloadsPalette, SLOT(setPaletteShown(bool)) );
     connect( downloadsPalette, SIGNAL(paletteShown(bool)), scrActions["toolsDownloads"], SLOT(setChecked(bool)));
     downloadsPalette->installEventFilter(this);
     connect( scrActions["toolsMeasurements"], SIGNAL(toggledData(bool, int)) , this, SLOT(setAppModeByToggle(bool, int)) );
-
+ 
     // DockChecker
-	docCheckerPalette = new CheckDocument(this, false);   
+    docCheckerPalette = new CheckDocument(this, false);   
     connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , docCheckerPalette, SLOT(setPaletteShown(bool)) );
     connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , this, SLOT(docCheckToggle(bool)) );
     connect( docCheckerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsPreflightVerifier"], SLOT(setChecked(bool)));
     connect( docCheckerPalette, SIGNAL(paletteShown(bool)), this, SLOT(docCheckToggle(bool)));
     docCheckerPalette->installEventFilter(this);
     docCheckerPalette->hide();
+ 
     connect(docCheckerPalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
     connect(docCheckerPalette, SIGNAL(selectElement(PageItem *, bool, int)), this, SLOT(selectItemFromOutlines(PageItem *, bool, int)));
     connect(docCheckerPalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
     connect(docCheckerPalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
-
+ 
     // initializing style manager here too even it's not strictly a palette
-	m_styleManager = new StyleManager(this, "styleManager");
-	SMCharacterStyle *tmpCS = new SMCharacterStyle();
-	m_styleManager->addStyle(new SMParagraphStyle(tmpCS));
-	m_styleManager->addStyle(tmpCS);
-	m_styleManager->addStyle(new SMTableStyle());
-	m_styleManager->addStyle(new SMCellStyle());
-	m_styleManager->addStyle(new SMLineStyle());
+    m_styleManager = new StyleManager(this, "styleManager");
+    SMCharacterStyle *tmpCS = new SMCharacterStyle();
+    m_styleManager->addStyle(new SMParagraphStyle(tmpCS));
+    m_styleManager->addStyle(tmpCS);
+    m_styleManager->addStyle(new SMTableStyle());
+    m_styleManager->addStyle(new SMCellStyle());
+    m_styleManager->addStyle(new SMLineStyle());
     connect( scrActions["editStyles"], SIGNAL(toggled(bool)), m_styleManager, SLOT(setPaletteShown(bool)) );
     connect( m_styleManager, SIGNAL(paletteShown(bool)), scrActions["editStyles"], SLOT(setChecked(bool)));
     m_styleManager->installEventFilter(this);
-
-	// initializing mark`s manager
-	marksManager = new MarksManager(this, "marksManager");
+ 
+    // initializing mark`s manager
+    marksManager = new MarksManager(this, "marksManager");
     connect( scrActions["editMarks"], SIGNAL(toggled(bool)), marksManager, SLOT(setPaletteShown(bool)) );
     connect( marksManager, SIGNAL(paletteShown(bool)), scrActions["editMarks"], SLOT(setChecked(bool)));
     marksManager->installEventFilter(this);
-
-	// initializing notes styles manager
-	nsEditor = new NotesStylesEditor(this, "notesStylesEditor");
+ 
+    // initializing notes styles manager
+    nsEditor = new NotesStylesEditor(this, "notesStylesEditor");
     connect( scrActions["editNotesStyles"], SIGNAL(toggled(bool)), nsEditor, SLOT(setPaletteShown(bool)) );
     connect( nsEditor, SIGNAL(paletteShown(bool)), scrActions["editNotesStyles"], SLOT(setChecked(bool)));
     nsEditor->installEventFilter(this);
-
-
+ 
+ 
     wdg_indigoDock->hide(); // default
     wdg_indigoDockManager->loadWorkspace();
-
+ 
+ 
 }
 
 
@@ -993,8 +987,7 @@ void ScribusMainWindow::initMenuBar()
 	scrMenuMgr->addMenuItemString("TextLinking", "Item");
 	scrMenuMgr->addMenuItemString("toolsLinkTextFrame", "TextLinking");
 	scrMenuMgr->addMenuItemString("toolsUnlinkTextFrame", "TextLinking");
-	scrMenuMgr->addMenuItemString("toolsUnlinkTextFrameWithTextCopy", "TextLinking");
-	scrMenuMgr->addMenuItemString("toolsUnlinkTextFrameWithTextCut", "TextLinking");
+	scrMenuMgr->addMenuItemString("toolsUnlinkTextFrameAndCutText", "TextLinking");
 	scrMenuMgr->createMenu("ItemPathOps", tr("Path Tools"), "Item");
 	scrMenuMgr->addMenuItemString("ItemPathOps", "Item");
 	scrMenuMgr->addMenuItemString("itemCombinePolygons", "ItemPathOps");
@@ -1109,10 +1102,10 @@ void ScribusMainWindow::initMenuBar()
 	scrMenuMgr->createMenu("InsertMark", tr("Marks"), "Insert");
 	scrMenuMgr->addMenuItemString("InsertMark", "Insert");
 	scrMenuMgr->addMenuItemString("insertMarkAnchor", "InsertMark");
-	scrMenuMgr->addMenuItemString("insertMark2Mark", "InsertMark");
-	scrMenuMgr->addMenuItemString("insertMarkItem", "InsertMark");
-	scrMenuMgr->addMenuItemString("insertMarkVariableText", "InsertMark");
 	scrMenuMgr->addMenuItemString("insertMarkNote", "InsertMark");
+	scrMenuMgr->addMenuItemString("insertMarkItem", "InsertMark");
+	scrMenuMgr->addMenuItemString("insertMark2Mark", "InsertMark");
+	scrMenuMgr->addMenuItemString("insertMarkVariableText", "InsertMark");
 
 	//Page menu
 	scrMenuMgr->createMenu("Page", ActionManager::defaultMenuNameEntryTranslated("Page"));
@@ -2041,8 +2034,8 @@ void ScribusMainWindow::closeEvent(QCloseEvent *ce)
 			m_prefsManager->appPrefs.uiPrefs.tabbedPalettes.append(currentTab);
 	}
 
-    // save IndigoDocks
-    indigoDockManager()->saveWorkspace();
+   	// save IndigoDocks
+    	indigoDockManager()->saveWorkspace();
 
 	propertiesPalette->hide();
 	outlinePalette->hide();
@@ -4587,7 +4580,7 @@ bool ScribusMainWindow::doPrint(PrintOptions &options, QString& error)
 }
 
 void ScribusMainWindow::slotFileQuit()
-{   
+{
 	ScCore->pluginManager->savePreferences();
 	close();
 }
@@ -5599,21 +5592,21 @@ void ScribusMainWindow::ToggleAllPalettes()
 	{
 		m_palettesStatus[PS_ALL] = false;
 		if (m_palettesStatus[PS_PROPERTIES])
-            propertiesPalette->show();
+			propertiesPalette->show();
 		if (m_palettesStatus[PS_OUTLINE])
-            outlinePalette->show();
+			outlinePalette->show();
 		if (m_palettesStatus[PS_SCRAPBOOK])
-            scrapbookPalette->show();
+			scrapbookPalette->show();
 		if (m_palettesStatus[PS_LAYER])
-            layerPalette->show();
+			layerPalette->show();
 		if (m_palettesStatus[PS_PAGE])
-            pagePalette->show();
+			pagePalette->show();
 		if (m_palettesStatus[PS_BOOKMARK])
-            bookmarkPalette->show();
+			bookmarkPalette->show();
 		if (m_palettesStatus[PS_VERIFIER])
-            docCheckerPalette->show();
+			docCheckerPalette->show();
 		if (m_palettesStatus[PS_DOWNLOADS])
-            downloadsPalette->show();
+			downloadsPalette->show();
 		setUndoPalette(m_palettesStatus[PS_UNDO]);
 	}
 	else
@@ -5627,7 +5620,7 @@ void ScribusMainWindow::ToggleAllPalettes()
 		m_palettesStatus[PS_UNDO] = undoPalette->isVisible();
 		m_palettesStatus[PS_VERIFIER] = docCheckerPalette->isVisible();
 		m_palettesStatus[PS_DOWNLOADS] = downloadsPalette->isVisible();
-        propertiesPalette->hide();
+		propertiesPalette->hide();
 		outlinePalette->hide();
 		scrapbookPalette->hide();
 		bookmarkPalette->hide();
@@ -6808,8 +6801,6 @@ int ScribusMainWindow::ShowSubs()
 	marksManager->startup();
 	nsEditor->startup();
 	symbolPalette->startup();
-
-
 #if QT_VERSION < 0x050600
 	if (!m_prefsManager->appPrefs.uiPrefs.tabbedPalettes.isEmpty())
 	{
@@ -6888,8 +6879,6 @@ int ScribusMainWindow::ShowSubs()
 #endif
 	move(m_prefsManager->appPrefs.uiPrefs.mainWinSettings.xPosition, m_prefsManager->appPrefs.uiPrefs.mainWinSettings.yPosition);
 	resize(m_prefsManager->appPrefs.uiPrefs.mainWinSettings.width, m_prefsManager->appPrefs.uiPrefs.mainWinSettings.height);
-
-
 
 	// init the toolbars
 	fileToolBar->initVisibility();
@@ -7714,18 +7703,11 @@ void ScribusMainWindow::editMasterPagesEnd()
 		Apply_MasterPage(doc->DocPages.at(c)->MPageNam, c, false);
 
 	pagePalette->endMasterPageMode();
-    if (pagePalette->dockState() == IndigoPanel::Docked)
+	if (pagePalette->dockState() == IndigoPanel::Docked)
 	{
 		pagePalette->setVisible(m_pagePalVisible);
 		scrActions["toolsPages"]->setChecked(m_pagePalVisible);
-    }
-
-//    if (pagePalette->isFloating())
-//    {
-//        pagePalette->setVisible(m_pagePalVisible);
-//        scrActions["toolsPages"]->setChecked(m_pagePalVisible);
-//    }
-
+	}
 	// #12857 : the number of pages may change when undoing/redoing
 	// page addition/deletion while in edit mode, so take some extra
 	// care so that storedPageNum is in appropriate range
