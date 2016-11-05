@@ -10,7 +10,7 @@ For Bugs: please open an issue in this repo [issue queue](https://github.com/nit
 For Patches: submit a PR 
 
 ## Discussion 
-Most of the dicussion is occuring at in the [Scribus UI/UX subforum](http://forums.scribus.net/index.php/topic,1617.0.html)
+Most of the dicussion is occuring in the [Scribus UI/UX subforum](http://forums.scribus.net/index.php/topic,1617.0.html)
 
 ## Links
 |Resource | Address |  
