@@ -7,6 +7,15 @@ TEMPLATE = app
 TARGET = Scribus
 INCLUDEPATH += .
 
+QT       += core widgets gui designer
+CONFIG   += plugin debug_and_release
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += core widgets gui designer
+} else {
+    CONFIG += designer
+}
+
 # Input
 HEADERS += scribus/actionmanager.h \
            scribus/annotation.h \

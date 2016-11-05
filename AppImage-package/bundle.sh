@@ -13,14 +13,16 @@ LOWERAPP=${APP,,}
 
 GIT_REV=$(git rev-parse --short HEAD)
 echo $GIT_REV
-make install DESTDIR=/home/travis/$APP/$APP.AppDir
+make install
 
+mkdir -p $HOME/$APP/$APP.AppDir
 cd $HOME/$APP/
 
 wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
 . ./functions.sh
 
 cd $APP.AppDir
+cp -r /app/ usr/
 
 ########################################################################
 # Copy desktop and icon file to AppDir for AppRun to pick them up
@@ -93,8 +95,10 @@ VERSION=git$GIT_REV-glibc$GLIBC_NEEDED
 sed -i -e 's|/usr/share/scribus|././/share/scribus|g' usr/bin/scribus
 sed -i -e 's|/usr/lib/scribus|././/lib/scribus|g' usr/bin/scribus
 sed -i -e 's|/usr/share/doc/scribus/|././/share/doc/scribus/|g' usr/bin/scribus
+sed -i -e 's|/app/|././/|g' usr/bin/scribus
 # Possibly need to patch additional hardcoded paths away, replace
 # "/usr" with "././" which means "usr/ in the AppDir"
+# "/app" with "././" which means "usr/ in the AppDir"
 
 ########################################################################
 # AppDir complete

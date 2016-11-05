@@ -167,10 +167,20 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     panel->updateSize();
 
     // Panel settings
-    if(dockState == IndigoPanel::Docked || dockState == IndigoPanel::HiddenDocked){
+//    switch(dockState){
+//    case IndigoPanel::HiddenDocked:
+//        panel->setDockState(dockState);
+//        break;
+//    default:
+//        panel->setDockState(IndigoPanel::Docked);
+//        break;
+//    }
+
+     // Panel settings
+    if(dockState == IndigoPanel::HiddenDocked){
         panel->setDockState(dockState);
     }else{
-        panel->setDockState(IndigoPanel::Docked);
+        panel->setDockState(IndigoPanel::Docked); // show panel and set attribute
     }
 
 
@@ -180,7 +190,7 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
 
 
     // Panel settings
-    if(dockState != IndigoPanel::Docked){
+    if(dockState == IndigoPanel::HiddenDocked){
         wdg_toolbar->hideTab(panel->Index());
     }
 
@@ -213,9 +223,6 @@ void IndigoDock::updatePanels(){
 
           i++;
     }
-
-    // toggle single mode
-    toggleSingleMode();
 
     // Calculate spacer
     updateMinHeight();
@@ -264,63 +271,8 @@ void IndigoDock::updateMinHeight(){
     }
 
 
-    // hide dock if all panels are hidden
-    if(int_hiddenPanels == lst_PanelList.size()){
-
-        qDebug() << "Hide Dock" << endl;
-        hide();
-        return;
-
-    }else{
-
-        show();
-
-        int minSize = 0;
-        int spacer = 0;
-
-        switch(m_orientation){
-        case Qt::Vertical:
-
-            minSize = totalPanelSize;
-            spacer = wdg_scrollArea_dz->height() - lastPanelSize;
-
-            if(spacer < 0) spacer = 0;
-
-            // set fixed height based on content
-            wdg_dropzone->setMaximumWidth(QWIDGETSIZE_MAX);
-            wdg_dropzone->setFixedHeight(minSize + spacer);
-
-            break;
-        case Qt::Horizontal:
-
-            minSize = totalPanelSize;
-            spacer = wdg_scrollArea_dz->width() - lastPanelSize;
-
-            if(spacer < 0) spacer = 0;
-
-            // set fixed width based on content
-            wdg_dropzone->setFixedWidth(minSize + spacer);
-            wdg_dropzone->setMaximumHeight(QWIDGETSIZE_MAX);
-
-
-            break;
-        }
-
-        // reset size limit
-        setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
-
-        update();
-    }
-}
-
-
-
-void IndigoDock::toggleSingleMode(){
-
-
-
-    // Switch single panel mode
-    if(lst_PanelList.size() <= 1){
+    // toggle single mode
+    if(lst_PanelList.size() - int_hiddenPanels <= 1){
 
         bool_singleMode = true;
         wdg_scrollArea_tb->hide();
@@ -333,8 +285,57 @@ void IndigoDock::toggleSingleMode(){
     }
 
     emit singleMode(bool_singleMode);
-  //  qDebug() << "emit: Dock singleMode" << bool_singleMode << endl;
 
+
+    // hide dock if all panels are hidden
+    if(int_hiddenPanels == lst_PanelList.size()){
+
+        hide();
+        return;
+
+    }else{
+
+        show();
+
+
+        int minSize = 0;
+        int spacer = 0;
+
+        switch(m_orientation){
+        case Qt::Vertical:
+
+            minSize = totalPanelSize;
+            spacer = wdg_scrollArea_dz->height() - lastPanelSize;
+
+            if(spacer < 0) spacer = 0;
+
+            // set fixed height based on content            
+            wdg_dropzone->setMinimumWidth(int_minWidth);
+            wdg_dropzone->setMaximumWidth(QWIDGETSIZE_MAX);
+            wdg_dropzone->setFixedHeight(minSize + spacer);
+
+            break;
+        case Qt::Horizontal:
+
+            minSize = totalPanelSize;
+            spacer = wdg_scrollArea_dz->width() - lastPanelSize;
+
+            if(spacer < 0) spacer = 0;
+
+            // set fixed width based on content
+            wdg_dropzone->setMinimumHeight(int_minHeight);
+            wdg_dropzone->setMaximumHeight(QWIDGETSIZE_MAX);
+            wdg_dropzone->setFixedWidth(minSize + spacer);
+
+            break;
+        }
+
+
+        // reset size limit
+        setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+        update();
+
+    }
 
 }
 
@@ -362,7 +363,7 @@ void IndigoDock::scrollToPanel(int PanelIndex){
 
     if (!panel) return;
 
-    this->show();
+    //this->show();
 
     panel->show();
 
@@ -509,12 +510,10 @@ void IndigoDock::updateTabPosition(Qt::DockWidgetArea area){
     }
     default:
 
+        calculateSize(); // default if floating dock
         break;
 
     }
-
-    // toggle single mode
-    toggleSingleMode();
 
 }
 
@@ -540,6 +539,8 @@ void IndigoDock::calculateSize(){
         wdg_scrollArea_dz->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         wdg_scrollArea_dz->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
+
+
         break;
 
     case Qt::Horizontal:
@@ -558,6 +559,8 @@ void IndigoDock::calculateSize(){
         wdg_scrollArea_dz->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         wdg_scrollArea_dz->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+
+
         break;
 
     default:
@@ -573,12 +576,9 @@ void IndigoDock::calculateSize(){
         pan->updateSize();
     }
 
-    // qDebug() << "Toolbar Size: Height" << wdg_toolbar->height() << "Width" << wdg_toolbar->width() << "MaxSize"<< wdg_toolbar->maximumSize()<< endl;
-
-    wdg_dropzone->setMinimumWidth(int_minWidth);
-    wdg_dropzone->setMinimumHeight(int_minHeight);
 
     updateMinHeight();
+
 
 }
 

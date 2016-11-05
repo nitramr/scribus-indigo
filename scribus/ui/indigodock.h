@@ -108,7 +108,6 @@ private:
     void removePlaceholder ();
     void calculateSize();
     void updatePanelSize();
-    void toggleSingleMode();
 
 protected:
     void resizeEvent(QResizeEvent *e);

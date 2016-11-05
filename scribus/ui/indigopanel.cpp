@@ -228,7 +228,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     int_minWidth = 80;
     int_dockHeight = 50;
     int_dockWidth = 80;
-    col_grip = QColor(this->palette().color(QPalette::Background));
+
     m_orientation = Qt::Vertical;
     QIcon icon = QIcon();
 
@@ -247,9 +247,6 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     lyt_content = new QVBoxLayout();
     lyt_content->addWidget(wdg_widget);
     lyt_content->setAlignment(Qt::AlignTop);
-
-    //    lyt_content = new FlowLayout(int_padding);
-    //    lyt_content->setSizeConstraint( QLayout::SetNoConstraint );
 
     lyt_innerArea = new QVBoxLayout();
     lyt_innerArea->setMargin(int_padding);
@@ -275,6 +272,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setMouseTracking(true);
     setAutoFillBackground( true );
     setBackgroundRole(QPalette::Background);
+    col_grip = QColor(this->palette().color(QPalette::Background));
     // setMinimumWidth(150);
     setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
     setCaption(name);
@@ -300,11 +298,9 @@ void IndigoPanel::setPrefsContext(QString context)
             palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);
             if (palettePrefs){
                 bool_visibleOnStartup = palettePrefs->getBool("visible", true);
-                int width = palettePrefs->getInt("width", 0);
-                int height= palettePrefs->getInt("height", 0);
-                setDockHeight(height);
-                setDockWidth(width);
-                updateSize();
+                setDockHeight(palettePrefs->getInt("height", 0));
+                setDockWidth(palettePrefs->getInt("width", 0));
+                // updateSize();
 
             }
         }
@@ -332,13 +328,13 @@ void IndigoPanel::updateSize(){
     case Qt::Vertical:
 
         setFixedHeight(int_dockHeight);
-        setMinimumWidth(minimumResizeWidth());
+       // setMinimumWidth(minimumResizeWidth());
         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
         break;
     case Qt::Horizontal:
         setFixedWidth(int_dockWidth);
-        setMinimumHeight(minimumResizeHeight());
+       // setMinimumHeight(minimumResizeHeight());
         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         break;
     }
@@ -382,26 +378,19 @@ bool IndigoPanel::visibleOnStartup(){
 
 void IndigoPanel::hide(){
 
-//    switch(dockState()){
-//    case IndigoPanel::Docked:
-//        setDockState(IndigoPanel::HiddenDocked);
-//        emit panelClosed(Index()); // used for tab
-//        qDebug() << "emit: panelClosed(...);" << endl;
-//        break;
-//    default:
-//        QFrame::hide();
-//        break;
+    storeSize();
 
-//    }
+    switch(dockState()){
+    case IndigoPanel::Docked:
+        setDockState(IndigoPanel::HiddenDocked);
+        emit panelClosed(Index()); // used for tab
+        qDebug() << "emit: panelClosed(...);" << endl;
+        break;
+    default:
+        QFrame::hide();
+        break;
 
-   // if (isVisible())
-   // {
-        storeSize();
-
-        setVisible(false);
-  //  }
-
-
+    }
 
 }
 
@@ -409,20 +398,18 @@ void IndigoPanel::hide(){
 
 void IndigoPanel::show(){
 
-//    switch(dockState()){
-//    case IndigoPanel::HiddenDocked:
-//        setDockState(IndigoPanel::Docked);
-//        emit panelShown(Index()); // used for tab
-//        qDebug() << "emit: panelShow(...);" << endl;
-//        break;
-//    default:
-//        QFrame::show();
-//        break;
-//    }
+    switch(dockState()){
+    case IndigoPanel::HiddenDocked:
+        setDockState(IndigoPanel::Docked);
+        emit panelShown(Index()); // used for tab
+        break;
+    default:
+        QFrame::show();
+        break;
+    }
 
-//    update();
+    update();
 
-    setVisible(true);
 }
 
 
@@ -546,11 +533,7 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
                         int _height = height()+delta.y();
                         if(_height <= minimumResizeHeight()) _height = minimumResizeHeight();
 
-                        int_dockHeight = _height;
-                        setFixedHeight(_height);
-                        setMinimumWidth(minimumResizeWidth());
-                        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-
+                        setDockHeight(_height);
 
                         break;
                     }
@@ -560,10 +543,7 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
                         int _width = width()+delta.x();
                         if(_width <= minimumResizeWidth()) _width = minimumResizeWidth();
 
-                        int_dockWidth = _width;
-                        setFixedWidth(_width);
-                        setMinimumHeight(minimumResizeHeight());
-                        setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+                        setDockWidth(_width);
 
                         break;
                     }
@@ -886,11 +866,13 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
         setWindowFlags(Qt::Tool | Qt::CustomizeWindowHint);
         //this->adjustSize();
         QFrame::show();
+        update();
         break;
 
     case IndigoPanel::Docked:
     default:
         QFrame::show();
+        update();
         break;
     }
 
@@ -927,23 +909,23 @@ void IndigoPanel::setVisible(bool visible){
 
 QFrame::setVisible(visible);
 
-        if(visible){
+//        if(visible){
 
-            switch(dockState()){
-            case IndigoPanel::HiddenDocked:
-                setDockState(IndigoPanel::Docked);
-                emit panelShown(Index()); // used for tab
-                break;
-            }
-        }else{
+//            switch(dockState()){
+//            case IndigoPanel::HiddenDocked:
+//                setDockState(IndigoPanel::Docked);
+//                emit panelShown(Index()); // used for tab
+//                break;
+//            }
+//        }else{
 
-            switch(dockState()){
-            case IndigoPanel::Docked:
-                setDockState(IndigoPanel::HiddenDocked);
-                emit panelClosed(Index()); // used for tab
-                break;
-            }
-        }
+//            switch(dockState()){
+//            case IndigoPanel::Docked:
+//                setDockState(IndigoPanel::HiddenDocked);
+//                emit panelClosed(Index()); // used for tab
+//                break;
+//            }
+//        }
 
 }
 
@@ -952,6 +934,7 @@ QFrame::setVisible(visible);
 void IndigoPanel::setMinimumResizeHeight(int height){
 
     int_minHeight = height;
+    updateSize();
 
 }
 
@@ -960,6 +943,7 @@ void IndigoPanel::setMinimumResizeHeight(int height){
 void IndigoPanel::setMinimumResizeWidth(int width){
 
     int_minWidth = width;
+    updateSize();
 
 }
 
@@ -982,6 +966,7 @@ int IndigoPanel::minimumResizeWidth(){
 void IndigoPanel::setDockWidth(int width){
 
     int_dockWidth = width;
+    updateSize();
 }
 
 
@@ -989,6 +974,7 @@ void IndigoPanel::setDockWidth(int width){
 void IndigoPanel::setDockHeight(int height){
 
     int_dockHeight = height;
+    updateSize();
 }
 
 
