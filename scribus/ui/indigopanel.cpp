@@ -84,7 +84,8 @@ IndigoPanelHandle::IndigoPanelHandle(QWidget *parent) :
 
     setLayout(mainLayout);
     setObjectName("IndigoPanelHandle");
-    enableExpander(false);
+    enableExpanderButton(false);
+    enableCloseButton(true);
 
     // Actions
     connect(wdg_btnClose, SIGNAL (clicked()), parent, SLOT (hide()));
@@ -181,12 +182,23 @@ void IndigoPanelHandle::setExpanderState(IndigoExpanderState expanderState){
 
 
 
-void IndigoPanelHandle::enableExpander(bool visible){
+void IndigoPanelHandle::enableExpanderButton(bool visible){
     bool_showExpander = visible;
 
     if(bool_showExpander){
         wdg_btnExpander->show();
     }else wdg_btnExpander->hide();
+
+}
+
+
+
+void IndigoPanelHandle::enableCloseButton(bool visible){
+    bool_showClose = visible;
+
+    if(bool_showClose){
+        wdg_btnClose->show();
+    }else wdg_btnClose->hide();
 
 }
 
@@ -204,8 +216,9 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     QFrame(dock),
     palettePrefs(0),
     prefsContextName(QString::null),
-    bool_visibleOnStartup(false),
-    bool_showExpander(false)
+    bool_visibleOnStartup(true),
+    bool_showExpander(false),
+    bool_showClose(true)
 {
     int int_padding = 5;
 
@@ -269,7 +282,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     setObjectName(name);
     setIcon(icon, 0);
     setHandleWidth(int_handleWidth);
-    enableExpander(bool_showExpander);
+    enableExpanderButton(bool_showExpander);
+    enableCloseButton(bool_showClose);
 
     setPrefsContext(name);
 }
@@ -285,7 +299,7 @@ void IndigoPanel::setPrefsContext(QString context)
         {
             palettePrefs = PrefsManager::instance()->prefsFile->getContext(prefsContextName);
             if (palettePrefs){
-                bool_visibleOnStartup = palettePrefs->getBool("visible");
+                bool_visibleOnStartup = palettePrefs->getBool("visible", true);
                 int width = palettePrefs->getInt("width", 0);
                 int height= palettePrefs->getInt("height", 0);
                 setDockHeight(height);
@@ -865,7 +879,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
 
     switch(state){
     case IndigoPanel::HiddenDocked:
-       // QFrame::hide();
+        QFrame::hide();
         break;
 
     case IndigoPanel::Floating:
@@ -876,7 +890,7 @@ void IndigoPanel::setDockState(IndigoPanel::IndigoDockState state){
 
     case IndigoPanel::Docked:
     default:
-       // QFrame::show();
+        QFrame::show();
         break;
     }
 
@@ -993,9 +1007,18 @@ int IndigoPanel::dockWidth(){
 
 
 
-void IndigoPanel::enableExpander(bool visible)
+void IndigoPanel::enableExpanderButton(bool visible)
 {
     bool_showExpander = visible;
-    wdg_handle->enableExpander(visible);
+    wdg_handle->enableExpanderButton(visible);
+
+}
+
+
+
+void IndigoPanel::enableCloseButton(bool visible)
+{
+    bool_showExpander = visible;
+    wdg_handle->enableCloseButton(visible);
 
 }

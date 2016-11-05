@@ -60,7 +60,8 @@ public:
     void setCaption(QString title, int fontSize);
     void setIcon(QIcon icon, int iconSize);
     void setExpanderState(IndigoExpanderState expanderState);
-    void enableExpander(bool visible);
+    void enableExpanderButton(bool visible);
+    void enableCloseButton(bool visible);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -73,6 +74,8 @@ private:
     QToolButton * wdg_btnClose;
     QToolButton * wdg_btnExpander;
     bool bool_showExpander;
+    bool bool_showClose;
+
 
 
 signals:
@@ -125,7 +128,8 @@ public:
     IndigoPanelHandle::IndigoExpanderState expanderState();
     void setExpanderState(IndigoPanelHandle::IndigoExpanderState expanderState);
     void setExpanderState(int expanderState);
-    void enableExpander(bool visible);
+    void enableExpanderButton(bool visible);
+    void enableCloseButton(bool visible);
 
     void setOrientation(Qt::Orientation orientation);
     void setHandleWidth(int width);
@@ -178,6 +182,7 @@ private:
     IndigoDockState m_state;
     IndigoPanelHandle::IndigoExpanderState m_expander;
     bool bool_showExpander;
+    bool bool_showClose;
 
     Qt::Orientation m_orientation;
     int int_handleWidth;

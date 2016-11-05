@@ -96,6 +96,8 @@ IndigoDock::IndigoDock(QWidget *parent) : QDockWidget(parent)
     setAccessibleName("IndigoDock");
     setObjectName("IndigoDock");
 
+    setFeatures(DockWidgetMovable|DockWidgetFloatable);
+
 
     connect(this, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(updateTabPosition(Qt::DockWidgetArea)));
     connect(wdg_toolbar, SIGNAL(tabMoved(int,int)), this, SLOT(movePanel(int,int)));
@@ -524,7 +526,7 @@ void IndigoDock::calculateSize(){
 
     case Qt::Vertical:
 
-        setFeatures(DockWidgetClosable|DockWidgetMovable|DockWidgetFloatable);
+        setFeatures(/*DockWidgetClosable|*/DockWidgetMovable|DockWidgetFloatable);
 
         // Toolbar
         wdg_toolbar->setTabOrientation(m_orientation);
@@ -542,7 +544,7 @@ void IndigoDock::calculateSize(){
 
     case Qt::Horizontal:
 
-        setFeatures(DockWidgetVerticalTitleBar|DockWidgetClosable|DockWidgetMovable|DockWidgetFloatable);
+        setFeatures(DockWidgetVerticalTitleBar/*|DockWidgetClosable*/|DockWidgetMovable|DockWidgetFloatable);
 
         // Toolbar
         wdg_toolbar->setTabOrientation(m_orientation);

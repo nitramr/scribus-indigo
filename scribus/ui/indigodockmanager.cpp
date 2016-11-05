@@ -395,7 +395,7 @@ void IndigoDockManager::dropPanel(){
     IndigoPanel *pan = qobject_cast<IndigoPanel *>(sender());
     if (!pan) return;
 
-    // try to add panel if it hover a dock
+    // try to add panel which hover a dock
     IndigoDock * dock;
     foreach(dock, lst_Docks){
 
