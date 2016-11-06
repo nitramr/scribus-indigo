@@ -13,16 +13,14 @@ LOWERAPP=${APP,,}
 
 GIT_REV=$(git rev-parse --short HEAD)
 echo $GIT_REV
-make install
+make install DESTDIR=/home/travis/$APP/$APP.AppDir
 
-mkdir -p $HOME/$APP/$APP.AppDir
 cd $HOME/$APP/
 
 wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
 . ./functions.sh
 
 cd $APP.AppDir
-cp -r /app/ usr/
 
 ########################################################################
 # Copy desktop and icon file to AppDir for AppRun to pick them up
@@ -42,7 +40,7 @@ rm -rf usr/share/icons/hicolor/48x48/
 
 # FIXME: How to find out which subset of plugins is really needed?
 mkdir -p ./usr/lib/qt5/plugins/
-PLUGINS=/opt/qt56/plugins/
+PLUGINS=/opt/qt57/plugins/
 cp -r $PLUGINS/* ./usr/lib/qt5/plugins/
 
 # Tcl/Tk, Tkinter (for Calendar script)
@@ -51,12 +49,12 @@ ldd usr/_tkinter.so | grep "=>" | awk '{print $3}' | xargs -I '{}' cp -v '{}' ./
 cp -r /usr/lib/tcltk usr/lib/
 cp -r /usr/share/tcltk usr/share/
 
-export LD_LIBRARY_PATH=/opt/qt56/lib/:LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/qt57/lib/:LD_LIBRARY_PATH
 copy_deps
 
 # Move the libraries to usr/bin
 move_lib
-mv ./opt/qt56/lib/* usr/lib ; rm -rf ./opt
+mv ./opt/qt57/lib/* usr/lib ; rm -rf ./opt
 ( cd usr/lib/qt5/plugins/platforms/../../ ; ln -s ../../lib/ . )
 mv usr/lib/x86_64-linux-gnu/* usr/lib/
 
@@ -95,10 +93,8 @@ VERSION=git$GIT_REV-glibc$GLIBC_NEEDED
 sed -i -e 's|/usr/share/scribus|././/share/scribus|g' usr/bin/scribus
 sed -i -e 's|/usr/lib/scribus|././/lib/scribus|g' usr/bin/scribus
 sed -i -e 's|/usr/share/doc/scribus/|././/share/doc/scribus/|g' usr/bin/scribus
-sed -i -e 's|/app/|././/|g' usr/bin/scribus
 # Possibly need to patch additional hardcoded paths away, replace
 # "/usr" with "././" which means "usr/ in the AppDir"
-# "/app" with "././" which means "usr/ in the AppDir"
 
 ########################################################################
 # AppDir complete
