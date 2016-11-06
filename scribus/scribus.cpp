@@ -401,8 +401,6 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	connect( scrActions["windowsCascade"], SIGNAL(triggered()) , mdiArea, SLOT(cascadeSubWindows()) );
 	connect( scrActions["windowsTile"], SIGNAL(triggered()) , mdiArea, SLOT(tileSubWindows()) );
 
-
-
 	m_prefsManager->setupMainWindow(this);
 
 	viewToolBar->previewQualitySwitcher->setCurrentIndex(m_prefsManager->appPrefs.itemToolPrefs.imageLowResType);
@@ -797,11 +795,9 @@ void ScribusMainWindow::initPalettes()
     connect( scrActions["editNotesStyles"], SIGNAL(toggled(bool)), nsEditor, SLOT(setPaletteShown(bool)) );
     connect( nsEditor, SIGNAL(paletteShown(bool)), scrActions["editNotesStyles"], SLOT(setChecked(bool)));
     nsEditor->installEventFilter(this);
- 
- 
-    wdg_indigoDock->hide(); // default
-    wdg_indigoDockManager->loadWorkspace();
- 
+  
+    wdg_indigoDockManager->loadWorkspace(); // load startup layout
+
  
 }
 

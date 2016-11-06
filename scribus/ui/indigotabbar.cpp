@@ -474,7 +474,7 @@ void IndigoTabBar::mouseMoveEvent(QMouseEvent*event){
                 int_realIndex = int_oldIndex;
 
         }
-    }
+    }//else bool_dragProceed = false; // stop processing if mouse is out of visible tab area
 
     update();
 
@@ -512,6 +512,9 @@ void IndigoTabBar::mouseReleaseEvent(QMouseEvent*event){
 
         bool_dragProceed = false;
         int_realIndex = -1;
+        if(!(int_hoverIndex >= 0 && int_hoverIndex < visTabs)){
+            int_newIndex = visTabs + 1;
+        }
 
         moveTab();
     }else{
