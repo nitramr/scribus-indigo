@@ -81,14 +81,13 @@ void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
         mw->scrMenuMgr->addMenuItemStringAfter("shapeShowPalette", "toolsInline", "Windows");
         mw->scrMenuMgr->addMenuItemStringstoMenuBar("Windows", m_actions);
 
-       // bool vis = sc_palette->isVisible();
 
-//        if(mw->indigoDockManager()->indigoDocks().count() > 0){
-//            IndigoDock * dock = mw->indigoDockManager()->indigoDocks().at(0);
-//            mw->indigoDockManager()->addIndigoPanel(dock, sc_palette);
-//        }else  mw->indigoDockManager()->addIndigoPanel(sc_palette);
+        if(mw->indigoDockManager()->indigoDocks().count() > 0){
+            IndigoDock * dock = mw->indigoDockManager()->indigoDocks().at(0);
+            mw->indigoDockManager()->addIndigoPanel(dock, sc_palette);
+        }else  mw->indigoDockManager()->addIndigoPanel(sc_palette);
 
-        //sc_palette->setVisible(false);
+        sc_palette->startup();
 
     }
 }
@@ -115,10 +114,9 @@ void ShapePlugin::deleteAboutData(const AboutData* about) const
 
 bool ShapePlugin::initPlugin()
 {
-    ScribusMainWindow * main = ScCore->primaryMainWindow();
+    ScribusMainWindow * mw = ScCore->primaryMainWindow();
 
-    sc_palette = new ShapePalette(main, "Shap");
-    sc_palette->startup();
+    sc_palette = new ShapePalette(mw, "Shap");
     sc_palette->readFromPrefs();
 
     return true;

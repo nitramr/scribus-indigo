@@ -300,7 +300,6 @@ void IndigoPanel::setPrefsContext(QString context)
                 bool_visibleOnStartup = palettePrefs->getBool("visible", true);
                 setDockHeight(palettePrefs->getInt("height", 0));
                 setDockWidth(palettePrefs->getInt("width", 0));
-                // updateSize();
 
             }
         }
@@ -328,16 +327,19 @@ void IndigoPanel::updateSize(){
     case Qt::Vertical:
 
         setFixedHeight(int_dockHeight);
-       // setMinimumWidth(minimumResizeWidth());
+        setMinimumWidth(minimumResizeWidth());
         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
         break;
     case Qt::Horizontal:
         setFixedWidth(int_dockWidth);
-       // setMinimumHeight(minimumResizeHeight());
+        setMinimumHeight(minimumResizeHeight());
         setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         break;
     }
+
+        resize(sizeHint());
+        this->adjustSize();
 
 }
 

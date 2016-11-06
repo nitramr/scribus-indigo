@@ -371,6 +371,9 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	initMenuBar();
 	createMenuBar();
 	initToolBars();
+
+    initPalettes();
+
 	ScCore->pluginManager->setupPluginActions(this);
 	ScCore->pluginManager->enableOnlyStartupPluginActions(this);
 	ScCore->pluginManager->languageChange();
@@ -397,7 +400,8 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	//Connect windows cascade and tile actions to the workspace after its created. Only depends on mdiArea created.
 	connect( scrActions["windowsCascade"], SIGNAL(triggered()) , mdiArea, SLOT(cascadeSubWindows()) );
 	connect( scrActions["windowsTile"], SIGNAL(triggered()) , mdiArea, SLOT(tileSubWindows()) );
-	initPalettes();
+
+
 
 	m_prefsManager->setupMainWindow(this);
 
@@ -504,7 +508,7 @@ void ScribusMainWindow::initToolBars()
 
 void ScribusMainWindow::setStyleSheet()
 {
-	 ThemeFactory *sf = new ThemeFactory();
+    ThemeFactory *sf = new ThemeFactory();
     QByteArray stylesheet;
  
     if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
@@ -616,7 +620,7 @@ void ScribusMainWindow::initIndigoDock()
  
     // install IndigoDockManager
     wdg_indigoDockManager = new IndigoDockManager(this);
-    wdg_indigoDockManager->setMinimumPanelSize(QSize(180,100));
+    wdg_indigoDockManager->setMinimumPanelSize(QSize(300,150));
  
     // Add IndigoDock
     wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
