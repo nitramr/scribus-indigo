@@ -240,6 +240,7 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
     wdg_handle->installEventFilter(this);
 
     wdg_grip = new QWidget();
+    wdg_grip->setObjectName("IndigoPanelGrip");
     wdg_grip->setAutoFillBackground(true);
     wdg_grip->installEventFilter(this);
     wdg_grip->setMouseTracking(true);

@@ -1,10 +1,13 @@
 /*
-some variables included here, to be replaced in code, eg for icon directory locations so we can remain platform independent here
-eg. ___downArrow___
+for images in url use relative path from icon set folder, e.g. stylesheet/down_arrow.png
 */
 
 
 /*
+
+Roles: http://doc.qt.io/qt-4.8/qpalette.html
+CSS:   http://doc.qt.io/qt-5/stylesheet-reference.html
+
 Theme 
 	dark
 	light
@@ -46,24 +49,29 @@ ColorFormat
 	hsva(360,100,100,100);
 
 */
-/*Palette::light {
-	[all]		alternate-base:		rgb(235,235,235);
-	[all]		base:			rgb(210,210,210);
-	[all]		bright-text:		rgb(255,0,0);
-	[all]		button:			rgb(235,235,235);
+Palette::light {
+	[all]		alternate-base:		rgb(192,192,192);
+	[all]		base:			rgb(152,152,152);
+	[all]		bright-text:		rgb(255,255,255);
+	[all]		button:			rgb(225,225,225);
+	[disabled]	button:			rgb(204,204,204);
 	[all]		button-text:		rgb(34,34,34);
-	[disabled]	button-text:		rgb(83,83,83);
+	[disabled]	button-text:		rgb(100,100,100);
+	[all]		dark:			rgb(182,182,182);
 	[all]		highlight:		rgb(42,130,218);
-	[all]		highlighted-text:	rgb(0,0,0);
+	[all]		highlighted-text:	rgb(255,255,255);
+	[all]		light:			rgb(255,255,255);
 	[all]		link:			rgb(42,130,218);
-	[all]		shadow:			rgb(200,200,200);
+	[all]		mid:			rgb(195,195,195);
+	[all]		midlight:		rgb(240,240,240);
+	[all]		shadow:			rgb(34,34,34);
 	[all]		text:			rgb(34,34,34);
 	[disabled]	text:			rgb(83,83,83);
-	[all]		tooltip-base:		rgb(210,210,210);
+	[all]		tooltip-base:		rgb(204,204,204);
 	[all]		tooltip-text:		rgb(34,34,34);
-	[all]		window:			rgb(235,235,235);
+	[all]		window:			rgb(204,204,204);
 	[all]		window-text: 		rgb(34,34,34);
-}*/
+}
 /*Palette::dark {
 	[all]		alternate-base:		rgb(53,53,53);
 	[all]		base:			rgb(25,25,25);
@@ -86,61 +94,146 @@ ColorFormat
 /* Regular QSS definitions */
 
 
-/* page selector comboboxes */
-
-PageSelector QComboBox { border: 1px solid gray; height: 20px; width: 3em; }
-PageSelector QComboBox::down-arrow { image: url(___downArrow___); width: 12px; height: 12px; }
-PageSelector QComboBox::down-arrow:on { top: 1px; left: 1px; }
-PageSelector QComboBox:editable { background: white; }
-PageSelector QComboBox:!editable, PageSelector QComboBox::drop-down:editable { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E1E1E1, stop: 0.4 #DDDDDD, stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);}
-PageSelector QComboBox:!editable:on, PageSelector QComboBox::drop-down:editable:on { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D3D3D3, stop: 0.4 #D8D8D8, stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1); }
-PageSelector QComboBox:on { padding-top: 3px; padding-left: 4px; }
-PageSelector QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 15px; border-left-width: 1px; border-left-color: darkgray; border-left-style: solid; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
-
-/* page back, forward etc buttons */
-PageSelector QPushButton { height: 20px; width: 20px; border: 0px; }
-PageSelector QPushButton:hover { border: 1px solid gray ; }
-PageSelector QPushButton:pressed { border: 1px solid gray; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa); }
-
-
-/* zoom buttons */
-QPushButton#zoomDefaultToolbarButton { height: 20px; width: 20px; border: 0px; }
-QPushButton#zoomDefaultToolbarButton:hover { border: 1px solid gray ; }
-QPushButton#zoomDefaultToolbarButton:pressed { border: 1px solid gray; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa); }
-
-QPushButton#zoomInToolbarButton { height: 20px; width: 20px; border: 0px; }
-QPushButton#zoomInToolbarButton:hover { border: 1px solid gray ; }
-QPushButton#zoomInToolbarButton:pressed { border: 1px solid gray; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa); }
-
-QPushButton#zoomOutToolbarButton { height: 20px; width: 20px; border: 0px; }
-QPushButton#zoomOutToolbarButton:hover { border: 1px solid gray ; }
-QPushButton#zoomOutToolbarButton:pressed { border: 1px solid gray; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #dadbde, stop: 1 #f6f7fa); }
-
-QSpinBox#zoomSpinBox { height: 20px; width: 3em; padding-right: 15px; }
-
-QComboBox#layerMenu { border: 1px solid gray; height: 20px; width:6em; }
-QComboBox#layerMenu::down-arrow { image: url(___downArrow___); width: 12px; height: 12px;}
-QComboBox#layerMenu::down-arrow:on { top: 1px; left: 1px; }
-QComboBox#layerMenu:editable { background: white; }
-QComboBox#layerMenu:!editable, QComboBox#layerMenu::drop-down:editable { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E1E1E1, stop: 0.4 #DDDDDD, stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);}
-QComboBox#layerMenu:!editable:on, QComboBox#layerMenu::drop-down:editable:on { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D3D3D3, stop: 0.4 #D8D8D8, stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1); }
-QComboBox#layerMenu:on { padding-top: 3px; padding-left: 4px; }
-QComboBox#layerMenu::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 15px; border-left-width: 1px; border-left-color: darkgray; border-left-style: solid; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
-
-QComboBox#unitSwitcher { border: 1px solid gray; height: 20px; width:2em; }
-QComboBox#unitSwitcher::down-arrow { image: url(___downArrow___); width: 12px; height: 12px;}
-QComboBox#unitSwitcher::down-arrow:on { top: 1px; left: 1px; }
-QComboBox#unitSwitcher:editable { background: white; }
-QComboBox#unitSwitcher:!editable, QComboBox#unitSwitcher::drop-down:editable { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E1E1E1, stop: 0.4 #DDDDDD, stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);}
-QComboBox#unitSwitcher:!editable:on, QComboBox#unitSwitcher::drop-down:editable:on { background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D3D3D3, stop: 0.4 #D8D8D8, stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1); }
-QComboBox#unitSwitcher:on { padding-top: 3px; padding-left: 4px; }
-QComboBox#unitSwitcher::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 15px; border-left-width: 1px; border-left-color: darkgray; border-left-style: solid; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
-
-ScToolBar QToolButton::menu-indicator { image: url(___tb_menu_arrow___); }
+ScToolBar QToolButton::menu-indicator { image: url(stylesheet/down_arrow.png); }
 
 IndigoDock QScrollBar:vertical {width: 10px;}
 IndigoDock QScrollBar:horizontal {height: 10px;}
 IndigoPanel QScrollBar:vertical {width: 10px;}
 IndigoPanel QScrollBar:horizontal {height: 10px;}
+
+QWidget#IndigoDropZone {background: palette(base);}
+QWidget#IndigoPanelGrip {background: palette(window);}
+
+/* QStatusBar */
+QStatusBar::item {
+    border: 0px transparent;
+ }
+
+
+
+
+/* QPushButton */
+QPushButton
+{
+    font-size:11pt;
+    color: palette(text);
+    background-color: palette(button);
+    border-width: 1px;
+    border-color: palette(dark);
+    border-style: solid;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 2px;
+    outline: none;
+}
+
+QPushButton:disabled
+{
+    background-color: palette(window);
+    border-color: palette(dark);    
+    color: palette(text);
+}
+
+QPushButton:focus, QPushButton:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 palette(light), stop:1 palette(button) );
+}
+
+QPushButton:pressed
+{
+    background-color: palette(button);
+    padding-top: -15px;
+    padding-bottom: -17px;
+}
+
+/*QComboBox*/
+
+QComboBox
+{
+    font-size:10pt;
+    color: palette(text);
+    background-color: palette(button);
+    border-width: 1px;
+    border-color: palette(dark);
+    border-style: solid;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 2px;
+    outline: none;
+}
+
+QComboBox:editable {
+    background-color: palette(light);
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+     background-color: palette(button);
+}
+
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 palette(light), stop:1 palette(button) );
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    outline: none;
+    width: 16px;
+
+    border-left-width: 1px;
+    border-left-color: palette(dark);
+    border-left-style: solid;
+    border-top-right-radius: 2px; 
+    border-bottom-right-radius: 2px;
+}
+
+QComboBox::drop-down:hover, QComboBox::drop-down:focus {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 palette(light), stop:1 palette(button) );
+}
+
+QComboBox::drop-down:pressed {
+    background-color: palette(button);
+}
+
+QComboBox::down-arrow {
+    image: url(stylesheet/down_arrow.png);
+    height: 16px;
+}
+
+/* QLineEdit */
+
+QLineEdit
+{
+    font-size:10pt;
+    color: palette(text);
+    background-color: palette(light);
+    border-width: 1px;
+    border-color: palette(dark);
+    border-style: solid;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 2px;
+    outline: none;
+    selection-background-color: palette(highlight);
+    selection-color: palette(light);
+}
+
+QLineEdit:disabled
+{
+    background-color: palette(mid);
+    border-color: palette(dark);    
+    color: palette(dark);
+}
+
+QLineEdit:focus
+{
+    border-color:palette(highlight);
+}
+
 
 

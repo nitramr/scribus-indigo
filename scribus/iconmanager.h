@@ -55,7 +55,8 @@ class SCRIBUS_API IconManager : public QObject
 		QIcon loadIcon(const QString nam, bool forceUseColor=false);
 		QPixmap loadPixmap(const QString nam, bool forceUseColor=false, bool rtlFlip=false);
 		QString pathForIcon(const QString nam);
-		QStringList pathList();
+        QString activePath();
+        QStringList pathList();
 		QStringList nameList(QString language);
 		void iconToGrayscale(QPixmap *pm);
 		bool setActiveFromPrefs(QString prefsSet);

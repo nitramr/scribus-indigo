@@ -58,6 +58,7 @@ IndigoDock::IndigoDock(QWidget *parent) : QDockWidget(parent)
 
 
     wdg_dropzone = new QWidget();
+    wdg_dropzone->setObjectName("IndigoDropZone");
     wdg_dropzone->setLayout(lyt_dropzone);
     wdg_dropzone->setMinimumWidth(int_minWidth);
     wdg_dropzone->setMinimumHeight(int_minHeight);
