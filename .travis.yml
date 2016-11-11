@@ -83,9 +83,9 @@ notifications:
     on_failure: always
 
 after_success:
-- ls -lh /home/travis/out/Scribus-*.appimage # Assuming you have some files in out/ that you would like to upload
+- ls -lh /out/Scribus-*.appimage # Assuming you have some files in out/ that you would like to upload
 - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-- bash ./upload.sh /home/travis/out/Scribus-*.appimage
+- bash ./upload.sh /out/Scribus-*.appimage
 
 branches:
   except:
