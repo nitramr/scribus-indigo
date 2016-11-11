@@ -25,6 +25,7 @@
 #define INDIGOPANEL_H
 
 #include <QWidget>
+#include <QAbstractButton>
 #include <QtGui>
 #include <QFrame>
 #include <QLayout>
@@ -35,15 +36,10 @@
 #include <QIcon>
 #include <QVBoxLayout>
 #include <QBoxLayout>
-//#include "uiwidgets/flowlayout.h"
 
-//#include <QCloseEvent>
-//#include <QHideEvent>
-//#include <QKeySequence>
-//#include <QShowEvent>
 
-//#include "scribusapi.h"
 class PrefsContext;
+
 
 class IndigoPanelHandle : public QWidget
 {

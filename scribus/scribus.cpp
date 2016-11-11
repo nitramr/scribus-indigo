@@ -321,6 +321,8 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 		qApp->setStyleSheet(QString(stylesheet));
 	}
 
+    setStyleSheet();
+
 	qApp->setLayoutDirection(QLocale(ScCore->getGuiLanguage()).textDirection());
 	previewDinUse = false;
 	printDinUse = false;
@@ -459,7 +461,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	}
 	appModeHelper->setStartupActionsEnabled(false);
 
-	setStyleSheet();
+
 
 	return retVal;
 }
@@ -511,18 +513,25 @@ void ScribusMainWindow::setStyleSheet()
  
     if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
     {
-        QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
+        /*QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
         QByteArray da;
         da.append(downArrow);
         stylesheet.replace("___downArrow___", da);
         QString toolbararrow(IconManager::instance()->pathForIcon("stylesheet/down_arrow.png"));
         QByteArray tba;
         tba.append(toolbararrow);
-        stylesheet.replace("___tb_menu_arrow___", tba);
+        stylesheet.replace("___tb_menu_arrow___", tba);*/
  
         QString style(stylesheet);
- 
         sf->parseString(style);
+
+        QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
+
+        QString iconFolder = ScPaths::instance().iconDir();
+        QString iconset(IconManager::instance()->activePath());
+
+        style.replace(re, iconFolder + iconset + "\\1");
+
  
         qApp->setPalette(sf->palette());
         qApp->setStyleSheet(style);

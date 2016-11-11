@@ -292,6 +292,11 @@ QString IconManager::pathForIcon(const QString nam)
 	return "";
 }
 
+QString IconManager::activePath(){
+    return m_iconSets[m_activeSetBasename].path+"/";
+
+}
+
 QStringList IconManager::pathList()
 {
 	QStringList paths;
