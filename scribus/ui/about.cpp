@@ -114,12 +114,12 @@ About::About( QWidget* parent, AboutMode diaMode ) : QDialog( parent )
 	buildID = new QLabel( tab );
 	buildID->setAlignment(Qt::AlignCenter);
 	buildID->setTextInteractionFlags(Qt::TextSelectableByMouse);
-	QString BUILD_DAY = "18";
-	QString BUILD_MONTH = CommonStrings::september;
+    QString BUILD_DAY = "11";
+    QString BUILD_MONTH = CommonStrings::november;
 	QString BUILD_YEAR = "2016";
 	QString BUILD_TIME = "";
 	QString BUILD_TZ = "";
-	QString BUILD_NAME = "";
+    QString BUILD_NAME = "Scribus Indigo Dock";
 
 	QString built = tr("%1 %2 %3").arg(BUILD_DAY).arg(BUILD_MONTH).arg(BUILD_YEAR);
 	QString version = VERSION;

@@ -87,9 +87,6 @@ Palette::dark {
 	[all]		window-text: 		rgb(204,204,204);
 }
 
-/* Regular QSS definitions */
-
-
 /* Custom Elements */
 
 ScToolBar QToolButton::menu-indicator {image: url(stylesheet/down_arrow.png);}
@@ -102,6 +99,10 @@ IndigoPanel QScrollBar:horizontal {height: 10px;}
 
 Canvas,
 ScribusView {background-color: rgb(128,128,128);}
+
+GradientPreview {
+    border: 0px solid transparent;
+}
 
 QWidget#IndigoDropZone {background: palette(base);}
 QWidget#IndigoPanelGrip {background: palette(window);}
@@ -508,12 +509,15 @@ QToolTip {
 QListView {
     show-decoration-selected: 1;
     background-color: palette(base);
+    color: palette(window-text);
+    border: 1px solid rgba(128,128,128,0.5);
 
 }
 
 QListView::item{
     outline: none;
     color: palette(window-text);
+    background-color: palette(base);
 }
 
 QListView::item:selected:!active,
@@ -525,6 +529,16 @@ QListView::item:selected:active {
 QListView::item:hover{
     background: palette(highlight);
     color: palette(highlighted-text);
+}
+
+
+/* QTreeWidget */
+
+QTreeWidget {
+    background-color: palette(window);
+    color: palette(window-text);
+    border: 1px solid rgba(128,128,128,0.5);
+
 }
 
 
@@ -730,3 +744,37 @@ QScrollBar::sub-line:horizontal:disabled,
 QScrollBar::handle:horizontal:disabled {
     background-color: palette(window);
 }
+
+
+/* QHeaderView */
+
+QHeaderView::section {
+    background-color: palette(window);
+    color: palette(window-text);
+    padding-left: 4px;
+    border: 1px solid rgba(128,128,128,0.5);
+}
+
+QHeaderView::section:checked
+{
+    background-color: palette(highlight);
+}
+
+QHeaderView::down-arrow {
+    image: url(stylesheet/down_arrow.png);
+}
+
+QHeaderView::up-arrow {
+    image: url(stylesheet/up_arrow.png);
+}
+
+
+/* QTableView */
+
+QTableView {
+    border: 1px solid rgba(128,128,128,0.5);
+    background-color: palette(base);
+    color: palette(window-text);
+    selection-background-color: palette(highlight);
+}
+
