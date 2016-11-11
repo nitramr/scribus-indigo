@@ -63,11 +63,13 @@ IndigoPanelHandle::IndigoPanelHandle(QWidget *parent) :
     wdg_btnClose->setFixedSize(16,16);
     wdg_btnClose->setAutoRaise(true);
     wdg_btnClose->setFocusPolicy(Qt::NoFocus);
+    wdg_btnClose->setStyleSheet("QToolButton{padding:0px;}");
 
     wdg_btnExpander = new QToolButton(this);
     wdg_btnExpander->setFixedSize(16,16);
     wdg_btnExpander->setAutoRaise(true);
     wdg_btnExpander->setFocusPolicy(Qt::NoFocus);
+    wdg_btnExpander->setStyleSheet("QToolButton{padding:0px;}");
 
     QStyleOptionDockWidget opt;
     wdg_btnClose->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton, &opt, this));
@@ -201,6 +203,7 @@ void IndigoPanelHandle::enableCloseButton(bool visible){
     }else wdg_btnClose->hide();
 
 }
+
 
 
 /*#####################
