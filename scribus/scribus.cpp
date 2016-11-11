@@ -524,6 +524,7 @@ void ScribusMainWindow::setStyleSheet()
  
         QString style(stylesheet);
         sf->parseString(style);
+        qApp->setPalette(sf->palette());
 
         QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
 
@@ -532,8 +533,7 @@ void ScribusMainWindow::setStyleSheet()
 
         style.replace(re, iconFolder + iconset + "\\1");
 
- 
-        qApp->setPalette(sf->palette());
+
         qApp->setStyleSheet(style);
  
     }

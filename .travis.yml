@@ -24,21 +24,24 @@ before_install:
 # Linux
 - if [ $TRAVIS_OS_NAME == linux ]; then 
       sudo apt-add-repository ppa:beineri/opt-qt57-trusty -y;
+      sudo apt-add-repository ppa:as-bahanta/raqm -y;
       sudo apt-add-repository ppa:ricotz/testing -y;
-      sudo apt-get update -qq; 
+      sudo apt-get update -qq;
       sudo apt-get install -y cmake libboost-python-dev libcups2-dev libhunspell-dev
       libhyphen-dev liblcms2-dev libpodofo-dev libtiff-dev libxml2-dev
       python-all-dev zlib1g-dev qt57base qt57declarative
       qt57tools libgraphicsmagick++1-dev
       libopenscenegraph-dev libpoppler-dev libcairo2-dev libwpg-dev libmspub-dev
-      libcdr-dev libvisio-dev coreutils binutils python-tk;
+      libcdr-dev libvisio-dev libharfbuzz-dev libharfbuzz-icu0
+      coreutils binutils python-tk;
     fi
 # OSX
 # - if [ $TRAVIS_OS_NAME == osx ]; then brew --env && brew config && brew list; fi
 - if [ $TRAVIS_OS_NAME == osx ]; then brew update; 
       brew outdated cmake --verbose || brew upgrade cmake; 
       brew tap homebrew/dupes && brew install homebrew/dupes/zlib && brew link --force zlib;
-      brew install xz little-cms2 cairo qt5 hunspell ghostscript graphicsmagick poppler podofo; 
+      brew install icu4c && brew link --force icu4c;
+      brew install xz little-cms2 cairo qt5 hunspell ghostscript graphicsmagick poppler podofo harfbuzz;
       brew outdated jpeg --verbose || brew upgrade jpeg;
       brew outdated libtiff --verbose || brew upgrade libtiff; 
       brew outdated fontconfig --verbose || brew upgrade fontconfig; 
@@ -80,7 +83,7 @@ notifications:
     on_failure: always
 
 after_success:
-- ls -lh out/*.AppImage # Assuming you have some files in out/ that you would like to upload
+- ls -lh /home/travis/out/Scribus-*.AppImage # Assuming you have some files in out/ that you would like to upload
 - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-- bash ./upload.sh out/*.AppImage
+- bash ./upload.sh /home/travis/out/Scribus-*.AppImage
 
