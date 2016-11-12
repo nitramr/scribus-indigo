@@ -5,6 +5,10 @@ Scribus - Open Source Desktop Publishing
 ## Status
 This is a experimental build of the Scribus DTP software that introduces and integrates [indigoDock](https://github.com/nitramr/indigoDock) in to Scribus trunk. 
 
+## Snapshot
+
+![dark theme](https://cloud.githubusercontent.com/assets/15112256/20237700/4d04e1de-a8da-11e6-8828-d0b25ceee49c.png)
+
 ## Contributing
 For Bugs: please open an issue in this repo [issue queue](https://github.com/nitramr/scribus-indigo/issues)  
 For Patches: submit a PR 
