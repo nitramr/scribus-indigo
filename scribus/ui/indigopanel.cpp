@@ -244,9 +244,10 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 
     wdg_grip = new QWidget();
     wdg_grip->setObjectName("IndigoPanelGrip");
-    wdg_grip->setAutoFillBackground(true);
+   // wdg_grip->setAutoFillBackground(true);
     wdg_grip->installEventFilter(this);
     wdg_grip->setMouseTracking(true);
+    wdg_grip->setBackgroundRole(QPalette::Window);
 
     lyt_content = new QVBoxLayout();
     lyt_content->addWidget(wdg_widget);

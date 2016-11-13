@@ -141,8 +141,8 @@ public:
 	/*!
 	* \retval 0 - ok, 1 - no fonts, ...
 	*/
-	int initScMW(bool primaryMainwWindow);
-	void addScToolBar(ScToolBar *tb, QString name);
+    int initScMW(bool primaryMainwWindow);
+    void addScToolBar(ScToolBar *tb, QString name, Qt::ToolBarArea area = Qt::TopToolBarArea);
 	bool warningVersion(QWidget *parent);
 	void SetShortCut();
 	void startUpDialog();
@@ -610,9 +610,9 @@ private:
 	void createMenuBar();
 	void addDefaultWindowMenuItems(); // addDefaultWindowMenuItems adds the basic Windows menu items, excluding the actual list of windows
 	void initStatusBar(); // setup the statusbar
-	void initToolBars(); // setup the toolbars
-	void setStyleSheet(); //set stylesheet for app
-	//Returns false when there are no fonts
+    void initToolBars(); // setup the toolbars
+    void setStyleSheet(); //set stylesheet for app
+    //Returns false when there are no fonts
 	void initHyphenator();
 	void initDefaultValues();
 	void initKeyboardShortcuts();

@@ -298,6 +298,7 @@ SET(SCRIBUS_MOC_CLASSES
 	selectionrubberband.h
 	styleitem.h
 	themefactory.h
+        thememanager.h
 	tocgenerator.h
 	undogui.h
 	undomanager.h
@@ -744,6 +745,7 @@ SET(SCRIBUS_SOURCES
 	tableutils.cpp
 	textwriter.cpp
 	themefactory.cpp
+        thememanager.cpp
 	third_party/fparser/fpoptimizer.cc
 	third_party/fparser/fparser.cc
 	tocgenerator.cpp
@@ -1400,7 +1402,9 @@ ELSE(WANT_HEADERINSTALL)
 ENDIF(WANT_HEADERINSTALL)
 
 #Install our stylesheet
-INSTALL(FILES
-	scribus.css
-	DESTINATION ${LIBDIR}
-)
+FILE( GLOB SCRIBUS_CSS *.css )
+INSTALL(FILES ${SCRIBUS_CSS} DESTINATION ${LIBDIR})
+
+#Install our XML
+FILE( GLOB SCRIBUS_XML *.xml )
+INSTALL(FILES ${SCRIBUS_XML} DESTINATION ${LIBDIR})

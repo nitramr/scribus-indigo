@@ -16,6 +16,7 @@ for which a new license (GPL+exception) is in place.
 #include "prefsstructs.h"
 #include "scribusapp.h"
 #include "scribusdoc.h"
+#include "thememanager.h"
 #include "util.h"
 
 extern ScribusQApp *ScQApp;
@@ -32,8 +33,8 @@ Prefs_UserInterface::Prefs_UserInterface(QWidget* parent, ScribusDoc* doc)
 	languageComboBox->addItems( languageList );
 
 	// qt styles
-	QStringList styleList = QStyleFactory::keys();
-	themeComboBox->addItem("");
+    QStringList styleList;
+    styleList= ThemeManager::instance()->nameList(ScQApp->currGUILanguage());//QStyleFactory::keys();
 	themeComboBox->addItems(styleList);
 	QStringList iconSetList;
 	iconSetList=IconManager::instance()->nameList(ScQApp->currGUILanguage());
@@ -92,7 +93,7 @@ void Prefs_UserInterface::restoreDefaults(struct ApplicationPrefs *prefsData)
 void Prefs_UserInterface::saveGuiToPrefs(struct ApplicationPrefs *prefsData) const
 {
 	prefsData->uiPrefs.language=selectedGUILang;
-	prefsData->uiPrefs.style=themeComboBox->currentText();
+    prefsData->uiPrefs.style=ThemeManager::instance()->baseNameForTranslation(themeComboBox->currentText());
 	prefsData->uiPrefs.iconSet=IconManager::instance()->baseNameForTranslation(iconSetComboBox->currentText());
 	prefsData->uiPrefs.applicationFontSize=fontSizeMenuSpinBox->value();
 	prefsData->uiPrefs.paletteFontSize=fontSizePaletteSpinBox->value();

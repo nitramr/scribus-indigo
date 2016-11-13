@@ -45,28 +45,9 @@ ColorFormat
 	hsva(360,100,100,100);
 
 */
-/*Palette::light {
-	[all]		alternate-base:		rgb(192,192,192);
-	[all]		base:			rgb(255,255,255);
-	[all]		bright-text:		rgb(255,255,255);
-	[all]		button:			rgb(225,225,225);
-	[all]		button-text:		rgb(34,34,34);
-	[all]		dark:			rgb(182,182,182);
-	[all]		highlight:		rgb(0,150,255);
-	[all]		highlighted-text:	rgb(34,34,34);
-	[all]		light:			rgb(255,255,255);
-	[all]		link:			rgb(42,130,218);
-	[all]		mid:			rgb(195,195,195);
-	[all]		midlight:		rgb(240,240,240);
-	[all]		shadow:			rgb(34,34,34);
-	[all]		text:			rgb(34,34,34);
-	[all]		tooltip-base:		rgb(204,204,204);
-	[all]		tooltip-text:		rgb(34,34,34);
-	[all]		window:			rgb(214,214,214);
-	[all]		window-text: 		rgb(34,34,34);
-}*/
 Palette::dark {
 	[all]		alternate-base:		rgb(53,53,53);
+	[all]		background:		rgb(46,46,46);
 	[all]		base:			rgb(25,25,25);
 	[all]		bright-text:		rgb(204,204,204);
 	[all]		button:			rgb(60,60,60);
@@ -104,14 +85,52 @@ GradientPreview {
     border: 0px solid transparent;
 }
 
-QWidget#IndigoDropZone {background: palette(base);}
-QWidget#IndigoPanelGrip {background: palette(window);}
+QWidget#IndigoDropZone {background-color: palette(base);}
+QWidget#IndigoPanelGrip {background-color: palette(window);}
 
 
 /* QStatusBar */
 
 QStatusBar::item{border: 0px transparent;}
 QStatusBar {background-color: palette(window);}
+
+
+/* QCheckBox */
+
+QCheckBox::indicator {
+    border: 1px solid rgba(128,128,128,0.5);
+    background-color: palette(base);
+    border-radius: 2px;
+    width: 12px;
+    height: 12px;
+    outline: none;
+    margin-top: 1px;
+}
+
+QCheckBox::indicator:checked {
+    image: url(ok.png);
+}
+
+QCheckBox::indicator:indeterminate {
+    background-color: palette(window-text);
+}
+
+
+/* QRadioButton */
+
+QRadioButton::indicator {
+    border: 1px solid rgb(128,128,128);
+    background-color: palette(base);
+    border-radius: 5px;
+    width: 10px;
+    height: 10px;
+    outline: none;
+    margin-top: 3px;
+}
+
+QRadioButton::indicator:checked {
+    background-color: palette(window-text);
+}
 
 
 /* QGroupBox */
@@ -145,7 +164,6 @@ QToolBar {
 
 QToolButton,
 QToolButton:disabled {
-    font-size:10pt;
     background-color: transparent;
     border: 1px solid transparent;
     padding-top: 3px;
@@ -160,7 +178,6 @@ QToolButton:disabled {
 /* QPushButton */
 
 QPushButton {
-    font-size:10pt;
     height: 16px;
     color: palette(button-text);
     background-color: palette(button);
@@ -208,7 +225,6 @@ QToolButton:pressed {
 /*QComboBox*/
 
 QComboBox {
-    font-size:10pt;
     height: 16px;
     color: palette(button-text);
     background-color: palette(button);
@@ -294,7 +310,6 @@ QComboBox QAbstractItemView::item:selected{
 
 QSpinBox,
 QDoubleSpinBox {
-    font-size:10pt;
     height: 16px;
     color: palette(button-text);
     background-color: palette(base);
@@ -383,7 +398,6 @@ QDoubleSpinBox::down-arrow {
 /* QLineEdit */
 
 QLineEdit {
-    font-size:10pt;
     height: 16px;
     color: palette(window-text);
     background-color: palette(base);
@@ -534,12 +548,12 @@ QListView::item:hover{
 
 /* QTreeWidget */
 
-QTreeWidget {
+/*QTreeWidget {
     background-color: palette(window);
     color: palette(window-text);
     border: 1px solid rgba(128,128,128,0.5);
 
-}
+}*/
 
 
 /* QMenu */

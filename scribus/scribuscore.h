@@ -37,6 +37,7 @@ class ScSplashScreen;
 class ScribusMainWindow;
 class PrefsManager;
 class UndoManager;
+class ThemeManager;
 
 extern SCRIBUS_API ScribusCore* ScCore;
 
@@ -135,6 +136,7 @@ protected:
 	ScSplashScreen *m_SplashScreen;
 	IconManager *m_iconManager;
 	UndoManager *m_undoManager;
+    ThemeManager *m_themeManager;
 	PrefsManager *m_prefsManager;
 	bool m_ScribusInitialized;
 	bool m_UseGUI;

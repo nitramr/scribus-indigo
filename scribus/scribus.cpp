@@ -153,6 +153,7 @@ for which a new license (GPL+exception) is in place.
 #include "serializer.h"
 #include "styleoptions.h"
 #include "tocgenerator.h"
+#include "thememanager.h"
 #include "ui/about.h"
 #include "ui/aboutplugins.h"
 #include "ui/adjustcmsdialog.h"
@@ -315,11 +316,11 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 {
 	int retVal=0;
 	qsrand(1234);
-	QByteArray stylesheet;
-	if (loadRawText(ScPaths::getApplicationDataDir() + "/stylesheet.css", stylesheet))
-	{
-		qApp->setStyleSheet(QString(stylesheet));
-	}
+//	QByteArray stylesheet;
+//	if (loadRawText(ScPaths::getApplicationDataDir() + "/stylesheet.css", stylesheet))
+//	{
+//		qApp->setStyleSheet(QString(stylesheet));
+//	}
 
     setStyleSheet();
 
@@ -476,11 +477,11 @@ ScribusMainWindow::~ScribusMainWindow()
 	delete m_doc;
 }
 
-void ScribusMainWindow::addScToolBar(ScToolBar *tb, QString name)
+void ScribusMainWindow::addScToolBar(ScToolBar *tb, QString name, Qt::ToolBarArea  area)
 {
 	if (!scrToolBars.contains(name))
 		scrToolBars.insert(name, tb);
-	addToolBar(tb);
+    addToolBar(area,tb);
 }
 
 void ScribusMainWindow::initToolBars()
@@ -494,9 +495,9 @@ void ScribusMainWindow::initToolBars()
 	viewToolBar = new ViewToolBar(this);
 
 	addScToolBar(fileToolBar, fileToolBar->objectName());
-	addScToolBar(editToolBar, editToolBar->objectName());
-	addScToolBar(modeToolBar, modeToolBar->objectName());
-	addScToolBar(pdfToolBar, pdfToolBar->objectName());
+    addScToolBar(editToolBar, editToolBar->objectName());
+    addScToolBar(modeToolBar, modeToolBar->objectName(), Qt::LeftToolBarArea);
+    addScToolBar(pdfToolBar, pdfToolBar->objectName(), Qt::LeftToolBarArea);
 	addScToolBar(viewToolBar, viewToolBar->objectName());
 	connect(modeToolBar, SIGNAL(visibilityChanged(bool)), scrActions["toolsToolbarTools"], SLOT(setChecked(bool)));
 	connect(scrActions["toolsToolbarPDF"], SIGNAL(toggled(bool)), pdfToolBar, SLOT(setVisible(bool)));
@@ -508,19 +509,15 @@ void ScribusMainWindow::initToolBars()
 
 void ScribusMainWindow::setStyleSheet()
 {
+
+    qApp->setStyle("Fusion");
+
     ThemeFactory *sf = new ThemeFactory();
     QByteArray stylesheet;
  
-    if (loadRawText(ScPaths::instance().libDir() + "scribus.css", stylesheet))
+    QString themePath = ScPaths::instance().libDir() + ThemeManager::instance()->activePath();
+    if (loadRawText(themePath, stylesheet))
     {
-        /*QString downArrow(IconManager::instance()->pathForIcon("16/go-down.png"));
-        QByteArray da;
-        da.append(downArrow);
-        stylesheet.replace("___downArrow___", da);
-        QString toolbararrow(IconManager::instance()->pathForIcon("stylesheet/down_arrow.png"));
-        QByteArray tba;
-        tba.append(toolbararrow);
-        stylesheet.replace("___tb_menu_arrow___", tba);*/
  
         QString style(stylesheet);
         sf->parseString(style);
@@ -537,19 +534,7 @@ void ScribusMainWindow::setStyleSheet()
         qApp->setStyleSheet(style);
  
     }
- 
-    /*layerMenu->setStyleSheet(stylesheet);
-    unitSwitcher->setStyleSheet(stylesheet);
-    zoomDefaultToolbarButton->setStyleSheet(stylesheet);
-    zoomInToolbarButton->setStyleSheet(stylesheet);
-    zoomOutToolbarButton->setStyleSheet(stylesheet);
-    zoomSpinBox->setStyleSheet(stylesheet);
- 
-    fileToolBar->setStyleSheet(stylesheet);
-    editToolBar->setStyleSheet(stylesheet);
-    modeToolBar->setStyleSheet(stylesheet);
-    pdfToolBar->setStyleSheet(stylesheet);
-    viewToolBar->setStyleSheet(stylesheet);*/
+
 }
 
 
@@ -6643,14 +6628,26 @@ void ScribusMainWindow::slotPrefsOrg()
 		QString newUILanguage = m_prefsManager->uiLanguage();
 		if (oldPrefs.uiPrefs.language != newUILanguage || ScQApp->currGUILanguage()!=newUILanguage)
 			ScQApp->changeGUILanguage(newUILanguage);
-		QString newUIStyle = m_prefsManager->guiStyle();
-		if (oldPrefs.uiPrefs.style != newUIStyle)
-		{
-			if (newUIStyle.isEmpty())
-				qApp->setStyle(m_prefsManager->guiSystemStyle());
-			else
-				qApp->setStyle(QStyleFactory::create(newUIStyle));
-		}
+
+
+
+        /* TODO: load new css theme */
+
+
+        qApp->setStyle(QStyleFactory::create("Fusion"));
+
+//		QString newUIStyle = m_prefsManager->guiStyle();
+//		if (oldPrefs.uiPrefs.style != newUIStyle)
+//		{
+//			if (newUIStyle.isEmpty())
+//				qApp->setStyle(m_prefsManager->guiSystemStyle());
+//			else
+//				qApp->setStyle(QStyleFactory::create(newUIStyle));
+//		}
+
+
+
+
 		int newUIFontSize = m_prefsManager->guiFontSize();
 		if (oldPrefs.uiPrefs.applicationFontSize != newUIFontSize)
 		{

@@ -48,6 +48,7 @@ for which a new license (GPL+exception) is in place.
 #include "prefsmanager.h"
 #include "scpaths.h"
 #include "scribuscore.h"
+#include "thememanager.h"
 #include "upgradechecker.h"
 
 #ifdef WITH_TESTS
@@ -123,6 +124,7 @@ ScribusQApp::~ScribusQApp()
 	LocaleManager::deleteInstance();
 	LanguageManager::deleteInstance();
 	IconManager::deleteInstance();
+    ThemeManager::deleteInstance();
 }
 
 void ScribusQApp::initLang()

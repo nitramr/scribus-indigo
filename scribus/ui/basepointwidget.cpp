@@ -60,7 +60,7 @@ void BasePointWidget::paintEvent(QPaintEvent *e)
 	}
 	else
 		p.drawLine(8, 8, 33, 8);
-	p.setBrush(Qt::white);
+    p.setBrush(palette().color(QPalette::Window));
 	p.setPen(QPen(palette().color(QPalette::WindowText), 2));
 	if (m_mode == 0)
 	{

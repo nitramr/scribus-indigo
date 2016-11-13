@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf8"?>
+<theme>
+	<author>Martin Reininger</author>
+	<license>GPLv2+</license>
+	<path>scribus_light.css</path>
+	<activeversion>1.5.3</activeversion>
+	<nametext lang="en_US">Scribus Light</nametext>
+	<nametext lang="fr">Scribus Brilliant</nametext>
+	<nametext lang="de_DE">Scribus Hell</nametext>
+</theme>
