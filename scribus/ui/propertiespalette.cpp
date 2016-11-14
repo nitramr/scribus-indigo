@@ -84,10 +84,6 @@ PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDoc
     setObjectName(QString::fromLocal8Bit(name));
     //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
-	QFont f(font());
-	f.setPointSize(f.pointSize()-1);
-	setFont(f);
-
 	TabStack = new ScTreeWidget( this );
 //	Uncomment this line if the new behaviour makes any trouble.
 //	TabStack->setToolBoxMode(true);

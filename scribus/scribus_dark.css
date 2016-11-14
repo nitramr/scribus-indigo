@@ -81,6 +81,12 @@ IndigoPanel QScrollBar:horizontal {height: 10px;}
 Canvas,
 ScribusView {background-color: rgb(128,128,128);}
 
+
+QLabel#OldC,
+QLabel#NewC {
+    border: 1px solid rgba(128,128,128,0.5);
+}
+
 GradientPreview {
     border: 0px solid transparent;
 }
@@ -88,12 +94,36 @@ GradientPreview {
 QWidget#IndigoDropZone {background-color: palette(base);}
 QWidget#IndigoPanelGrip {background-color: palette(window);}
 
+/* ColorListBox */
+
+ColorListBox {
+    background-color: rgb(128,128,128);
+    border: 1px solid rgba(128,128,128,0.5);
+}
+
+ColorListBox::item{
+    outline: none;
+    color: palette(window-text);
+    background-color: palette(light);
+}
+
+
+/* QMdiArea */
+
+QMdiArea QTabBar::tab:selected {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 
 /* QStatusBar */
 
 QStatusBar::item{border: 0px transparent;}
 QStatusBar {background-color: palette(window);}
-
+QStatusBar QPushButton {
+    border: 1px solid transparent;
+    background-color: transparent !important;
+}
 
 /* QCheckBox */
 

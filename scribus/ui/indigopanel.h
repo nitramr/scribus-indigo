@@ -109,7 +109,7 @@ public:
     IndigoPanelHandle * wdg_handle;
 
     QString Caption();
-    void setCaption(QString title = "", int fontSize = 10);
+    void setCaption(QString title = "", int fontSize = -1);
 
     QIcon Icon();
     void setIcon(QIcon icon, int iconSize = 22);

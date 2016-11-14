@@ -117,13 +117,15 @@ void IndigoPanelHandle::paintEvent(QPaintEvent *event)
     QFont font = p.font() ;
     font.setPointSize ( int_fontSize );
     font.setWeight(QFont::DemiBold);
-    QFontMetrics fm(this->font());
-    int lbl_width = fm.width(str_title);
+//    QFontMetrics fm(this->font());
+//    int lbl_width = fm.width(str_title);
 
 
     if (h > 0)
     {
         int labelX = int_iconSize + 4;
+        int lbl_width = this->width() - labelX - wdg_btnExpander->width() - wdg_btnClose->width() - 20;
+
 
         p.drawPixmap(QRect(0, iconY, int_iconSize,int_iconSize),ico_icon.pixmap(int_iconSize*devicePixelRatio(),int_iconSize*devicePixelRatio()));
         p.setFont(font);
@@ -640,6 +642,9 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 
 
 void IndigoPanel::setCaption(const QString title, int fontSize){
+
+    if (fontSize <= -1) fontSize = font().pointSize();
+
     wdg_handle->setCaption(title, fontSize);
 }
 
