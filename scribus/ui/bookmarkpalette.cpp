@@ -51,5 +51,5 @@ void BookPalette::changeEvent(QEvent *e)
 
 void BookPalette::languageChange()
 {
-    setWindowTitle( tr( "Bookmarks" ) );
+	setWindowTitle( tr( "Bookmarks" ) );
 }

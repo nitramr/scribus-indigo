@@ -267,9 +267,9 @@ UndoPalette::UndoPalette(QWidget* parent, const char* name) : UndoGui(parent, na
 	layout->addLayout(buttonLayout);
 	setWidget(container);
 
-    // Panel icon
-    IconManager* im = IconManager::instance();
-    setIcon(im->loadPixmap("64/pan-history.png"));
+        // Panel icon
+        IconManager* im = IconManager::instance();
+        setIcon(im->loadPixmap("64/pan-history.png"));
 
 
 	updateFromPrefs();

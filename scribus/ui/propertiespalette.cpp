@@ -81,8 +81,8 @@ PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDoc
 	m_haveItem = false;
 	m_unitRatio = 1.0;
 
-    setObjectName(QString::fromLocal8Bit(name));
-    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+        setObjectName(QString::fromLocal8Bit(name));
+//      setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 	TabStack = new ScTreeWidget( this );
 //	Uncomment this line if the new behaviour makes any trouble.
@@ -141,8 +141,8 @@ PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDoc
 	TabStack->widget(0)->setEnabled(false);
 	TabStack->setItemEnabled(0, false);
 
-    // Panel icon
-    setIcon(IconManager::instance()->loadPixmap("64/pan-frame.png"));
+        // Panel icon
+        setIcon(IconManager::instance()->loadPixmap("64/pan-frame.png"));
 
 }
 

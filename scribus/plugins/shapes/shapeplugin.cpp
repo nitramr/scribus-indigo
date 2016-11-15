@@ -34,34 +34,34 @@ for which a new license (GPL+exception) is in place.
 
 int shapeplugin_getPluginAPIVersion()
 {
-    return PLUGIN_API_VERSION;
+	return PLUGIN_API_VERSION;
 }
 
 ScPlugin* shapeplugin_getPlugin()
 {
-    ShapePlugin* plug = new ShapePlugin();
-    Q_CHECK_PTR(plug);
-    return plug;
+	ShapePlugin* plug = new ShapePlugin();
+	Q_CHECK_PTR(plug);
+	return plug;
 }
 
 void shapeplugin_freePlugin(ScPlugin* plugin)
 {
-    ShapePlugin* plug = dynamic_cast<ShapePlugin*>(plugin);
-    Q_ASSERT(plug);
-    delete plug;
+	ShapePlugin* plug = dynamic_cast<ShapePlugin*>(plugin);
+	Q_ASSERT(plug);
+	delete plug;
 }
 
 ShapePlugin::ShapePlugin() : ScPersistentPlugin()
 {
-    sc_palette = NULL;
+	sc_palette = NULL;
 }
 
 ShapePlugin::~ShapePlugin() {};
 
 void ShapePlugin::languageChange()
 {
-    if (sc_palette)
-        sc_palette->languageChange();
+	if (sc_palette)
+		sc_palette->languageChange();
 }
 
 void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
@@ -95,22 +95,22 @@ void ShapePlugin::addToMainWindowMenu(ScribusMainWindow* mw)
 
 const QString ShapePlugin::fullTrName() const
 {
-    return QObject::tr("Custom Shapes");
+	return QObject::tr("Custom Shapes");
 }
 
 const ScActionPlugin::AboutData* ShapePlugin::getAboutData() const
 {
-    AboutData* about = new AboutData;
-    Q_CHECK_PTR(about);
-    about->authors = QString::fromUtf8("Franz Schmid <franz@scribus.info>, ");
-    about->shortDescription = tr("Palette for Photoshop Custom Shapes.");
-    return about;
+	AboutData* about = new AboutData;
+	Q_CHECK_PTR(about);
+	about->authors = QString::fromUtf8("Franz Schmid <franz@scribus.info>, ");
+	about->shortDescription = tr("Palette for Photoshop Custom Shapes.");
+	return about;
 }
 
 void ShapePlugin::deleteAboutData(const AboutData* about) const
 {
-    Q_ASSERT(about);
-    delete about;
+	Q_ASSERT(about);
+	delete about;
 }
 
 bool ShapePlugin::initPlugin()
@@ -125,11 +125,11 @@ bool ShapePlugin::initPlugin()
 
 bool ShapePlugin::cleanupPlugin()
 {
-    if (sc_palette)
-    {
-        sc_palette->writeToPrefs();
-        delete sc_palette;
-        sc_palette = NULL;
-    }
-    return true;
+	if (sc_palette)
+	{
+		sc_palette->writeToPrefs();
+		delete sc_palette;
+		sc_palette = NULL;
+	}
+	return true;
 }

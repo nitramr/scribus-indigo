@@ -41,8 +41,7 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 
     : IndigoPanel(prefsContext )
 {
-
-    if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
+	if (PrefsManager::instance()->appPrefs.uiPrefs.useSmallWidgets)
 	{
 		setStyleSheet("	QToolButton { margin: 1px; padding: 0px; font-size: 10px; } \
 						QToolButton:pressed { padding-top: 2px; padding-left: 2px } \
@@ -65,7 +64,7 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 
 
 void ScDockPalette::startup()
-{    
+{
 	setFontSize();
     if (visibleOnStartup())
 	{
@@ -84,7 +83,7 @@ void ScDockPalette::setPaletteShown(bool visible)
     storeVisibility(visible);
 
 	if (!visible)
-        hide();
+		hide();
 	else if (!isVisible())
 	{
 		show();

@@ -286,5 +286,5 @@ void InlinePalette::changeEvent(QEvent *e)
 
 void InlinePalette::languageChange()
 {
-    setWindowTitle( tr( "Inline Items" ) );
+	setWindowTitle( tr( "Inline Items" ) );
 }

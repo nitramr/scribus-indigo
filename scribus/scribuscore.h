@@ -136,7 +136,7 @@ protected:
 	ScSplashScreen *m_SplashScreen;
 	IconManager *m_iconManager;
 	UndoManager *m_undoManager;
-    ThemeManager *m_themeManager;
+        ThemeManager *m_themeManager;
 	PrefsManager *m_prefsManager;
 	bool m_ScribusInitialized;
 	bool m_UseGUI;

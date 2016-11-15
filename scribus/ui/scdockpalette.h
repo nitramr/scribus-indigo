@@ -42,8 +42,7 @@ class SCRIBUS_API ScDockPalette : public IndigoPanel
         /** @brief Sample way to grab keystrokes, simply calls superclass at this point */
 		//virtual void keyPressEvent(QKeyEvent *keyEvent);
 		void startup();
-
-
+		
 	public slots:
 		virtual void setPaletteShown(bool);
 		virtual void setFontSize();

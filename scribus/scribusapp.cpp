@@ -124,7 +124,7 @@ ScribusQApp::~ScribusQApp()
 	LocaleManager::deleteInstance();
 	LanguageManager::deleteInstance();
 	IconManager::deleteInstance();
-    ThemeManager::deleteInstance();
+        ThemeManager::deleteInstance();
 }
 
 void ScribusQApp::initLang()

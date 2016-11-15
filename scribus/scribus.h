@@ -141,8 +141,8 @@ public:
 	/*!
 	* \retval 0 - ok, 1 - no fonts, ...
 	*/
-    int initScMW(bool primaryMainwWindow);
-    void addScToolBar(ScToolBar *tb, QString name, Qt::ToolBarArea area = Qt::TopToolBarArea);
+        int initScMW(bool primaryMainwWindow);
+        void addScToolBar(ScToolBar *tb, QString name, Qt::ToolBarArea area = Qt::TopToolBarArea);
 	bool warningVersion(QWidget *parent);
 	void SetShortCut();
 	void startUpDialog();
@@ -218,7 +218,7 @@ public:
 	/** \brief private doc for managing default patterns. */
 	ScribusDoc* m_doc;
 
-    IndigoDockManager *indigoDockManager();
+        IndigoDockManager *indigoDockManager();
 
 	QProgressBar* mainWindowProgressBar;
 	ScrSpinBox* zoomSpinBox; //zoom spinbox at bottom of view
@@ -601,8 +601,8 @@ protected:
 
 private:
 
-    IndigoDockManager * wdg_indigoDockManager;
-    IndigoDock * wdg_indigoDock;
+        IndigoDockManager * wdg_indigoDockManager;
+        IndigoDock * wdg_indigoDock;
 
     /** init methods */
 	void initSplash(bool showSplash);
@@ -610,13 +610,13 @@ private:
 	void createMenuBar();
 	void addDefaultWindowMenuItems(); // addDefaultWindowMenuItems adds the basic Windows menu items, excluding the actual list of windows
 	void initStatusBar(); // setup the statusbar
-    void initToolBars(); // setup the toolbars
-    void setStyleSheet(); //set stylesheet for app
-    //Returns false when there are no fonts
+        void initToolBars(); // setup the toolbars
+        void setStyleSheet(); //set stylesheet for app
+        //Returns false when there are no fonts
 	void initHyphenator();
 	void initDefaultValues();
 	void initKeyboardShortcuts();
-    void initIndigoDock();
+        void initIndigoDock();
 	void initPalettes();
 	void initScrapbook();
 
