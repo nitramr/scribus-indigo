@@ -377,7 +377,6 @@ bool IndigoPanel::visibleOnStartup(){
     return bool_visibleOnStartup;
 }
 
-
 /**********************
  *
  * Slots
@@ -389,16 +388,22 @@ void IndigoPanel::hide(){
 
     storeSize();
 
-    switch(dockState()){
-    case IndigoPanel::Docked:
+//    switch(dockState()){
+//    case IndigoPanel::Docked:
+//        setDockState(IndigoPanel::HiddenDocked);
+//        emit panelClosed(Index()); // used for tab
+//        qDebug() << "emit: panelClosed(...);" << endl;
+//        break;
+//    default:
+//        QFrame::hide();
+//        break;
+
+//    }
+
+
+    if(dockState() == IndigoPanel::Docked || dockState() == IndigoPanel::HiddenDocked){
         setDockState(IndigoPanel::HiddenDocked);
         emit panelClosed(Index()); // used for tab
-        qDebug() << "emit: panelClosed(...);" << endl;
-        break;
-    default:
-        QFrame::hide();
-        break;
-
     }
 
 }
@@ -416,6 +421,12 @@ void IndigoPanel::show(){
         QFrame::show();
         break;
     }
+
+//    if(dockState() == IndigoPanel::HiddenDocked){
+//        setDockState(IndigoPanel::Docked);
+//        emit panelShown(Index()); // used for tab
+//    }
+
 
     update();
 

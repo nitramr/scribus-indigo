@@ -41,6 +41,7 @@ IndigoDock::IndigoDock(QWidget *parent) : QDockWidget(parent)
     int_minWidth = int_minPanelWidth + 2*int_padding;
     int_scrollSpeed = 150; // milliseconds
     bool_singleMode = false;
+    bool_restoreMode = false;
 
 
     wdg_toolbar = new IndigoTabBar;
@@ -168,16 +169,6 @@ void IndigoDock::addIndigoPanel (IndigoPanel *panel, IndigoPanel::IndigoDockStat
     panel->updateSize();
 
     // Panel settings
-//    switch(dockState){
-//    case IndigoPanel::HiddenDocked:
-//        panel->setDockState(dockState);
-//        break;
-//    default:
-//        panel->setDockState(IndigoPanel::Docked);
-//        break;
-//    }
-
-     // Panel settings
     if(dockState == IndigoPanel::HiddenDocked){
         panel->setDockState(dockState);
     }else{
@@ -222,7 +213,7 @@ void IndigoDock::updatePanels(){
             panel->setIndex(i);
         }
 
-          i++;
+        i++;
     }
 
     // Calculate spacer
@@ -234,6 +225,7 @@ void IndigoDock::updatePanels(){
 
 void IndigoDock::updateMinHeight(){
 
+    if(bool_restoreMode) return;
 
     int i = 0;
     int int_hiddenPanels = 0;
@@ -262,13 +254,13 @@ void IndigoDock::updateMinHeight(){
         }
 
         default:{
-           int_hiddenPanels ++;
+            int_hiddenPanels ++;
             break;
         }
 
         }
 
-          i++;
+        i++;
     }
 
 
@@ -310,7 +302,7 @@ void IndigoDock::updateMinHeight(){
 
             if(spacer < 0) spacer = 0;
 
-            // set fixed height based on content            
+            // set fixed height based on content
             wdg_dropzone->setMinimumWidth(int_minWidth);
             wdg_dropzone->setMaximumWidth(QWIDGETSIZE_MAX);
             wdg_dropzone->setFixedHeight(minSize + spacer);
@@ -360,16 +352,15 @@ void IndigoDock::movePanel(int oldIndex, int newIndex){
 
 void IndigoDock::scrollToPanel(int PanelIndex){
 
+    if(bool_restoreMode) return;
+
     IndigoPanel *panel = lst_PanelList.at(PanelIndex);
 
     if (!panel) return;
 
-    //this->show();
-
-    panel->show();
+    this->show();
 
     updateMinHeight();
-
 
 
     int offset = int_padding;
@@ -398,6 +389,7 @@ void IndigoDock::scrollToPanel(int PanelIndex){
         break;
     }
 
+
 }
 
 
@@ -406,13 +398,13 @@ void IndigoDock::scrollToPanel(QString PanelName){
 
     foreach(IndigoPanel * panel, lst_PanelList){
 
-       if(panel->dockState() == IndigoPanel::Docked || panel->dockState() == IndigoPanel::HiddenDocked){
-           if(panel->objectName() == PanelName){
+        if(panel->dockState() == IndigoPanel::Docked || panel->dockState() == IndigoPanel::HiddenDocked){
+            if(panel->objectName() == PanelName){
 
-               this->scrollToPanel(panel->Index());
-               return;
-           }
-       }
+                this->scrollToPanel(panel->Index());
+                return;
+            }
+        }
     }
 
 }
@@ -593,37 +585,37 @@ bool IndigoDock::hoverDock(IndigoPanel * pan){
 
     if (wdg_dropzone->rect().contains(cursor) ) {
 
-            int index = -1;
+        int index = -1;
 
 
-            foreach(IndigoPanel *panel, lst_PanelList )
-            {
+        foreach(IndigoPanel *panel, lst_PanelList )
+        {
 
-                if(panel->dockState() == IndigoPanel::Docked || panel->dockState() == IndigoPanel::HiddenDocked){
+            if(panel->dockState() == IndigoPanel::Docked || panel->dockState() == IndigoPanel::HiddenDocked){
 
-                    // calculate IndigoPanel position on DropZone
-                    QPoint childPosBegin = this->mapFromGlobal(panel->mapToGlobal( QPoint( 0, 0 ) ));
+                // calculate IndigoPanel position on DropZone
+                QPoint childPosBegin = this->mapFromGlobal(panel->mapToGlobal( QPoint( 0, 0 ) ));
 
-                    QRect panRect = QRect(childPosBegin, QPoint(childPosBegin.x() + panel->width(), childPosBegin.y()+panel->height()+2*int_padding + int_placeholderHeight));
+                QRect panRect = QRect(childPosBegin, QPoint(childPosBegin.x() + panel->width(), childPosBegin.y()+panel->height()+2*int_padding + int_placeholderHeight));
 
 
-                    // Check if mouse is over an IndigoPanel and get Index
-                    if (panRect.contains(cursor) ) {
+                // Check if mouse is over an IndigoPanel and get Index
+                if (panRect.contains(cursor) ) {
 
-                        index = panel->Index();
-                        break;
+                    index = panel->Index();
+                    break;
 
-                    }
                 }
             }
+        }
 
 
-            //set Panel Index of floating panel
-            pan->setIndex(index);
+        //set Panel Index of floating panel
+        pan->setIndex(index);
 
-            this->addPlaceholder(index);
+        this->addPlaceholder(index);
 
-            return true;
+        return true;
 
     }else{
         this->removePlaceholder();
@@ -671,27 +663,27 @@ void IndigoDock::clear(){
 
 void IndigoDock::updatePanelSize(){
 
-//    IndigoPanel * panel;
-//    foreach(panel, lst_PanelList){
-//        qDebug() << "Panel SizeHintHeight" << panel->sizeHint().height() << endl;
+    //    IndigoPanel * panel;
+    //    foreach(panel, lst_PanelList){
+    //        qDebug() << "Panel SizeHintHeight" << panel->sizeHint().height() << endl;
 
-//        panel->setMinimumSize(int_minPanelWidth, int_minPanelHeight);
-//    }
+    //        panel->setMinimumSize(int_minPanelWidth, int_minPanelHeight);
+    //    }
 
 }
 
 
 void IndigoDock::toggelPanelVisibility(bool visibility){
 
-//    if(visibility == false){
-//        IndigoPanel * pan;
+    //    if(visibility == false){
+    //        IndigoPanel * pan;
 
-//        foreach(pan, lst_PanelList){
+    //        foreach(pan, lst_PanelList){
 
-//            pan->hide();
+    //            pan->hide();
 
-//        }
-//    }
+    //        }
+    //    }
 
 
 }
@@ -716,18 +708,18 @@ void IndigoDock::resizeEvent(QResizeEvent *e){
 bool IndigoDock::eventFilter(QObject *object, QEvent *event)
 {
 
-//    switch( event->type() )
-//    {
-//    case QEvent::Hide:
-////    case QEvent::Resize:
-//    {
-//        updateMinHeight();
-//        break;
-//    }
+    //    switch( event->type() )
+    //    {
+    //    case QEvent::Hide:
+    ////    case QEvent::Resize:
+    //    {
+    //        updateMinHeight();
+    //        break;
+    //    }
 
-//    default:
-//        break;
-//    }
+    //    default:
+    //        break;
+    //    }
 
 
     return QWidget::eventFilter(object, event);
@@ -793,7 +785,7 @@ void IndigoDock::setMinimumPanelSize(QSize size){
 
 QSize IndigoDock::minimumPanelSize(){
 
-   return QSize(int_minPanelWidth, int_minPanelHeight);
+    return QSize(int_minPanelWidth, int_minPanelHeight);
 
 }
 
@@ -829,5 +821,13 @@ void IndigoDock::setPanelPadding(int padding){
 int IndigoDock::panelPadding(){
 
     return int_padding;
+
+}
+
+
+
+void IndigoDock::setRestoreMode(bool restoreOn){
+
+    bool_restoreMode = restoreOn;
 
 }

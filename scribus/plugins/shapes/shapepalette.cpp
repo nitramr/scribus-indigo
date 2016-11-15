@@ -65,6 +65,7 @@ ShapeView::ShapeView(QWidget* parent) : QListWidget(parent)
 	setItemDelegate(delegate);
 	setIconSize(QSize(48, 48));
 
+
 	connect(this, SIGNAL(customContextMenuRequested (const QPoint &)), this, SLOT(HandleContextMenu(QPoint)));
 }
 
@@ -307,6 +308,9 @@ ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( 
 	vLayout->addLayout( buttonLayout );
 	Frame3 = new QToolBox( this );
 	vLayout->addWidget(Frame3);
+
+    // Panel icon
+    setIcon(IconManager::instance()->loadPixmap("64/pan-shapes.png"));
 
 	setWidget(containerWidget);
 

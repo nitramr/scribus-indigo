@@ -321,8 +321,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 //	{
 //		qApp->setStyleSheet(QString(stylesheet));
 //	}
-
-        setStyleSheet();
+    setStyleSheet();
 
 	qApp->setLayoutDirection(QLocale(ScCore->getGuiLanguage()).textDirection());
 	previewDinUse = false;
@@ -375,7 +374,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	createMenuBar();
 	initToolBars();
 
-        initPalettes();
+    initPalettes();
 
 	ScCore->pluginManager->setupPluginActions(this);
 	ScCore->pluginManager->enableOnlyStartupPluginActions(this);
@@ -495,9 +494,9 @@ void ScribusMainWindow::initToolBars()
 	viewToolBar = new ViewToolBar(this);
 
 	addScToolBar(fileToolBar, fileToolBar->objectName());
-        addScToolBar(editToolBar, editToolBar->objectName());
-        addScToolBar(modeToolBar, modeToolBar->objectName(), Qt::LeftToolBarArea);
-        addScToolBar(pdfToolBar, pdfToolBar->objectName(), Qt::LeftToolBarArea);
+    addScToolBar(editToolBar, editToolBar->objectName());
+    addScToolBar(modeToolBar, modeToolBar->objectName(), Qt::LeftToolBarArea);
+    addScToolBar(pdfToolBar, pdfToolBar->objectName(), Qt::LeftToolBarArea);
 	addScToolBar(viewToolBar, viewToolBar->objectName());
 	connect(modeToolBar, SIGNAL(visibilityChanged(bool)), scrActions["toolsToolbarTools"], SLOT(setChecked(bool)));
 	connect(scrActions["toolsToolbarPDF"], SIGNAL(toggled(bool)), pdfToolBar, SLOT(setVisible(bool)));
@@ -635,6 +634,8 @@ void ScribusMainWindow::initPalettes()
     //CB TODO hide the publicly available members of some palettes
     // these must be filtered too as they take control of the palettes events
  
+    wdg_indigoDock->setRestoreMode(true);
+
     // Properties
  
     propertiesPalette = new PropertiesPalette(this, "Properties");
@@ -790,6 +791,9 @@ void ScribusMainWindow::initPalettes()
     connect( nsEditor, SIGNAL(paletteShown(bool)), scrActions["editNotesStyles"], SLOT(setChecked(bool)));
     nsEditor->installEventFilter(this);
   
+
+    wdg_indigoDock->setRestoreMode(false);
+
     wdg_indigoDockManager->loadWorkspace(); // load startup layout
 
  

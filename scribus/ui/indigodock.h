@@ -75,9 +75,11 @@ public:
     void setMinimumPanelSize(QSize size);
     QSize minimumPanelSize();
     void setMovableTabs(bool allow);
+    void setRestoreMode(bool restoreOn);
     bool movableTabs();
     void updateMinHeight();
 
+    QScrollArea * wdg_scrollArea_dz;
 
 private:
 
@@ -85,7 +87,7 @@ private:
     QBoxLayout * lyt_dropzone;
     IndigoTabBar * wdg_toolbar;
     QSplitter *wdg_mainSplitter;
-    QScrollArea * wdg_scrollArea_dz;
+
     QScrollArea * wdg_scrollArea_tb;
     QWidget *wdg_dropzone;
     QWidget * wdg_placeholder;
@@ -100,13 +102,14 @@ private:
     int int_scrollSpeed;
 
     bool bool_singleMode;
+    bool bool_restoreMode;
 
     void addWidget(QWidget *widget);
     void insertWidget(int index, QWidget *widget);
-    void updatePanels();
     void addPlaceholder (int index = -1);
     void removePlaceholder ();
     void calculateSize();
+    void updatePanels();
     void updatePanelSize();
 
 protected:

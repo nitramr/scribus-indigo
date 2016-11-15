@@ -464,6 +464,8 @@ void IndigoDockManager::loadWorkspace(){
             newDock = lst_tmpDocks.at(i);
         }else newDock = new IndigoDock(this);
 
+        newDock->setRestoreMode(true);
+
         // add dock property
         addIndigoDock(newDock, Qt::RightDockWidgetArea);
 
@@ -485,6 +487,10 @@ void IndigoDockManager::loadWorkspace(){
             }
 
         }
+
+
+        newDock->setRestoreMode(false);
+        newDock->updateMinHeight();
 
         i++;
     }
@@ -509,6 +515,11 @@ void IndigoDockManager::saveWorkspace(){
         IndigoDock * dock;
         foreach(dock, lst_Docks){
 
+//            value += dock->wdg_scrollArea_dz->verticalScrollBar()->value() + ";";
+//            value += dock->wdg_scrollArea_dz->horizontalScrollBar()->value() + ";";
+
+//            value += "{";
+
             QString dockEnd = "";
 
             int p = 0;
@@ -523,6 +534,8 @@ void IndigoDockManager::saveWorkspace(){
                 value += panel->objectName() + panEnd;
                 p++;
             }
+
+//            value += "}";
 
             if(lst_Docks.count() > d+1){
                 dockEnd = "|";

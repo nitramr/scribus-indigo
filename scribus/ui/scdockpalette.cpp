@@ -70,7 +70,7 @@ void ScDockPalette::startup()
 	{
         show();
 	}
-	else
+    else
         hide();
 
     emit paletteShown(visibleOnStartup());
@@ -79,16 +79,16 @@ void ScDockPalette::startup()
 
 
 void ScDockPalette::setPaletteShown(bool visible)
-{
+{    
+
     storeVisibility(visible);
 
-	if (!visible)
-		hide();
-	else if (!isVisible())
-	{
-		show();
-		activateWindow();
-	}
+    if (!visible)
+        hide();
+    else
+    {
+        show();
+    }
 }
 
 
