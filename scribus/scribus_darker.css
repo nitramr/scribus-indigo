@@ -46,25 +46,25 @@ ColorFormat
 
 */
 Palette::dark {
-	[all]		alternate-base:		rgb(65,65,65);
-	[all]		background:		rgb(70,70,70);
-	[all]		base:			rgb(46,46,46);
+	[all]		alternate-base:		rgb(53,53,53);
+	[all]		background:		rgb(46,46,46);
+	[all]		base:			rgb(25,25,25);
 	[all]		bright-text:		rgb(204,204,204);
-	[all]		button:			rgb(85,85,85);
+	[all]		button:			rgb(60,60,60);
 	[all]		button-text:		rgb(204,204,204);
-	[all]		dark:			rgb(55,55,55);
+	[all]		dark:			rgb(30,30,30);
 	[all]		highlight:		rgb(0,150,255);
 	[all]		highlighted-text:	rgb(34,34,34);
 	[all]		link:			rgb(42,130,218);
-	[all]		light:			rgb(95,95,95);
+	[all]		light:			rgb(70,70,70);
 	[all]		link:			rgb(42,130,218);
-	[all]		mid:			rgb(63,63,63);
-	[all]		midlight:		rgb(80,80,80);
+	[all]		mid:			rgb(38,38,38);
+	[all]		midlight:		rgb(65,65,65);
 	[all]		shadow:			rgb(0,0,0);
 	[all]		text:			rgb(204,204,204);
-	[all]		tooltip-base:		rgb(65,65,65);
+	[all]		tooltip-base:		rgb(53,53,53);
 	[all]		tooltip-text:		rgb(204,204,204);
-	[all]		window:			rgb(70,70,70);
+	[all]		window:			rgb(46,46,46);
 	[all]		window-text: 		rgb(204,204,204);
 }
 
@@ -78,10 +78,9 @@ IndigoPanel QScrollBar:vertical {width: 10px;}
 IndigoDock QScrollBar:horizontal,
 IndigoPanel QScrollBar:horizontal {height: 10px;}
 
-
 QLabel#OldC,
 QLabel#NewC {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
 }
 
 GradientPreview {
@@ -95,7 +94,7 @@ QWidget#IndigoPanelGrip {background-color: palette(window);}
 
 ColorListBox {
     background-color: rgb(128,128,128);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
 }
 
 ColorListBox::item{
@@ -129,7 +128,7 @@ QCheckBox:disabled {
 }
 
 QCheckBox::indicator {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background-color: palette(base);
     border-radius: 2px;
     width: 12px;
@@ -154,7 +153,7 @@ QRadioButton:disabled {
 }
 
 QRadioButton::indicator {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background-color: palette(base);
     border-radius: 5px;
     width: 10px;
@@ -206,7 +205,7 @@ IndigoPanel QToolButton {
 
 QToolButton {
     background-color: palette(button);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     color: palette(button-text);
     padding-top: 3px;
     padding-bottom: 3px;
@@ -220,7 +219,7 @@ QPushButton {
     height: 16px;
     color: palette(button-text);
     background-color: palette(button);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     padding-top: 3px;
     padding-bottom: 3px;
     padding-left: 6px;
@@ -240,7 +239,7 @@ QPushButton:hover,
 QToolButton:focus,
 QToolButton:hover {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 palette(light), stop:1 palette(button) );
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
 }
 
 QPushButton:focus,
@@ -265,7 +264,7 @@ QComboBox {
     color: palette(button-text);
     background-color: palette(button);
     border-width: 1px;
-    border-color: rgb(39,39,39);
+    border-color: rgb(15,15,15);
     border-style: solid;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -316,7 +315,7 @@ QComboBox::drop-down {
     outline: none;
     width: 16px;
     border-left-width: 1px;
-    border-left-color: rgb(39,39,39);
+    border-left-color: rgb(15,15,15);
     border-left-style: solid;
     border-top-right-radius: 2px; 
     border-bottom-right-radius: 2px;
@@ -337,7 +336,7 @@ QDoubleSpinBox {
     color: palette(button-text);
     background-color: palette(base);
     border-width: 1px;
-    border-color: rgb(39,39,39);
+    border-color: rgb(15,15,15);
     border-style: solid;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -364,7 +363,7 @@ QDoubleSpinBox::down-button{
     background-color: palette(button);
 
     border-left-width: 1px;
-    border-left-color: rgb(39,39,39);
+    border-left-color: rgb(15,15,15);
     border-left-style: solid;
 }
 
@@ -427,7 +426,7 @@ QLineEdit {
     color: palette(window-text);
     background-color: palette(base);
     border-width: 1px;
-    border-color: rgb(39,39,39);
+    border-color: rgb(15,15,15);
     border-style: solid;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -436,7 +435,7 @@ QLineEdit {
     border-radius: 2px;
     outline: none;
     selection-background-color: palette(highlight);
-    selection-color: rgb(39,39,39);
+    selection-color: rgb(15,15,15);
 }
 
 QLineEdit:disabled {
@@ -451,7 +450,7 @@ QLineEdit:focus{border-color:palette(highlight);}
 
 QTabBar::tab {
     background-color: palette(mid);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
     min-width: 8ex;
@@ -501,7 +500,7 @@ QTabBar::scroller {
 QTabBar QToolButton {
     color: palette(button-text);
     background-color: palette(mid);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
 }
 
 QTabBar QToolButton:hover,
@@ -510,7 +509,7 @@ QTabBar QToolButton:focus{
 }
 
 QTabBar QToolButton:disabled {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background-color: palette(window);
     color: rgb(128,128,128);
 }
@@ -527,7 +526,7 @@ QTabBar QToolButton::left-arrow {
 /* QTabWidget */
 
 QTabWidget::pane {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background-color: palette(mid);
     position: absolute;
     top: -1px;
@@ -542,7 +541,7 @@ QTabWidget::tab-bar {
 /* QTooTip */
 
 QToolTip {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     color: palette(tooltip-text);
     background-color: palette(tooltip-base);
 }
@@ -553,7 +552,7 @@ QToolTip {
 QListView {
     background-color: palette(base);
     color: palette(window-text);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
 
 }
 
@@ -589,8 +588,8 @@ QListView::item:hover{
 
 QMenuBar {
     background-color: palette(window);
-    border-top: 1px solid rgb(39,39,39);
-    border-bottom: 1px solid rgb(39,39,39);
+    border-top: 1px solid rgb(15,15,15);
+    border-bottom: 1px solid rgb(15,15,15);
     padding:3px;
 }
 
@@ -598,7 +597,7 @@ ScrPopupMenu,
 QComboBox QAbstractItemView,
 QMenu {
     background-color: palette(window);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     selection-background-color: palette(button);
 }
 
@@ -645,7 +644,7 @@ ScrPopupMenu,
 QComboBox QAbstractItemView::item:selected,
 QMenu::separator {
     height: 1px;
-    background: rgb(39,39,39);
+    background: rgb(15,15,15);
     margin-left: 26px;
     margin-right: 20px;
 }
@@ -654,7 +653,7 @@ QMenu::separator {
 /* QProgressBar */
 
 QProgressBar {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     border-radius: 2px;
     background-color: palette(base);
     padding-top: 2px;
@@ -670,7 +669,7 @@ QProgressBar::chunk {
 /* QSlider */
 
 QSlider::groove:horizontal {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     height: 8px;
     background-color: palette(mid);
     margin: 2px 0;
@@ -678,14 +677,14 @@ QSlider::groove:horizontal {
 
 QSlider::handle:horizontal {
     background-color: palette(button);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     width: 18px;
     margin: -2px 0;
     border-radius: 2px;
 }
 
 QSlider::groove:vertical {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     width: 8px;
     background-color: palette(mid);
     margin: 0 2px;
@@ -693,7 +692,7 @@ QSlider::groove:vertical {
 
 QSlider::handle:vertical {
     background-color: palette(button);
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     height: 18px;
     margin: 0 -2px;
     border-radius: 2px;
@@ -718,14 +717,14 @@ QSlider::handle:vertical:hover {
 /* QScrollBar */
 
 QScrollBar:horizontal {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background: palette(base);
     height: 15px;
     margin: 0px 16px 0 16px;
 }
 
 QScrollBar:vertical {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background: palette(base);
     width: 15px;
     margin: 16px 0 16px 0;
@@ -840,7 +839,7 @@ QHeaderView::section {
     background-color: palette(window);
     color: palette(window-text);
     padding-left: 4px;
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
 }
 
 QHeaderView::section:checked
@@ -860,7 +859,7 @@ QHeaderView::up-arrow {
 /* QTableView */
 
 QTableView {
-    border: 1px solid rgb(39,39,39);
+    border: 1px solid rgb(15,15,15);
     background-color: palette(base);
     color: palette(window-text);
     selection-background-color: palette(highlight);

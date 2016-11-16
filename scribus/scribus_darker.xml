@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf8"?>
+<theme>
+	<author>Martin Reininger</author>
+	<license>GPLv2+</license>
+	<path>scribus_darker.css</path>
+	<activeversion>1.5.3</activeversion>
+	<nametext lang="en_US">Scribus Darker</nametext>
+	<nametext lang="fr">Scribus Noir</nametext>
+	<nametext lang="de_DE">Scribus Dunkeler</nametext>
+</theme>

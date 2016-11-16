@@ -20,6 +20,7 @@
 
 // #include <QDebug>
 #include <QToolTip>
+#include <QtWidgets>
 #include <QWidget>
 
 #include "appmodes.h"
@@ -107,9 +108,15 @@ QDataStream &operator>> ( QDataStream & ds, CanvasViewMode & vm )
 
 Canvas::Canvas(ScribusDoc* doc, ScribusView* parent) : QWidget(parent), m_doc(doc), m_view(parent)
 {
-	setAutoFillBackground(true);
-	setAttribute(Qt::WA_OpaquePaintEvent, true);
-	setAttribute(Qt::WA_NoSystemBackground, true);
+    //setAttribute(Qt::WA_OpaquePaintEvent, true);
+    //setAttribute(Qt::WA_NoSystemBackground, true);
+    //setAutoFillBackground(true);
+
+    // Override background with preferences color
+    QPalette p = palette();
+    p.setBrush(QPalette::Window, PrefsManager::instance()->appPrefs.displayPrefs.scratchColor);
+    setPalette(p);
+
 	m_buffer = /*QImage()*/QPixmap();
 	m_bufferRect = QRect();
 	m_viewMode.init();
@@ -810,10 +817,12 @@ void Canvas::fillBuffer(QPaintDevice* buffer, QPoint bufferOrigin, QRect clipRec
 */
 void Canvas::paintEvent ( QPaintEvent * p )
 {
+
 //	qDebug()<<"Canvas::paintEvent"<<p->rect()<<m_viewMode.forceRedraw<<m_viewMode.operItemSelecting;
 // 	printBacktrace(62);
 	if (m_doc->isLoading())
-		return;
+		return;    
+
 // #define SHOW_ME_WHAT_YOU_GET_IN_D_CANVA
 #ifdef SHOW_ME_WHAT_YOU_GET_IN_D_CANVA
 	QTime t;
@@ -1563,21 +1572,31 @@ void Canvas::drawBackgroundMasterpage(ScPainter* painter, int clipx, int clipy, 
 	double y = m_doc->scratch()->top() * m_viewMode.scale;
 	double w = m_doc->currentPage()->width() * m_viewMode.scale;
 	double h = m_doc->currentPage()->height() * m_viewMode.scale;
-	QRectF drawRect = QRectF(x, y, w+5, h+5);
+    QRectF drawRect = QRectF(x, y, w+5, h+5);
 	drawRect.translate(-m_doc->minCanvasCoordinate.x(), -m_doc->minCanvasCoordinate.y());
 	if (drawRect.intersects(QRectF(clipx, clipy, clipw, cliph)))
 	{
 		painter->setFillMode(ScPainter::Solid);
-		painter->setBrush(QColor(128,128,128));
+
+        QColor color1 = palette().window().color();
+        QColor color2(Qt::black);
+        double ratio = 0.2;
+        QColor cShadow(color1.red()* (1-ratio) + color2.red()*ratio,
+                       color1.green()* (1-ratio) + color2.green()*ratio,
+                       color1.blue()* (1-ratio) + color2.blue()*ratio,
+                       255);
+
+        painter->setBrush(cShadow);
+
 		MarginStruct pageBleeds;
 		m_doc->getBleeds(m_doc->currentPage(), pageBleeds);
 		painter->setAntialiasing(false);
 		painter->setPen(Qt::black, 1 / m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 		if (!m_doc->bleeds()->isNull() && m_doc->guidesPrefs().showBleed)
 		{
-			if (PrefsManager::instance()->appPrefs.displayPrefs.showPageShadow)
-				painter->drawRect(m_doc->scratch()->left() - pageBleeds.left()+5, m_doc->scratch()->top() - pageBleeds.top()+5, m_doc->currentPage()->width() + pageBleeds.left() + pageBleeds.right(), m_doc->currentPage()->height() + pageBleeds.bottom() + pageBleeds.top());
-			painter->setBrush(m_doc->paperColor());
+            if (PrefsManager::instance()->appPrefs.displayPrefs.showPageShadow)
+                painter->drawRect(m_doc->scratch()->left() - pageBleeds.left()+5, m_doc->scratch()->top() - pageBleeds.top()+5, m_doc->currentPage()->width() + pageBleeds.left() + pageBleeds.right(), m_doc->currentPage()->height() + pageBleeds.bottom() + pageBleeds.top());
+            painter->setBrush(m_doc->paperColor());
 			painter->drawRect(m_doc->scratch()->left() - pageBleeds.left(), m_doc->scratch()->top() - pageBleeds.top(), m_doc->currentPage()->width() + pageBleeds.left() + pageBleeds.right(), m_doc->currentPage()->height() + pageBleeds.bottom() + pageBleeds.top());
 		}
 		else
@@ -1601,7 +1620,15 @@ void Canvas::drawBackgroundPageOutlines(ScPainter* painter, int clipx, int clipy
 	uint docPagesCount=m_doc->Pages->count();
 	if (PrefsManager::instance()->appPrefs.displayPrefs.showPageShadow)
 	{
-		painter->setBrush(QColor(128,128,128));
+        QColor color1 = palette().window().color();
+        QColor color2(Qt::black);
+        double ratio = 0.2;
+        QColor cShadow(color1.red()* (1-ratio) + color2.red()*ratio,
+                       color1.green()* (1-ratio) + color2.green()*ratio,
+                       color1.blue()* (1-ratio) + color2.blue()*ratio,
+                       255);
+
+        painter->setBrush(cShadow);
 		painter->setAntialiasing(false);
 		painter->setPen(Qt::black, 1.0 / m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 		ScPage *actPg;
