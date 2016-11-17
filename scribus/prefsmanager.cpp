@@ -1968,7 +1968,7 @@ bool PrefsManager::ReadPref(QString ho)
 
 		if (dc.tagName()=="UI")
 		{
-                        appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
+            appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
 			appPrefs.uiPrefs.wheelJump = dc.attribute("ScrollWheelJump").toInt();
 			appPrefs.uiPrefs.mouseMoveTimeout = dc.attribute("MouseMoveTimeout", "150").toInt();
             appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
@@ -2681,13 +2681,14 @@ bool PrefsManager::ReadPref(QString ho)
 	appPrefs.ui_SystemTheme = qApp->style()->objectName();
 
 
-//	if (appPrefs.uiPrefs.style.length() > 0)
-//	{
-//		qApp->setStyle(QStyleFactory::create(appPrefs.uiPrefs.style));
-//		// Plain wrong, a style may set a palette different from the standard palette
-//		// Eg : Windows XP and Windows Vista styles
-//		// qApp->setPalette(qApp->style()->standardPalette());
-//	}
+    if (appPrefs.uiPrefs.style.length() > 0)
+    {
+
+        qApp->setStyle(QStyleFactory::create(appPrefs.uiPrefs.style));
+        // Plain wrong, a style may set a palette different from the standard palette
+        // Eg : Windows XP and Windows Vista styles
+        // qApp->setPalette(qApp->style()->standardPalette());
+    }
 	QFont apf = qApp->font();
 	apf.setPointSize(appPrefs.uiPrefs.applicationFontSize);
 	qApp->setFont(apf);

@@ -93,7 +93,7 @@ void Prefs_UserInterface::restoreDefaults(struct ApplicationPrefs *prefsData)
 void Prefs_UserInterface::saveGuiToPrefs(struct ApplicationPrefs *prefsData) const
 {
 	prefsData->uiPrefs.language=selectedGUILang;
-        prefsData->uiPrefs.style=ThemeManager::instance()->baseNameForTranslation(themeComboBox->currentText());
+    prefsData->uiPrefs.style=ThemeManager::instance()->baseNameForTranslation(themeComboBox->currentText());
 	prefsData->uiPrefs.iconSet=IconManager::instance()->baseNameForTranslation(iconSetComboBox->currentText());
 	prefsData->uiPrefs.applicationFontSize=fontSizeMenuSpinBox->value();
 	prefsData->uiPrefs.paletteFontSize=fontSizePaletteSpinBox->value();

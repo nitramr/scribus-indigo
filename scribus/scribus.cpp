@@ -474,6 +474,7 @@ ScribusMainWindow::~ScribusMainWindow()
 	if (appModeHelper)
 		delete appModeHelper;
 	delete m_doc;
+    delete m_tocGenerator;
 }
 
 void ScribusMainWindow::addScToolBar(ScToolBar *tb, QString name, Qt::ToolBarArea  area)
@@ -508,30 +509,44 @@ void ScribusMainWindow::initToolBars()
 
 void ScribusMainWindow::setStyleSheet()
 {
+    QStringList sysTheme = QStyleFactory::keys();
+    QString sTheme = PrefsManager().instance()->appPrefs.uiPrefs.style;
 
-    qApp->setStyle("Fusion");
+    if(sysTheme.contains(sTheme)){
+        qApp->setStyle(QStyleFactory::create(sTheme));
+        QByteArray stylesheet;
+        // load alternative styles if available
+        if (loadRawText(ScPaths::getApplicationDataDir() + "/stylesheet.css", stylesheet))
+        {
+            qApp->setStyleSheet(QString(stylesheet));
+        }
 
-    ThemeFactory *sf = new ThemeFactory();
-    QByteArray stylesheet;
- 
-    QString themePath = ScPaths::instance().libDir() + ThemeManager::instance()->activePath();
-    if (loadRawText(themePath, stylesheet))
-    {
- 
-        QString style(stylesheet);
-        sf->parseString(style);
-        qApp->setPalette(sf->palette());
+    }else{
 
-        QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
+        qApp->setStyle("Fusion");
 
-        QString iconFolder = ScPaths::instance().iconDir();
-        QString iconset(IconManager::instance()->activePath());
+        ThemeFactory *sf = new ThemeFactory();
+        QByteArray stylesheet;
 
-        style.replace(re, iconFolder + iconset + "\\1");
+        QString themePath = ScPaths::instance().libDir() + ThemeManager::instance()->activePath();
+        if (loadRawText(themePath, stylesheet))
+        {
+
+            QString style(stylesheet);
+            sf->parseString(style);
+            qApp->setPalette(sf->palette());
+
+            QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
+
+            QString iconFolder = ScPaths::instance().iconDir();
+            QString iconset(IconManager::instance()->activePath());
+
+            style.replace(re, iconFolder + iconset + "\\1");
 
 
-        qApp->setStyleSheet(style);
- 
+            qApp->setStyleSheet(style);
+
+        }
     }
 
 }

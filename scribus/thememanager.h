@@ -76,6 +76,7 @@ class SCRIBUS_API ThemeManager : public QObject
         QString m_backupSetVersion;
 
         bool initThemes();
+        void addSystemThemes();
         void readThemeConfigFiles();
 
 

@@ -18,6 +18,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QDomDocument>
+#include <QStyleFactory>
 
 #include "thememanager.h"
 #include "prefsmanager.h"
@@ -68,8 +69,37 @@ bool ThemeManager::initThemes()
     return true;
 }
 
+
+void ThemeManager::addSystemThemes(){
+
+    QStringList sysThemes = QStyleFactory::keys();
+
+    QString theme;
+    foreach(theme, sysThemes){
+
+        ScIconSetData isd;
+
+        isd.path="";
+        isd.license="System";
+        isd.activeversion="1.5.3";
+        isd.nameTranslations.insert("en_US",theme);
+        isd.baseName=theme;
+
+        m_themeSets.insert(isd.baseName, isd);
+        m_backupSetBasename=m_activeSetBasename;
+        m_backupSetVersion=m_backupSetVersion;
+        m_activeSetBasename=isd.baseName;
+        m_activeSetVersion=isd.activeversion;
+
+    }
+
+}
+
+
 void ThemeManager::readThemeConfigFiles()
 {
+    addSystemThemes();
+
     QString baseThemeDir(ScPaths::instance().libDir());
     QStringList locations;
     locations<<baseThemeDir;
