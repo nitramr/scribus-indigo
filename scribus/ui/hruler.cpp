@@ -71,11 +71,11 @@ enum ruler_code
 Hruler::Hruler(ScribusView *pa, ScribusDoc *doc) : QWidget(pa)
 {
 	prefsManager=PrefsManager::instance();
-	setBackgroundRole(QPalette::Window);
+    setBackgroundRole(QPalette::Base);
 	setAutoFillBackground(true);
-	QPalette palette;
-	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
-	setPalette(palette);
+//	QPalette palette;
+//	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
+//	setPalette(palette);
 	m_doc = doc;
 	m_view = pa;
 	offs = 0;
@@ -530,7 +530,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 			double EndPos = Pos + ColWidth;
 			drawTextMarks(Pos, EndPos, p);
 			
-			p.setPen(QPen(Qt::blue, 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setPen(QPen(palette().highlight().color(), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			int xPos = textPosToLocal(Pos);
 			p.drawLine(xPos, topline, xPos, bottomline);
 			if (CurrCol == 0)
@@ -539,7 +539,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 				p.drawLine(xPos, topline, (xPos+4), topline);
 			}
 			
-			p.setPen(QPen(Qt::blue, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setPen(QPen(palette().highlight().color(), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			
 			xPos = textPosToLocal(Pos+First+Indent);
 			QPolygon cr;
@@ -558,7 +558,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 
 			if (TabValues.count() != 0)
 			{
-				p.setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+                p.setPen(QPen(palette().windowText().color(), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 				for (int yg = 0; yg < signed(TabValues.count()); yg++)
 				{
 					xPos = textPosToLocal(Pos+TabValues[yg].tabPosition);
@@ -615,7 +615,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 				}
 			}
 			
-			p.setPen(QPen(Qt::blue, 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setPen(QPen(palette().highlight().color(), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			xPos = textPosToLocal(EndPos);
 			p.drawLine(xPos, topline, xPos, bottomline);
 			if (CurrCol == Cols-1)
@@ -649,8 +649,8 @@ void Hruler::drawMarker(QPainter& p)
 		pp.setBrush( BACKGROUND );
 		pp.drawRect( 0, 0, 4*SCALE, 16*SCALE );
 		
-		pp.setPen(Qt::red);
-		pp.setBrush(Qt::red);
+        pp.setPen(palette().highlight().color());
+        pp.setBrush(palette().highlight().color());
 		cr.setPoints(3, 2*SCALE, 16*SCALE, 4*SCALE, 0, 0, 0);
 		pp.drawPolygon(cr);
 	}
@@ -661,8 +661,8 @@ void Hruler::drawMarker(QPainter& p)
 	p.drawPixmap((where-2)*SCALE, 1, pix);
 	p.restore();
 	// restore marks
-	p.setBrush(Qt::black);
-	p.setPen(Qt::black);
+    p.setBrush(palette().windowText().color());
+    p.setPen(palette().windowText().color());
 	p.setFont(font());
 	double sc = m_view->getScale();
 	double cc = width() / sc;
@@ -676,8 +676,8 @@ void Hruler::drawMarker(QPainter& p)
 	// draw slim marker
 	p.resetTransform();
 	p.translate(-m_view->contentsX(), 0);
-	p.setPen(Qt::red);
-	p.setBrush(Qt::red);
+    p.setPen(palette().highlight().color());
+    p.setBrush(palette().highlight().color());
 	cr.setPoints(5,  whereToDraw, 5, whereToDraw, 16, whereToDraw, 5, whereToDraw+2, 0, whereToDraw-2, 0);
 	p.drawPolygon(cr);
 #endif
@@ -686,8 +686,8 @@ void Hruler::drawMarker(QPainter& p)
 
 void Hruler::drawMarks(QPainter& p)
 {
-	p.setBrush(Qt::black);
-	p.setPen(Qt::black);
+    p.setBrush(palette().windowText().color());
+    p.setPen(palette().windowText().color());
 	//p.drawLine(0, 16, width(), 16);
 	double sc = Scaling;
 	double cc = width() / sc;
@@ -746,8 +746,8 @@ void Hruler::drawTextMarks(double Pos, double EndPos, QPainter& p)
 {
 	double xl;
 	
-	p.setPen(QPen(Qt::blue, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
-	p.setBrush(Qt::blue);
+    p.setPen(QPen(palette().highlight().color(), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+    p.setBrush(palette().highlight().color());
 	for (xl = Pos; xl < EndPos; xl += iter)
 	{
 		int xli = textPosToLocal(xl);

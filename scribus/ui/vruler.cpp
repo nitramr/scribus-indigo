@@ -45,11 +45,11 @@ for which a new license (GPL+exception) is in place.
 Vruler::Vruler(ScribusView *pa, ScribusDoc *doc) : QWidget(pa)
 {
 	prefsManager=PrefsManager::instance();
-	setBackgroundRole(QPalette::Window);
+    setBackgroundRole(QPalette::Base);
 	setAutoFillBackground(true);
-	QPalette palette;
-	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
-	setPalette(palette);
+//	QPalette palette;
+//	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
+//	setPalette(palette);
 	m_doc = doc;
 	m_view = pa;
 	offs = 0;
@@ -104,8 +104,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 	p.save();
 	p.setClipRect(e->rect());
 //	p.drawLine(16, 0, 16, height());
-	p.setBrush(Qt::black);
-	p.setPen(Qt::black);
+    p.setBrush(palette().windowText().color());
+    p.setPen(palette().windowText().color());
 	p.setFont(font());
 	double cc = height() / sc;
 	double firstMark = ceil(offs / iter) * iter - offs;
@@ -171,8 +171,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 			pp.setBrush( BACKGROUND );
 			pp.drawRect( 0, 0, 16*SCALE, 4*SCALE );
 	
-			pp.setPen(Qt::red);
-			pp.setBrush(Qt::red);
+            pp.setPen(palette().highlight().color());
+            pp.setBrush(palette().highlight().color());
 			cr.setPoints(3, 16*SCALE, 2*SCALE, 0, 4*SCALE, 0, 0);
 			pp.drawPolygon(cr);
 		}
@@ -183,8 +183,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 		p.drawPixmap(0, (where-2)*SCALE, pix);
 		p.restore();
 		// repaint marks
-		p.setBrush(Qt::black);
-		p.setPen(Qt::black);
+        p.setBrush(palette().windowText().color());
+        p.setPen(palette().windowText().color());
 		p.setFont(font());
 		double sc = m_view->getScale();
 		double cc = height() / sc;
@@ -197,8 +197,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 #else
 		// draw slim marker
 		p.translate(0, -m_view->contentsY());
-		p.setPen(Qt::red);
-		p.setBrush(Qt::red);
+        p.setPen(palette().highlight().color());
+        p.setBrush(palette().highlight().color());
 		cr.setPoints(5,  5, whereToDraw, 16, whereToDraw, 5, whereToDraw, 0, whereToDraw+2, 0, whereToDraw-2);
 		p.drawPolygon(cr);
 #endif

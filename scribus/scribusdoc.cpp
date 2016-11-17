@@ -224,7 +224,7 @@ ScribusDoc::ScribusDoc() : UndoObject( tr("Document")), Observable<ScribusDoc>(N
 	viewCount(0), viewID(0),
 	SnapGrid(false),
 	SnapGuides(true),
-	SnapElement(false), GuideLock(false),
+    SnapElement(true), GuideLock(false),
 	minCanvasCoordinate(FPoint(0, 0)),
 	rulerXoffset(0.0), rulerYoffset(0.0),
 	Pages(0), MasterPages(), DocPages(),
