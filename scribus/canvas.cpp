@@ -112,7 +112,7 @@ Canvas::Canvas(ScribusDoc* doc, ScribusView* parent) : QWidget(parent), m_doc(do
     //setAttribute(Qt::WA_NoSystemBackground, true);
     //setAutoFillBackground(true);
 
-    // Override background with preferences color
+    // Override background with preferences color; transparency doesn't work on linux systems
     QPalette p = palette();
     p.setBrush(QPalette::Window, PrefsManager::instance()->appPrefs.displayPrefs.scratchColor);
     setPalette(p);

@@ -171,8 +171,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 			pp.setBrush( BACKGROUND );
 			pp.drawRect( 0, 0, 16*SCALE, 4*SCALE );
 	
-            pp.setPen(palette().highlight().color());
-            pp.setBrush(palette().highlight().color());
+            pp.setPen(QColor(0,150,255));
+            pp.setBrush(QColor(0,150,255));
 			cr.setPoints(3, 16*SCALE, 2*SCALE, 0, 4*SCALE, 0, 0);
 			pp.drawPolygon(cr);
 		}
@@ -197,8 +197,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 #else
 		// draw slim marker
 		p.translate(0, -m_view->contentsY());
-        p.setPen(palette().highlight().color());
-        p.setBrush(palette().highlight().color());
+        p.setPen(QColor(0,150,255));
+        p.setBrush(QColor(0,150,255));
 		cr.setPoints(5,  5, whereToDraw, 16, whereToDraw, 5, whereToDraw, 0, whereToDraw+2, 0, whereToDraw-2);
 		p.drawPolygon(cr);
 #endif

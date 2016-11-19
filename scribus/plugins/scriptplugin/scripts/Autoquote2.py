@@ -23,18 +23,15 @@ if 'none' is chosen, then existing spaces inside double quotes are deleted
 + take into account already existing doublequotes for the correct choice open / close of next dquote
 + warning if some open/close inconsistency is detected
 for example in « texte " suite »
-
 LIMITS
 - it only acts on the currently selected frame
 (todo : acting on more than one selected frame,
 or on whole chain of linked text frame would be nice).
 - Spaces are not added outside of the quotes.
 (that could be a job for another more general typographic tool)
-
 INSTALL
 download file, save it with 'quotenspace.py' name
 and enjoy
-
 USAGE
 You must have a document open, and a text frame selected.
 Run script from scribus menu (Script > Run script...)
@@ -44,8 +41,6 @@ A dialog then asks what is your choice as for spaces.
 Follow indications and answer 0, 1, 2 or 3 
 Another dialog asks whether you want the script to manage 
 existing correct doublequotes.
-
-
 """
 import scribus
 
@@ -127,7 +122,7 @@ elif ((lang == 'hu') or (lang == 'nl')):
     lead_single = u"\u00bb"
     follow_single = u"\u00ab"
 else:
-    scribus.messageBox('Language Error', 'You need to choose an available language', icon=0, button1=1)
+    scribus.messageBox('Language Error', 'You need to choose an available language', scribus.ICON_WARNING, scribus.BUTTON_OK)
     sys.exit(2)
 
 if scribus.selectionCount() == 0:

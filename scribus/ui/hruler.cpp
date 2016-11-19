@@ -530,7 +530,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 			double EndPos = Pos + ColWidth;
 			drawTextMarks(Pos, EndPos, p);
 			
-            p.setPen(QPen(palette().highlight().color(), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setPen(QPen(QColor(0,150,255), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			int xPos = textPosToLocal(Pos);
 			p.drawLine(xPos, topline, xPos, bottomline);
 			if (CurrCol == 0)
@@ -539,7 +539,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 				p.drawLine(xPos, topline, (xPos+4), topline);
 			}
 			
-            p.setPen(QPen(palette().highlight().color(), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setPen(QPen(QColor(0,150,255), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			
 			xPos = textPosToLocal(Pos+First+Indent);
 			QPolygon cr;
@@ -615,7 +615,7 @@ void Hruler::paintEvent(QPaintEvent *e)
 				}
 			}
 			
-            p.setPen(QPen(palette().highlight().color(), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+            p.setPen(QPen(QColor(0,150,255), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			xPos = textPosToLocal(EndPos);
 			p.drawLine(xPos, topline, xPos, bottomline);
 			if (CurrCol == Cols-1)
@@ -649,8 +649,8 @@ void Hruler::drawMarker(QPainter& p)
 		pp.setBrush( BACKGROUND );
 		pp.drawRect( 0, 0, 4*SCALE, 16*SCALE );
 		
-        pp.setPen(palette().highlight().color());
-        pp.setBrush(palette().highlight().color());
+        pp.setPen(QColor(0,150,255));
+        pp.setBrush(QColor(0,150,255));
 		cr.setPoints(3, 2*SCALE, 16*SCALE, 4*SCALE, 0, 0, 0);
 		pp.drawPolygon(cr);
 	}
@@ -676,8 +676,8 @@ void Hruler::drawMarker(QPainter& p)
 	// draw slim marker
 	p.resetTransform();
 	p.translate(-m_view->contentsX(), 0);
-    p.setPen(palette().highlight().color());
-    p.setBrush(palette().highlight().color());
+    p.setPen(QColor(0,150,255));
+    p.setBrush(QColor(0,150,255));
 	cr.setPoints(5,  whereToDraw, 5, whereToDraw, 16, whereToDraw, 5, whereToDraw+2, 0, whereToDraw-2, 0);
 	p.drawPolygon(cr);
 #endif
@@ -746,8 +746,8 @@ void Hruler::drawTextMarks(double Pos, double EndPos, QPainter& p)
 {
 	double xl;
 	
-    p.setPen(QPen(palette().highlight().color(), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
-    p.setBrush(palette().highlight().color());
+    p.setPen(QPen(QColor(0,150,255), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+    p.setBrush(QColor(0,150,255));
 	for (xl = Pos; xl < EndPos; xl += iter)
 	{
 		int xli = textPosToLocal(xl);
