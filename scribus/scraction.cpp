@@ -48,11 +48,12 @@ ScrAction::ScrAction(ActionType aType, const QString & menuText, QKeySequence ac
 		connect (this, SIGNAL(triggered()), this, SLOT(triggeredToTriggeredData()));
 }
 
-ScrAction::ScrAction(ActionType aType, const QPixmap & icon16, const QPixmap & icon22, const QString & menuText, QKeySequence accel, QObject * parent, QVariant d) : QAction( QIcon(icon16), menuText, parent )
+ScrAction::ScrAction(ActionType aType, const QIcon & icon16, const QIcon & icon22, const QString & menuText, QKeySequence accel, QObject * parent, QVariant d) : QAction( QIcon(icon16), menuText, parent )
 {
 	setShortcut(accel);
-	initScrAction();
-	icon().addPixmap(icon22, QIcon::Normal, QIcon::On);
+    initScrAction();
+
+    icon() = icon22;
 
 	m_actionType = aType;
 	setData(d);
@@ -60,12 +61,13 @@ ScrAction::ScrAction(ActionType aType, const QPixmap & icon16, const QPixmap & i
 		connect (this, SIGNAL(triggered()), this, SLOT(triggeredToTriggeredData()));
 }
 
-ScrAction::ScrAction( const QPixmap & icon16, const QPixmap & icon22, const QString & menuText, QKeySequence accel, QObject * parent ) : QAction( QIcon(icon16), menuText, parent )
+ScrAction::ScrAction( const QIcon & icon16, const QIcon & icon22, const QString & menuText, QKeySequence accel, QObject * parent ) : QAction( QIcon(icon16), menuText, parent )
 {
 	setShortcut(accel);
 	setMenuRole(QAction::NoRole);
 	initScrAction();
-	icon().addPixmap(icon22, QIcon::Normal, QIcon::On);
+
+    icon() = icon22;
 }
 
 

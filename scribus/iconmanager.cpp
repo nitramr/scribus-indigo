@@ -12,6 +12,7 @@
 *                                                                         *
 ***************************************************************************/
 
+#include <QApplication>
 #include <QCursor>
 #include <QDebug>
 #include <QFile>
@@ -196,49 +197,74 @@ QCursor IconManager::loadCursor(const QString nam, int hotX, int hotY, bool forc
 
 QIcon IconManager::loadIcon(const QString nam, bool forceUseColor)
 {
-	return QIcon(loadPixmap(nam, forceUseColor));
+    QIcon icon = QIcon();
+    icon.addPixmap(loadPixmap(nam, forceUseColor),QIcon::Normal, QIcon::Off);
+    icon.addPixmap(tintPixmap(loadPixmap(nam, forceUseColor)), QIcon::Disabled, QIcon::Off);
+    icon.addPixmap(loadPixmap(nam, forceUseColor),QIcon::Normal, QIcon::On);
+    icon.addPixmap(tintPixmap(loadPixmap(nam, forceUseColor)), QIcon::Disabled, QIcon::On);
+
+    return icon;
+
 }
+
+QPixmap IconManager::tintPixmap(QPixmap pm, QColor color){
+
+    QImage img = QImage(pm.toImage());
+    img = img.alphaChannel();
+    int alpha = color.alpha();
+
+    for(int i = 0; i < img.colorCount(); ++i) {
+        color.setAlpha(qMax(qGray(img.color(i)) -alpha, 0 ));
+        img.setColor(i, color.rgba());
+    }
+
+    return QPixmap::fromImage(img);
+
+}
+
 
 QPixmap IconManager::loadPixmap(const QString nam, bool forceUseColor, bool rtlFlip)
 {
-	if (m_pxCache.contains(nam))
-		return *m_pxCache[nam];
+    if (m_pxCache.contains(nam))
+        return *m_pxCache[nam];
 
 	QString iconFilePath(pathForIcon(nam));
-	QPixmap *pm = new QPixmap();
-	pm->load(iconFilePath);
-	if (pm->isNull())
+    QPixmap *pm = new QPixmap();
+    pm->load(iconFilePath);
+    if (pm->isNull())
 		qWarning("Unable to load icon %s: Got null pixmap", iconFilePath.toLatin1().constData());
 //	else
 //		qDebug()<<"Successful icon load from"<<iconFilePath;
-	if (PrefsManager::instance()->appPrefs.uiPrefs.grayscaleIcons && !forceUseColor)
-		iconToGrayscale(pm);
+    if (PrefsManager::instance()->appPrefs.uiPrefs.grayscaleIcons && !forceUseColor)
+        iconToGrayscale(pm);
+
 	if (rtlFlip)
 	{
 		QTransform t;
 		t.rotate(180);
-		*pm = pm->transformed(t);
+        *pm = pm->transformed(t);
 	}
-	m_pxCache.insert(nam, pm);
-	return *pm;
+    m_pxCache.insert(nam, pm);
+    return *pm;
 }
 
 void IconManager::iconToGrayscale(QPixmap* pm)
 {
-	QImage qi(pm->toImage());
-	int h=qi.height();
-	int w=qi.width();
-	QRgb c_rgb;
-	for (int i=0;i<w;++i)
-	{
-		for (int j=0;j<h;++j)
-		{
-			c_rgb=qi.pixel(i,j);
-			int k = qMin(qRound(0.3 * qRed(c_rgb) + 0.59 * qGreen(c_rgb) + 0.11 * qBlue(c_rgb)), 255);
-			qi.setPixel(i, j, qRgba(k, k, k, qAlpha(c_rgb)));
-		}
-	}
-	*pm=QPixmap::fromImage(qi);
+    QImage qi(pm->toImage());
+    int h=qi.height();
+    int w=qi.width();
+    QRgb c_rgb;
+    for (int i=0;i<w;++i)
+    {
+        for (int j=0;j<h;++j)
+        {
+            c_rgb=qi.pixel(i,j);
+            int k = qMin(qRound(0.3 * qRed(c_rgb) + 0.59 * qGreen(c_rgb) + 0.11 * qBlue(c_rgb)), 255);
+            qi.setPixel(i, j, qRgba(k, k, k, qAlpha(c_rgb)));
+
+        }
+    }
+    *pm=QPixmap::fromImage(qi);
 }
 
 bool IconManager::setActiveFromPrefs(QString prefsSet)

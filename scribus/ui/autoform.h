@@ -22,7 +22,7 @@ class SCRIBUS_API Autoforms : public QToolButton
 public:
 	Autoforms( QWidget* parent );
 	~Autoforms() {};
-	QPixmap getIconPixmap(int nr);
+    QIcon getIconPixmap(int nr);
 
 public slots:
 	void selForm(int a);

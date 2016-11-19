@@ -50,8 +50,10 @@ Palette::dark {
 	[all]		background:		rgb(70,70,70);
 	[all]		base:			rgb(46,46,46);
 	[all]		bright-text:		rgb(204,204,204);
+	[disabled]	bright-text: 		rgb(128,128,128);
 	[all]		button:			rgb(85,85,85);
 	[all]		button-text:		rgb(204,204,204);
+	[disabled]	button-text: 		rgb(128,128,128);
 	[all]		dark:			rgb(55,55,55);
 	[all]		highlight:		rgb(0,150,255);
 	[all]		highlighted-text:	rgb(34,34,34);
@@ -62,10 +64,12 @@ Palette::dark {
 	[all]		midlight:		rgb(80,80,80);
 	[all]		shadow:			rgb(0,0,0);
 	[all]		text:			rgb(204,204,204);
+	[disabled]	text: 			rgb(128,128,128);
 	[all]		tooltip-base:		rgb(65,65,65);
 	[all]		tooltip-text:		rgb(204,204,204);
 	[all]		window:			rgb(70,70,70);
 	[all]		window-text: 		rgb(204,204,204);
+	[disabled]	window-text: 		rgb(128,128,128);
 }
 
 /* Custom Elements */

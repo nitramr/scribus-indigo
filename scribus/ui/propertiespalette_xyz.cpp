@@ -93,22 +93,28 @@ PropertiesPalette_XYZ::PropertiesPalette_XYZ( QWidget* parent) : QWidget(parent)
 	flipV->setCheckable( true );
 	
 	doLock->setCheckable( true );
-	QIcon a = QIcon();
-	a.addPixmap(im->loadPixmap("16/lock.png"), QIcon::Normal, QIcon::On);
-	a.addPixmap(im->loadPixmap("16/lock-unlocked.png"), QIcon::Normal, QIcon::Off);
-	doLock->setIcon(a);
+    QIcon a = QIcon();
+    a.addPixmap(im->loadPixmap("16/lock.png"), QIcon::Normal, QIcon::On);
+    a.addPixmap(im->tintPixmap(im->loadPixmap("16/lock.png")), QIcon::Disabled, QIcon::On);
+    a.addPixmap(im->loadPixmap("16/lock-unlocked.png"), QIcon::Normal, QIcon::Off);
+    a.addPixmap(im->tintPixmap(im->loadPixmap("16/lock-unlocked.png")), QIcon::Disabled, QIcon::Off);
+    doLock->setIcon(a);
 
 	noPrint->setCheckable( true );
-	QIcon a2 = QIcon();
-	a2.addPixmap(im->loadPixmap("NoPrint.png"), QIcon::Normal, QIcon::On);
-	a2.addPixmap(im->loadPixmap("16/document-print.png"), QIcon::Normal, QIcon::Off);
-	noPrint->setIcon(a2);
+    QIcon a2 = QIcon();
+    a2.addPixmap(im->loadPixmap("NoPrint.png"), QIcon::Normal, QIcon::On);
+    a2.addPixmap(im->tintPixmap(im->loadPixmap("NoPrint.png")), QIcon::Disabled, QIcon::On);
+    a2.addPixmap(im->loadPixmap("16/document-print.png"), QIcon::Normal, QIcon::Off);
+    a2.addPixmap(im->tintPixmap(im->loadPixmap("16/document-print.png")), QIcon::Disabled, QIcon::Off);
+    noPrint->setIcon(a2);
 
 	noResize->setCheckable( true );
-	QIcon a3 = QIcon();
-	a3.addPixmap(im->loadPixmap("framenoresize.png"), QIcon::Normal, QIcon::On);
-	a3.addPixmap(im->loadPixmap("frameresize.png"), QIcon::Normal, QIcon::Off);
-	noResize->setIcon(a3);
+    QIcon a3 = QIcon();
+    a3.addPixmap(im->loadPixmap("framenoresize.png"), QIcon::Normal, QIcon::On);
+    a3.addPixmap(im->tintPixmap(im->loadPixmap("framenoresize.png")), QIcon::Disabled, QIcon::On);
+    a3.addPixmap(im->loadPixmap("frameresize.png"), QIcon::Normal, QIcon::Off);
+    a3.addPixmap(im->tintPixmap(im->loadPixmap("frameresize.png")), QIcon::Disabled, QIcon::Off);
+    noResize->setIcon(a3);
 
 	m_lineMode = false;
 

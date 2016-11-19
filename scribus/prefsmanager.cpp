@@ -1980,7 +1980,7 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.useTabs = static_cast<bool>(dc.attribute("UseDocumentTabs", "0").toInt());
 			appPrefs.uiPrefs.stickyTools = static_cast<bool>(dc.attribute("StickyTools", "0").toInt());
 			appPrefs.uiPrefs.grayscaleIcons = static_cast<bool>(dc.attribute("UseGrayscaleIcons",0).toInt());
-                        appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Light");
+            appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Light");
 		}
 
 		if (dc.tagName()=="DocumentSetup")

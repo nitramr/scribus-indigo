@@ -25,7 +25,7 @@ void Autoforms::selForm(int a)
 	emit FormSel(a, n, AutoShapes);
 }
 
-QPixmap Autoforms::getIconPixmap(int nr)
+QIcon Autoforms::getIconPixmap(int nr)
 {
 	return buttonGroup1->getIconPixmap(nr);
 }
