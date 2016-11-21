@@ -7,7 +7,7 @@ This is a experimental build of the Scribus DTP software that introduces and int
 
 ## Snapshot
 
-![dark theme](https://cloud.githubusercontent.com/assets/15112256/20237700/4d04e1de-a8da-11e6-8828-d0b25ceee49c.png)
+![dark theme](https://cloud.githubusercontent.com/assets/15112256/20462261/55a690be-af18-11e6-931b-a3e5226bcf53.png)
 
 ## Contributing
 For Bugs: please open an issue in this repo [issue queue](https://github.com/nitramr/scribus-indigo/issues)  
