@@ -111,7 +111,7 @@ class SCRIBUS_API ActionManager : public QObject
 		void languageChangeActions();
 		static QKeySequence defaultKey(const QString &actionName);
 	
-		QPixmap noIcon;
+		QIcon noIcon;
 		ScribusMainWindow *mainWindow;
 		UndoManager *undoManager;
 		IconManager* im;

@@ -1969,8 +1969,8 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
 			appPrefs.uiPrefs.wheelJump = dc.attribute("ScrollWheelJump").toInt();
 			appPrefs.uiPrefs.mouseMoveTimeout = dc.attribute("MouseMoveTimeout", "150").toInt();
-			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
-			appPrefs.uiPrefs.paletteFontSize = dc.attribute("PaletteFontSize", "10").toInt();
+			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "14").toInt();
+			appPrefs.uiPrefs.paletteFontSize = dc.attribute("PaletteFontSize", "14").toInt();
 			appPrefs.uiPrefs.recentDocCount = dc.attribute("RecentDocumentCount","5").toUInt();
 			appPrefs.uiPrefs.showStartupDialog = static_cast<bool>(dc.attribute("ShowStartupDialog", "1").toInt());
 			appPrefs.uiPrefs.showSplashOnStartup = static_cast<bool>(dc.attribute("UI_SHOWSPLASHSCREEN", "1").toInt());
