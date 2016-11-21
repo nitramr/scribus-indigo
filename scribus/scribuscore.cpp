@@ -81,6 +81,7 @@ ScribusCore::~ScribusCore()
 		ScribusMainWindow *mainWindow = m_ScMWList.takeAt(0);
 		delete mainWindow;
 	}
+	delete pluginManager;
 }
 
 #ifndef NDEBUG
@@ -321,7 +322,7 @@ void ScribusCore::getCMSProfiles(bool showInfo)
 	InputProfiles.clear();
 	InputProfilesCMYK.clear();
 	LabProfiles.clear();
-	profDirs = ScPaths::getSystemProfilesDirs();
+	profDirs = ScPaths::systemProfilesDirs();
 	profDirs.prepend( m_prefsManager->appPrefs.pathPrefs.colorProfiles );
 	profDirs.prepend( ScPaths::instance().shareDir()+"profiles/");
 	for(int i = 0; i < profDirs.count(); i++)

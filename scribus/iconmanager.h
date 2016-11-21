@@ -52,14 +52,14 @@ class SCRIBUS_API IconManager : public QObject
 		static void deleteInstance();
 		bool setup();
 		QCursor loadCursor(const QString nam, int hotX = -1, int hotY = -1, bool forceUseColor=false);
-        QIcon loadIcon(const QString nam, bool forceUseColor=false);
-        QPixmap tintPixmap(QPixmap pm, QColor color = QColor(128,128,128, 128));
+		QIcon loadIcon(const QString nam, bool forceUseColor=false);
+		QPixmap tintPixmap(QPixmap pm, QColor color = QColor(128,128,128, 128));
 		QPixmap loadPixmap(const QString nam, bool forceUseColor=false, bool rtlFlip=false);
 		QString pathForIcon(const QString nam);
-        QString activePath();
-        QStringList pathList();
+		QString activePath();
+		QStringList pathList();
 		QStringList nameList(QString language);
-        void iconToGrayscale(QPixmap *pm);
+		void iconToGrayscale(QPixmap *pm);
 		bool setActiveFromPrefs(QString prefsSet);
 		QString activeSetBasename() { return m_activeSetBasename; }
 		QString baseNameForTranslation(QString transName);

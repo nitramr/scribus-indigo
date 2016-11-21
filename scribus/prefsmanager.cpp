@@ -120,7 +120,7 @@ void PrefsManager::setup()
 {
 	setupPreferencesLocation();
 
-	m_importingFrom12=copyOldPreferences();
+	m_importingFrom12=copyOldAppConfigAndData();
 	prefsFile = new PrefsFile( m_prefsLocation + "/prefs150.xml" );
 	if (m_importingFrom12)
 		convert12Preferences();
@@ -158,7 +158,7 @@ void PrefsManager::initDefaults()
 
 	appPrefs.uiPrefs.mouseMoveTimeout = 150;
 	appPrefs.uiPrefs.wheelJump = 40;
-    appPrefs.uiPrefs.style = "Scribus Dark";
+	appPrefs.uiPrefs.style = "Scribus Dark";
 	/** Set Default window position and size to sane default values which should work on every screen */
 //	appPrefs.uiPrefs.mainWinSettings.xPosition = 0;
 //	appPrefs.uiPrefs.mainWinSettings.yPosition = 0;
@@ -177,7 +177,7 @@ void PrefsManager::initDefaults()
 	appPrefs.uiPrefs.useTabs = false;
 	appPrefs.uiPrefs.stickyTools = false;
 	appPrefs.uiPrefs.grayscaleIcons = false;
-    appPrefs.uiPrefs.iconSet = "Scribus 1.5.1 Light";
+	appPrefs.uiPrefs.iconSet = "Scribus 1.5.1 Light";
 	appPrefs.guidesPrefs.marginsShown = true;
 	appPrefs.guidesPrefs.framesShown = true;
 	appPrefs.guidesPrefs.layerMarkersShown = false;
@@ -195,10 +195,10 @@ void PrefsManager::initDefaults()
 	appPrefs.guidesPrefs.guideRad = 10;
 	appPrefs.guidesPrefs.minorGridSpacing = 20;
 	appPrefs.guidesPrefs.majorGridSpacing = 100;
-    appPrefs.guidesPrefs.minorGridColor = QColor(205,222,135);
-    appPrefs.guidesPrefs.majorGridColor = QColor(205,222,135);
-    appPrefs.guidesPrefs.marginColor = QColor(255,85,135);
-    appPrefs.guidesPrefs.guideColor = QColor(229,128,255);
+	appPrefs.guidesPrefs.minorGridColor = QColor(205,222,135);
+	appPrefs.guidesPrefs.majorGridColor = QColor(205,222,135);
+	appPrefs.guidesPrefs.marginColor = QColor(255,85,135);
+	appPrefs.guidesPrefs.guideColor = QColor(229,128,255);
 	appPrefs.guidesPrefs.baselineGridColor = QColor(Qt::lightGray);
 	appPrefs.guidesPrefs.renderStackOrder.clear();
 	appPrefs.guidesPrefs.renderStackOrder << 0 << 1 << 2 << 3 << 4;
@@ -251,18 +251,18 @@ void PrefsManager::initDefaults()
 	appPrefs.opToolPrefs.dispY = 10.0;
 	appPrefs.opToolPrefs.constrain = 15.0;
 	appPrefs.displayPrefs.paperColor = QColor(Qt::white);
-    appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
+	appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
 	appPrefs.displayPrefs.showPageShadow = true;
 	appPrefs.displayPrefs.showVerifierWarningsOnCanvas = true;
 	appPrefs.displayPrefs.showAutosaveClockOnCanvas = false;
-    appPrefs.displayPrefs.frameColor = QColor(55,171,200);
+	appPrefs.displayPrefs.frameColor = QColor(55,171,200);
 	appPrefs.displayPrefs.frameNormColor = QColor(Qt::black);
 	appPrefs.displayPrefs.frameGroupColor = QColor(Qt::darkCyan);
-    appPrefs.displayPrefs.frameLockColor = QColor(255, 120, 115);
-    appPrefs.displayPrefs.frameLinkColor = QColor(55,171,130);
+	appPrefs.displayPrefs.frameLockColor = QColor(255, 120, 115);
+	appPrefs.displayPrefs.frameLinkColor = QColor(55,171,130);
 	appPrefs.displayPrefs.frameAnnotationColor = QColor(Qt::blue);
-    appPrefs.displayPrefs.pageBorderColor = QColor(Qt::black);
-	appPrefs.displayPrefs.controlCharColor = QColor(Qt::darkRed);    
+	appPrefs.displayPrefs.pageBorderColor = QColor(Qt::black);
+	appPrefs.displayPrefs.controlCharColor = QColor(Qt::darkRed);
 	appPrefs.itemToolPrefs.textColumns = 1;
 	appPrefs.itemToolPrefs.textColumnGap = 0.0;
 	appPrefs.itemToolPrefs.lineColorShade = 100;
@@ -335,7 +335,7 @@ void PrefsManager::initDefaults()
 		dpi = 72;
 	appPrefs.displayPrefs.displayScale = dpi / 72.0;
 
-	appPrefs.pathPrefs.documents = ScPaths::getUserDocumentDir();
+	appPrefs.pathPrefs.documents = ScPaths::userDocumentDir();
 	appPrefs.pathPrefs.colorProfiles = "";
 	appPrefs.pathPrefs.scripts = "";
 	appPrefs.pathPrefs.documentTemplates = "";
@@ -722,92 +722,90 @@ void PrefsManager::initArrowStyles()
 	points.resize(0);
 }
 
-QString PrefsManager::setupPreferencesLocation()
-{
-	QString Pff = QDir::toNativeSeparators(ScPaths::getApplicationDataDir());
-	QFileInfo Pffi = QFileInfo(Pff);
-	QString PrefsPfad;
-	//If we are using the ScPaths default prefs location
-	if (Pffi.exists())
-	{
-		if (Pffi.isDir())
-			PrefsPfad = Pff;
-		else
-			PrefsPfad = QDir::homePath();
-	}
-	else // Move to using the ScPaths default prefs location/scribus.* from ~/.scribus.*
-	{
-		QDir prefsDirectory = QDir();
-		prefsDirectory.mkdir(Pff);
-		PrefsPfad = Pff;
-		QString oldPR = QDir::toNativeSeparators(QDir::homePath()+"/.scribus.rc");
-		QFileInfo oldPi = QFileInfo(oldPR);
-		if (oldPi.exists())
-			moveFile(oldPR, Pff+"/scribus.rc");
-		QString oldPR2 = QDir::toNativeSeparators(QDir::homePath()+"/.scribusfont.rc");
-		QFileInfo oldPi2 = QFileInfo(oldPR2);
-		if (oldPi2.exists())
-			moveFile(oldPR2, Pff+"/scribusfont.rc");
-		QString oldPR3 = QDir::toNativeSeparators(QDir::homePath()+"/.scribusscrap.scs");
-		QFileInfo oldPi3 = QFileInfo(oldPR3);
-		if (oldPi3.exists())
-			moveFile(oldPR3, Pff+"/scrap.scs");
-	}
-	QString scP = QDir::toNativeSeparators(ScPaths::getPluginDataDir());
-	QFileInfo scPi = QFileInfo(scP);
-	if (!scPi.exists())
-	{
-		QDir pluginDataDirectory = QDir();
-		pluginDataDirectory.mkdir(scP);
-	}
-	QString scB = QDir::toNativeSeparators(Pff+"/scrapbook");
-	QFileInfo scBi = QFileInfo(scB);
-	if (!scBi.exists())
-	{
-		QDir scrapDirectory = QDir();
-		scrapDirectory.mkdir(scB);
-		QDir scrapMainDirectory = QDir();
-		scrapDirectory.mkdir(QDir::toNativeSeparators(scB+"/main"));
-	}
-	QFileInfo scTmp = QFileInfo(QDir::toNativeSeparators(scB+"/tmp"));
-	if (!scTmp.exists())
-	{
-		QDir scrapDirectoryT = QDir();
-		scrapDirectoryT.mkdir(QDir::toNativeSeparators(scB+"/tmp"));
-	}
-	m_prefsLocation=PrefsPfad;
-	QFileInfo scSwatch = QFileInfo(ScPaths::getApplicationDataDir()+"swatches");
-	if (!scSwatch.exists())
-	{
-		QDir swatchDir = QDir();
-		swatchDir.mkpath(ScPaths::getApplicationDataDir()+"swatches");
-		swatchDir.mkpath(ScPaths::getApplicationDataDir()+"swatches/locked");
-	}
-	return PrefsPfad;
-}
-
 const QString PrefsManager::preferencesLocation()
 {
 	return m_prefsLocation;
 }
 
-bool PrefsManager::copyOldPreferences()
+void PrefsManager::setupPreferencesLocation()
 {
+	m_prefsLocation=ScPaths::preferencesDir(true);
+}
+
+bool PrefsManager::copyOldAppConfigAndData()
+{
+	if (QFile::exists(m_prefsLocation+"scribus150.rc") && QFile::exists(m_prefsLocation+"prefs150.xml"))
+		return false;
+
+	//Move to using the ScPaths default prefs location/scribus.* from ~/.scribus.*
+	QString oldPR = QDir::toNativeSeparators(QDir::homePath()+"/.scribus.rc");
+	QFileInfo oldPi = QFileInfo(oldPR);
+	if (oldPi.exists())
+		moveFile(oldPR, m_prefsLocation+"scribus.rc");
+	QString oldPR2 = QDir::toNativeSeparators(QDir::homePath()+"/.scribusfont.rc");
+	QFileInfo oldPi2 = QFileInfo(oldPR2);
+	if (oldPi2.exists())
+		moveFile(oldPR2, m_prefsLocation+"scribusfont.rc");
+	QString oldPR3 = QDir::toNativeSeparators(QDir::homePath()+"/.scribusscrap.scs");
+	QFileInfo oldPi3 = QFileInfo(oldPR3);
+	if (oldPi3.exists())
+		moveFile(oldPR3, m_prefsLocation+"scrap.scs");
+	QString oldPrefsLocation(QDir::homePath()+"/.scribus/");
+	QString oldPR4 = QDir::toNativeSeparators(oldPrefsLocation + "scribus150.rc");
+	QFileInfo oldPi4 = QFileInfo(oldPR4);
+	if (oldPi4.exists())
+		moveFile(oldPR4, m_prefsLocation+"scribus150.rc");
+	QString oldPR5 = QDir::toNativeSeparators(oldPrefsLocation + "scrap150.scs");
+	QFileInfo oldPi5 = QFileInfo(oldPR5);
+	if (oldPi5.exists())
+		moveFile(oldPR5, m_prefsLocation+"scrap150.scs");
+	QString oldPR6 = QDir::toNativeSeparators(oldPrefsLocation + "prefs150.xml");
+	QFileInfo oldPi6 = QFileInfo(oldPR6);
+	if (oldPi6.exists())
+		moveFile(oldPR6, m_prefsLocation+"prefs150.xml");
+	QString oldPR7 = QDir::toNativeSeparators(oldPrefsLocation + "scripter150.rc");
+	QFileInfo oldPi7 = QFileInfo(oldPR7);
+	if (oldPi7.exists())
+		moveFile(oldPR7, m_prefsLocation+"scripter150.rc");
+
+
+	//Move plugin data files to new plugin data file directory
+	QDir oldPluginData(ScPaths::preferencesDir() + "/plugins");
+	QFileInfoList filPluginData(oldPluginData.entryInfoList());
+	foreach (const QFileInfo &fiP, filPluginData)
+		moveFile(fiP.absoluteFilePath(), ScPaths::pluginDataDir(true) + fiP.fileName());
+
+	//Move scrapbook files to new scrapbook directory
+	QDir oldScrapData(ScPaths::preferencesDir() + "/scrapbook");
+	QFileInfoList filScrapData(oldScrapData.entryInfoList());
+	foreach (const QFileInfo &fiS, filScrapData)
+		moveFile(fiS.absoluteFilePath(), ScPaths::scrapbookDir(true) + fiS.fileName());
+
+	//Move swatch files to new palette directory
+	QDir oldPaletteData(ScPaths::preferencesDir() + "/swatches");
+	QFileInfoList filPaletteData(oldPaletteData.entryInfoList());
+	foreach (const QFileInfo &fiPal, filPaletteData)
+		moveFile(fiPal.absoluteFilePath(), ScPaths::userPaletteFilesDir(true) + fiPal.fileName());
+	QDir oldPaletteData2=ScPaths::preferencesDir() + "/palettes";
+	QFileInfoList filPaletteData2(oldPaletteData2.entryInfoList());
+	foreach (const QFileInfo &fiPal, filPaletteData2)
+		moveFile(fiPal.absoluteFilePath(), ScPaths::userPaletteFilesDir(true) + fiPal.fileName());
+
 	//Now make copies for 1.3 use and leave the old ones alone for <1.3.0 usage
 	QString prefs135[4], prefs140[4], prefs150[4];
 
-	prefs135[0]=QDir::toNativeSeparators(m_prefsLocation+"/scribus135.rc");
-	prefs135[1]=QDir::toNativeSeparators(m_prefsLocation+"/scrap135.scs");
-	prefs135[2]=QDir::toNativeSeparators(m_prefsLocation+"/prefs135.xml");
-	prefs135[3]=QDir::toNativeSeparators(m_prefsLocation+"/scripter135.rc");
-	prefs140[0]=QDir::toNativeSeparators(m_prefsLocation+"/scribus140.rc");
-	prefs140[1]=QDir::toNativeSeparators(m_prefsLocation+"/scrap140.scs");
-	prefs140[2]=QDir::toNativeSeparators(m_prefsLocation+"/prefs140.xml");
-	prefs140[3]=QDir::toNativeSeparators(m_prefsLocation+"/scripter140.rc");
-	prefs150[0]=QDir::toNativeSeparators(m_prefsLocation+"/scribus150.rc");
-	prefs150[1]=QDir::toNativeSeparators(m_prefsLocation+"/scrap150.scs");
-	prefs150[2]=QDir::toNativeSeparators(m_prefsLocation+"/prefs150.xml");
-	prefs150[3]=QDir::toNativeSeparators(m_prefsLocation+"/scripter150.rc");
+	prefs135[0]=QDir::toNativeSeparators(m_prefsLocation+"scribus135.rc");
+	prefs135[1]=QDir::toNativeSeparators(m_prefsLocation+"scrap135.scs");
+	prefs135[2]=QDir::toNativeSeparators(m_prefsLocation+"prefs135.xml");
+	prefs135[3]=QDir::toNativeSeparators(m_prefsLocation+"scripter135.rc");
+	prefs140[0]=QDir::toNativeSeparators(m_prefsLocation+"scribus140.rc");
+	prefs140[1]=QDir::toNativeSeparators(m_prefsLocation+"scrap140.scs");
+	prefs140[2]=QDir::toNativeSeparators(m_prefsLocation+"prefs140.xml");
+	prefs140[3]=QDir::toNativeSeparators(m_prefsLocation+"scripter140.rc");
+	prefs150[0]=QDir::toNativeSeparators(m_prefsLocation+"scribus150.rc");
+	prefs150[1]=QDir::toNativeSeparators(m_prefsLocation+"scrap150.scs");
+	prefs150[2]=QDir::toNativeSeparators(m_prefsLocation+"prefs150.xml");
+	prefs150[3]=QDir::toNativeSeparators(m_prefsLocation+"scripter150.rc");
 
 	bool existsPrefs135[4], existsPrefs140[4], existsPrefs150[4];
 	for (uint i=0;i<4;++i)
@@ -1968,11 +1966,11 @@ bool PrefsManager::ReadPref(QString ho)
 
 		if (dc.tagName()=="UI")
 		{
-            appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
+			appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
 			appPrefs.uiPrefs.wheelJump = dc.attribute("ScrollWheelJump").toInt();
 			appPrefs.uiPrefs.mouseMoveTimeout = dc.attribute("MouseMoveTimeout", "150").toInt();
-            appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
-            appPrefs.uiPrefs.paletteFontSize = dc.attribute("PaletteFontSize", "10").toInt();
+			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
+			appPrefs.uiPrefs.paletteFontSize = dc.attribute("PaletteFontSize", "10").toInt();
 			appPrefs.uiPrefs.recentDocCount = dc.attribute("RecentDocumentCount","5").toUInt();
 			appPrefs.uiPrefs.showStartupDialog = static_cast<bool>(dc.attribute("ShowStartupDialog", "1").toInt());
 			appPrefs.uiPrefs.showSplashOnStartup = static_cast<bool>(dc.attribute("UI_SHOWSPLASHSCREEN", "1").toInt());
@@ -1980,7 +1978,7 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.useTabs = static_cast<bool>(dc.attribute("UseDocumentTabs", "0").toInt());
 			appPrefs.uiPrefs.stickyTools = static_cast<bool>(dc.attribute("StickyTools", "0").toInt());
 			appPrefs.uiPrefs.grayscaleIcons = static_cast<bool>(dc.attribute("UseGrayscaleIcons",0).toInt());
-            appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Light");
+			appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Light");
 		}
 
 		if (dc.tagName()=="DocumentSetup")
@@ -2032,14 +2030,14 @@ bool PrefsManager::ReadPref(QString ho)
 			if (dc.hasAttribute("ScratchColor"))
 				appPrefs.displayPrefs.scratchColor = QColor(dc.attribute("ScratchColor"));
 			else
-                appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
-            appPrefs.displayPrefs.frameColor = QColor(dc.attribute("FrameSelectedColor","#37abc8"));
+				appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
+			appPrefs.displayPrefs.frameColor = QColor(dc.attribute("FrameSelectedColor","#37abc8"));
 			appPrefs.displayPrefs.frameNormColor = QColor(dc.attribute("FrameNormColor","#000000"));
 			appPrefs.displayPrefs.frameGroupColor = QColor(dc.attribute("FrameGroupColor","#008080"));
-            appPrefs.displayPrefs.frameLockColor = QColor(dc.attribute("FrameLockColor","#ff7873"));
-            appPrefs.displayPrefs.frameLinkColor = QColor(dc.attribute("FrameLinkColor","#37ab82"));
+			appPrefs.displayPrefs.frameLockColor = QColor(dc.attribute("FrameLockColor","#ff7873"));
+			appPrefs.displayPrefs.frameLinkColor = QColor(dc.attribute("FrameLinkColor","#37ab82"));
 			appPrefs.displayPrefs.frameAnnotationColor = QColor(dc.attribute("FrameAnnotationColor","#0000ff"));
-            appPrefs.displayPrefs.pageBorderColor = QColor(dc.attribute("PageBorderColor","#000000"));
+			appPrefs.displayPrefs.pageBorderColor = QColor(dc.attribute("PageBorderColor","#000000"));
 			appPrefs.displayPrefs.controlCharColor = QColor(dc.attribute("ControlCharColor","#800000"));
 			appPrefs.displayPrefs.marginColored = static_cast<bool>(dc.attribute("ShowMarginsFilled", "0").toInt());
 			appPrefs.displayPrefs.displayScale = qRound(ScCLocale::toDoubleC(dc.attribute("DisplayScale"), appPrefs.displayPrefs.displayScale)*72)/72.0;
@@ -2679,16 +2677,13 @@ bool PrefsManager::ReadPref(QString ho)
 		appPrefs.docSetupPrefs.docUnitIndex = int(SC_POINTS);
 	// Configure GUI
 	appPrefs.ui_SystemTheme = qApp->style()->objectName();
-
-
-    if (appPrefs.uiPrefs.style.length() > 0)
-    {
-
-        qApp->setStyle(QStyleFactory::create(appPrefs.uiPrefs.style));
-        // Plain wrong, a style may set a palette different from the standard palette
-        // Eg : Windows XP and Windows Vista styles
-        // qApp->setPalette(qApp->style()->standardPalette());
-    }
+	if (appPrefs.uiPrefs.style.length() > 0)
+	{
+		qApp->setStyle(QStyleFactory::create(appPrefs.uiPrefs.style));
+		// Plain wrong, a style may set a palette different from the standard palette
+		// Eg : Windows XP and Windows Vista styles
+		// qApp->setPalette(qApp->style()->standardPalette());
+	}
 	QFont apf = qApp->font();
 	apf.setPointSize(appPrefs.uiPrefs.applicationFontSize);
 	qApp->setFont(apf);

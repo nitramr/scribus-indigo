@@ -45,11 +45,11 @@ for which a new license (GPL+exception) is in place.
 Vruler::Vruler(ScribusView *pa, ScribusDoc *doc) : QWidget(pa)
 {
 	prefsManager=PrefsManager::instance();
-    setBackgroundRole(QPalette::Base);
+	setBackgroundRole(QPalette::Base);
 	setAutoFillBackground(true);
-//	QPalette palette;
-//	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
-//	setPalette(palette);
+	//	QPalette palette;
+	//	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
+	//	setPalette(palette);
 	m_doc = doc;
 	m_view = pa;
 	offs = 0;
@@ -104,8 +104,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 	p.save();
 	p.setClipRect(e->rect());
 //	p.drawLine(16, 0, 16, height());
-    p.setBrush(palette().windowText().color());
-    p.setPen(palette().windowText().color());
+	p.setBrush(palette().windowText().color());
+	p.setPen(palette().windowText().color());
 	p.setFont(font());
 	double cc = height() / sc;
 	double firstMark = ceil(offs / iter) * iter - offs;
@@ -170,9 +170,9 @@ void Vruler::paintEvent(QPaintEvent *e)
 			QPainter pp( &pix );
 			pp.setBrush( BACKGROUND );
 			pp.drawRect( 0, 0, 16*SCALE, 4*SCALE );
-	
-            pp.setPen(QColor(0,150,255));
-            pp.setBrush(QColor(0,150,255));
+
+			pp.setPen(QColor(0,150,255));
+			pp.setBrush(QColor(0,150,255));
 			cr.setPoints(3, 16*SCALE, 2*SCALE, 0, 4*SCALE, 0, 0);
 			pp.drawPolygon(cr);
 		}
@@ -183,8 +183,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 		p.drawPixmap(0, (where-2)*SCALE, pix);
 		p.restore();
 		// repaint marks
-        p.setBrush(palette().windowText().color());
-        p.setPen(palette().windowText().color());
+		p.setBrush(palette().windowText().color());
+		p.setPen(palette().windowText().color());
 		p.setFont(font());
 		double sc = m_view->getScale();
 		double cc = height() / sc;
@@ -197,8 +197,8 @@ void Vruler::paintEvent(QPaintEvent *e)
 #else
 		// draw slim marker
 		p.translate(0, -m_view->contentsY());
-        p.setPen(QColor(0,150,255));
-        p.setBrush(QColor(0,150,255));
+		p.setPen(QColor(0,150,255));
+		p.setBrush(QColor(0,150,255));
 		cr.setPoints(5,  5, whereToDraw, 16, whereToDraw, 5, whereToDraw, 0, whereToDraw+2, 0, whereToDraw-2);
 		p.drawPolygon(cr);
 #endif
@@ -239,137 +239,137 @@ void Vruler::unitChange()
 	int docUnitIndex = m_doc->unitIndex();
 	switch (docUnitIndex)
 	{
-		case SC_PT:
-			if (sc > 1 && sc <= 4)
-				cor = 2;
-			if (sc > 4)
-				cor = 10;
-			if (sc < 0.3)
-			{
-				iter = unitRulerGetIter1FromIndex(docUnitIndex) * 3;
-	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 3;
-			}
-			else if (sc < 0.2)
-			{
-				iter = unitRulerGetIter1FromIndex(docUnitIndex) * 2;
-	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 2;
-			}
-			else
-			{
-				iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
-	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
-	  		}
-			break;
-		case SC_MM:
-			if (sc > 1)
-				cor = 10;
+	case SC_PT:
+		if (sc > 1 && sc <= 4)
+			cor = 2;
+		if (sc > 4)
+			cor = 10;
+		if (sc < 0.3)
+		{
+			iter = unitRulerGetIter1FromIndex(docUnitIndex) * 3;
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 3;
+		}
+		else if (sc < 0.2)
+		{
+			iter = unitRulerGetIter1FromIndex(docUnitIndex) * 2;
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 2;
+		}
+		else
+		{
 			iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
-  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
-			break;
-		case SC_IN:
-			iter = unitRulerGetIter1FromIndex(docUnitIndex);
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
-			if (sc > 1 && sc <= 4)
-			{
-				cor = 2;
-				iter /= cor;
-				iter2 /= cor;
-			}
-			if (sc > 4)
-			{
-				cor = 4;
-				iter /= cor;
-				iter2 /= cor;
-			}
-			if (sc < 0.25)
-			{
-				cor = 0.5;
-				iter = 72.0*16.0;
-				iter2 = 72.0*2.0;
-			}
-			break;
-		case SC_P:
-			iter = unitRulerGetIter1FromIndex(docUnitIndex);
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
-			if (sc >= 1 && sc <= 4)
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
+		}
+		break;
+	case SC_MM:
+		if (sc > 1)
+			cor = 10;
+		iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
+		iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
+		break;
+	case SC_IN:
+		iter = unitRulerGetIter1FromIndex(docUnitIndex);
+		iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
+		if (sc > 1 && sc <= 4)
+		{
+			cor = 2;
+			iter /= cor;
+			iter2 /= cor;
+		}
+		if (sc > 4)
+		{
+			cor = 4;
+			iter /= cor;
+			iter2 /= cor;
+		}
+		if (sc < 0.25)
+		{
+			cor = 0.5;
+			iter = 72.0*16.0;
+			iter2 = 72.0*2.0;
+		}
+		break;
+	case SC_P:
+		iter = unitRulerGetIter1FromIndex(docUnitIndex);
+		iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
+		if (sc >= 1 && sc <= 4)
+		{
+			cor = 1;
+			iter = 12.0;
+			iter2 = 60.0;
+		}
+		if (sc > 4)
+		{
+			cor = 2;
+			iter = 6.0;
+			iter2 = 12.0;
+		}
+		if (sc < 0.3)
+		{
+			cor = 0.25;
+			iter = 12.0*4;
+			iter2 = 60.0*4;
+		}
+		else
+			if (sc < 1)
 			{
 				cor = 1;
 				iter = 12.0;
 				iter2 = 60.0;
 			}
-			if (sc > 4)
-			{
-				cor = 2;
-				iter = 6.0;
-				iter2 = 12.0;
-			}
-			if (sc < 0.3)
-			{
-				cor = 0.25;
-				iter = 12.0*4;
-				iter2 = 60.0*4;
-			}
-			else
-				if (sc < 1)
-			{
-				cor = 1;
-				iter = 12.0;
-				iter2 = 60.0;
-			}
-			break;
-		case SC_CM:
-			if (sc > 1 && sc <= 4)
-				cor = 1;
-			if (sc > 4)
-				cor = 10;
-			if (sc < 0.6)
-			{
-				cor=0.1;
-				iter = 720.0/25.4;
-				iter2 = 7200.0/25.4;
-			}
-			else
-			{
-				iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
-	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
-	  		}
-			break;
-		case SC_C:
-			iter = unitRulerGetIter1FromIndex(docUnitIndex);
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
-			if (sc >= 1 && sc <= 4)
-			{
-				cor = 1;
-				iter = 72.0/25.4*4.512;
-				iter2 = 72.0/25.4*4.512*5.0;
-			}
-			if (sc > 4)
-			{
-				cor = 2;
-				iter = 72.0/25.4*4.512/2.0;
-				iter2 = 72.0/25.4*4.512;
-			}
-			if (sc < 0.3)
-			{
-				cor = 0.1;
-				iter = 72.0/25.4*4.512*10;
-				iter2 = 72.0/25.4*4.512*5.0*10;
-			}
-			else
-				if (sc < 1)
+		break;
+	case SC_CM:
+		if (sc > 1 && sc <= 4)
+			cor = 1;
+		if (sc > 4)
+			cor = 10;
+		if (sc < 0.6)
+		{
+			cor=0.1;
+			iter = 720.0/25.4;
+			iter2 = 7200.0/25.4;
+		}
+		else
+		{
+			iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
+		}
+		break;
+	case SC_C:
+		iter = unitRulerGetIter1FromIndex(docUnitIndex);
+		iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
+		if (sc >= 1 && sc <= 4)
+		{
+			cor = 1;
+			iter = 72.0/25.4*4.512;
+			iter2 = 72.0/25.4*4.512*5.0;
+		}
+		if (sc > 4)
+		{
+			cor = 2;
+			iter = 72.0/25.4*4.512/2.0;
+			iter2 = 72.0/25.4*4.512;
+		}
+		if (sc < 0.3)
+		{
+			cor = 0.1;
+			iter = 72.0/25.4*4.512*10;
+			iter2 = 72.0/25.4*4.512*5.0*10;
+		}
+		else
+			if (sc < 1)
 			{
 				cor = 1;
 				iter = 72.0/25.4*4.512;
 				iter2 = 72.0/25.4*4.512*5.0;
 			}
-			break;
-		default:
-			if (sc > 1 && sc <= 4)
-				cor = 2;
-			if (sc > 4)
-				cor = 10;
-			iter = unitRulerGetIter1FromIndex(0) / cor;
-	 		iter2 = unitRulerGetIter2FromIndex(0) / cor;
-			break;
+		break;
+	default:
+		if (sc > 1 && sc <= 4)
+			cor = 2;
+		if (sc > 4)
+			cor = 10;
+		iter = unitRulerGetIter1FromIndex(0) / cor;
+		iter2 = unitRulerGetIter2FromIndex(0) / cor;
+		break;
 	}
 }

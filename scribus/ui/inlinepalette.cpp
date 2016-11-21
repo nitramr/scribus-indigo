@@ -103,15 +103,15 @@ void InlineView::dropEvent(QDropEvent *e)
 
 InlinePalette::InlinePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
-    //setMinimumSize( QSize( 220, 240 ) );
-    setObjectName(QString::fromLocal8Bit(name));
+	//setMinimumSize( QSize( 220, 240 ) );
+	setObjectName(QString::fromLocal8Bit(name));
 	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	InlineViewWidget = new InlineView(this);
 	InlineViewWidget->clear();
 	setWidget( InlineViewWidget ); 
 
-    // Panel icon
-    setIcon(IconManager::instance()->loadPixmap("64/pan-inline.png"));
+	// Panel icon
+	setIcon(IconManager::instance()->loadPixmap("64/pan-inline.png"));
 
 	unsetDoc();
 	m_scMW  = NULL;

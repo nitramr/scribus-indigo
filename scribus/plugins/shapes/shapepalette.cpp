@@ -65,7 +65,6 @@ ShapeView::ShapeView(QWidget* parent) : QListWidget(parent)
 	setItemDelegate(delegate);
 	setIconSize(QSize(48, 48));
 
-
 	connect(this, SIGNAL(customContextMenuRequested (const QPoint &)), this, SLOT(HandleContextMenu(QPoint)));
 }
 
@@ -281,11 +280,11 @@ void ShapeView::updateShapeList()
 ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 
-    setMinimumSize( QSize( 220, 240 ) );
-   // setMinimumSize(minimumResizeWidth(),minimumResizeHeight());
-    //resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
-    setObjectName(QString::fromLocal8Bit(name));
-    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+	setMinimumSize( QSize( 220, 240 ) );
+	// setMinimumSize(minimumResizeWidth(),minimumResizeHeight());
+	//resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
+	setObjectName(QString::fromLocal8Bit(name));
+	//setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);   
 	vLayout = new QVBoxLayout( containerWidget );
 	vLayout->setSpacing( 0 );
@@ -309,8 +308,8 @@ ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( 
 	Frame3 = new QToolBox( this );
 	vLayout->addWidget(Frame3);
 
-    // Panel icon
-    setIcon(IconManager::instance()->loadPixmap("64/pan-shapes.png"));
+	// Panel icon
+	setIcon(IconManager::instance()->loadPixmap("64/pan-shapes.png"));
 
 	setWidget(containerWidget);
 
@@ -319,8 +318,6 @@ ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( 
 	languageChange();
 	connect(importButton, SIGNAL(clicked()), this, SLOT(Import()));
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(closeTab()));
-
-
 }
 
 void ShapePalette::writeToPrefs()
@@ -567,7 +564,6 @@ void ShapePalette::setMainWindow(ScribusMainWindow *mw)
 		ShapeViewWidget = (ShapeView*)Frame3->widget(a);
 		ShapeViewWidget->scMW = mw;
 	}
-
 }
 
 void ShapePalette::setDoc(ScribusDoc *newDoc)

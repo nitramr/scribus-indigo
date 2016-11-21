@@ -51,9 +51,8 @@ ScrAction::ScrAction(ActionType aType, const QString & menuText, QKeySequence ac
 ScrAction::ScrAction(ActionType aType, const QIcon & icon16, const QIcon & icon22, const QString & menuText, QKeySequence accel, QObject * parent, QVariant d) : QAction( QIcon(icon16), menuText, parent )
 {
 	setShortcut(accel);
-    initScrAction();
-
-    icon() = icon22;
+	initScrAction();
+	icon() = icon22;
 
 	m_actionType = aType;
 	setData(d);
@@ -66,8 +65,7 @@ ScrAction::ScrAction( const QIcon & icon16, const QIcon & icon22, const QString 
 	setShortcut(accel);
 	setMenuRole(QAction::NoRole);
 	initScrAction();
-
-    icon() = icon22;
+	icon() = icon22;
 }
 
 

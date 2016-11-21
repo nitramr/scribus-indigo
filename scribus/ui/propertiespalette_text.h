@@ -114,28 +114,13 @@ private slots:
 
 protected:
 	PropertyWidget_TextColor* colorWidgets;
-	QTreeWidgetItem* colorWidgetsItem;
-
 	PropertyWidget_Distance* distanceWidgets;
-	QTreeWidgetItem* distanceItem;
-
 	PropertyWidget_Advanced* advancedWidgets;
-	QTreeWidgetItem* advancedWidgetsItem;
-
 	PropertyWidget_OptMargins* optMargins;
-	QTreeWidgetItem* optMarginsItem;
-
 	PropertyWidget_Flop* flopBox;
-	QTreeWidgetItem* flopItem;
-
 	PropertyWidget_Orphans* orphanBox;
-	QTreeWidgetItem* orphanItem;
-
 	PropertyWidget_ParEffect* parEffectWidgets;
-	QTreeWidgetItem* parEffectItem;
-
 	PropertyWidget_PathText* pathTextWidgets;
-	QTreeWidgetItem* pathTextItem;
 };
 
 #endif

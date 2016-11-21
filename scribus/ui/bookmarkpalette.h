@@ -49,7 +49,7 @@ public:
 	\param parent Parent Window
 	\retval None
 	*/
-    BookPalette(QWidget* parent, const char *name);
+	BookPalette(QWidget* parent, const char *name);
 	~BookPalette() {};
 	
 	virtual void changeEvent(QEvent *e);

@@ -43,34 +43,34 @@ class PrefsContext;
 
 class IndigoPanelHandle : public QWidget
 {
-        Q_OBJECT
+	Q_OBJECT
 public:
 
-    enum IndigoExpanderState{
-        Normal = 0,
-        Advanced = 1
-    };
+	enum IndigoExpanderState{
+		Normal = 0,
+		Advanced = 1
+	};
 
-    IndigoPanelHandle(QWidget* parent);
-    QString Caption();
-    void setCaption(QString title, int fontSize);
-    void setIcon(QIcon icon, int iconSize);
-    void setExpanderState(IndigoExpanderState expanderState);
-    void enableExpanderButton(bool visible);
-    void enableCloseButton(bool visible);
+	IndigoPanelHandle(QWidget* parent);
+	QString Caption();
+	void setCaption(QString title, int fontSize);
+	void setIcon(QIcon icon, int iconSize);
+	void setExpanderState(IndigoExpanderState expanderState);
+	void enableExpanderButton(bool visible);
+	void enableCloseButton(bool visible);
 
 protected:
-    void paintEvent(QPaintEvent *event);
+	void paintEvent(QPaintEvent *event);
 
 private:
-    QIcon ico_icon;
-    int int_iconSize;
-    QString str_title;
-    int int_fontSize;
-    QToolButton * wdg_btnClose;
-    QToolButton * wdg_btnExpander;
-    bool bool_showExpander;
-    bool bool_showClose;
+	QIcon ico_icon;
+	int int_iconSize;
+	QString str_title;
+	int int_fontSize;
+	QToolButton * wdg_btnClose;
+	QToolButton * wdg_btnExpander;
+	bool bool_showExpander;
+	bool bool_showClose;
 
 
 
@@ -84,132 +84,132 @@ public slots:
 
 class IndigoPanel : public QFrame
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    enum IndigoDockState{
+	enum IndigoDockState{
 
-            HiddenDocked = 0,
-            Floating = 1,
-            Docked = 2
+		HiddenDocked = 0,
+		Floating = 1,
+		Docked = 2
 
-        };
+	};
 
 
 
-    IndigoPanel(QString name, QWidget* dock = 0);
-    IndigoPanel(QString name, QIcon icon, int iconSize = 22, QWidget* dock = 0);
-    void addWidget(QWidget *content);
-    void addWidget(QLayout *content);
-    void setWidget(QWidget * widget);
-    void addStretch(int stretch = 0);
+	IndigoPanel(QString name, QWidget* dock = 0);
+	IndigoPanel(QString name, QIcon icon, int iconSize = 22, QWidget* dock = 0);
+	void addWidget(QWidget *content);
+	void addWidget(QLayout *content);
+	void setWidget(QWidget * widget);
+	void addStretch(int stretch = 0);
 
-    QWidget *widget() const;
+	QWidget *widget() const;
 
-    IndigoPanelHandle * wdg_handle;
+	IndigoPanelHandle * wdg_handle;
 
-    QString Caption();
-    void setCaption(QString title = "", int fontSize = -1);
+	QString Caption();
+	void setCaption(QString title = "", int fontSize = -1);
 
-    QIcon Icon();
-    void setIcon(QIcon icon, int iconSize = 22);
+	QIcon Icon();
+	void setIcon(QIcon icon, int iconSize = 22);
 
-    int Index();
-    void setIndex(int index);
+	int Index();
+	void setIndex(int index);
 
-    IndigoDockState dockState();
-    void setDockState(IndigoDockState state);
-    void setDockState(int state);
+	IndigoDockState dockState();
+	void setDockState(IndigoDockState state);
+	void setDockState(int state);
 
-    IndigoPanelHandle::IndigoExpanderState expanderState();
-    void setExpanderState(IndigoPanelHandle::IndigoExpanderState expanderState);
-    void setExpanderState(int expanderState);
-    void enableExpanderButton(bool visible);
-    void enableCloseButton(bool visible);
+	IndigoPanelHandle::IndigoExpanderState expanderState();
+	void setExpanderState(IndigoPanelHandle::IndigoExpanderState expanderState);
+	void setExpanderState(int expanderState);
+	void enableExpanderButton(bool visible);
+	void enableCloseButton(bool visible);
 
-    void setOrientation(Qt::Orientation orientation);
-    void setHandleWidth(int width);
-    void setGripColor(QColor color);
-    void setWindowTitle(const QString &title);
-    void setVisible(bool visible);
+	void setOrientation(Qt::Orientation orientation);
+	void setHandleWidth(int width);
+	void setGripColor(QColor color);
+	void setWindowTitle(const QString &title);
+	void setVisible(bool visible);
 
-    void setMinimumResizeHeight(int height);
-    void setMinimumResizeWidth(int width);
-    int minimumResizeHeight();
-    int minimumResizeWidth();
+	void setMinimumResizeHeight(int height);
+	void setMinimumResizeWidth(int width);
+	int minimumResizeHeight();
+	int minimumResizeWidth();
 
-    void setDockWidth(int width);
-    void setDockHeight(int height);
-    int dockHeight();
-    int dockWidth();
+	void setDockWidth(int width);
+	void setDockHeight(int height);
+	int dockHeight();
+	int dockWidth();
 
-    void updateSize();
+	void updateSize();
 
-    bool visibleOnStartup();
+	bool visibleOnStartup();
 
 protected:
-    bool eventFilter(QObject *object, QEvent *e);
-    bool mouseInGrip(QPoint mousePos);
+	bool eventFilter(QObject *object, QEvent *e);
+	bool mouseInGrip(QPoint mousePos);
 
-    /** @brief Set the Preferences context to be used for storage of startup visibility and position and size */
-    virtual void setPrefsContext(QString context);
-    void storeSize();
-    void storeVisibility(bool);
+	/** @brief Set the Preferences context to be used for storage of startup visibility and position and size */
+	virtual void setPrefsContext(QString context);
+	void storeSize();
+	void storeVisibility(bool);
 
-    PrefsContext* palettePrefs;
-    QString prefsContextName;
-    bool bool_visibleOnStartup;
+	PrefsContext* palettePrefs;
+	QString prefsContextName;
+	bool bool_visibleOnStartup;
 
 
 private:
-    QWidget * wdg_grip;
-    QColor col_grip;
-    QVBoxLayout *lyt_innerArea;
-   // FlowLayout * lyt_normalArea;
-    QBoxLayout *lyt_main;
-    QVBoxLayout * lyt_content;
-    QScrollArea * wdg_scrollArea;
+	QWidget * wdg_grip;
+	QColor col_grip;
+	QVBoxLayout *lyt_innerArea;
+	// FlowLayout * lyt_normalArea;
+	QBoxLayout *lyt_main;
+	QVBoxLayout * lyt_content;
+	QScrollArea * wdg_scrollArea;
 
-    QWidget * wdg_widget;
+	QWidget * wdg_widget;
 
-    QPoint pnt_relativeOffset;
-    QIcon ico_icon;
-    int int_index;
-    IndigoDockState m_state;
-    IndigoPanelHandle::IndigoExpanderState m_expander;
-    bool bool_showExpander;
-    bool bool_showClose;
+	QPoint pnt_relativeOffset;
+	QIcon ico_icon;
+	int int_index;
+	IndigoDockState m_state;
+	IndigoPanelHandle::IndigoExpanderState m_expander;
+	bool bool_showExpander;
+	bool bool_showClose;
 
-    Qt::Orientation m_orientation;
-    int int_handleWidth;
-    bool resizing;
-    QPoint oldPos;
+	Qt::Orientation m_orientation;
+	int int_handleWidth;
+	bool resizing;
+	QPoint oldPos;
 
-    int int_minWidth;
-    int int_minHeight;
+	int int_minWidth;
+	int int_minHeight;
 
-    int int_dockWidth;
-    int int_dockHeight;
+	int int_dockWidth;
+	int int_dockHeight;
 
 
 signals:
-    void mouseReleased();
-    void mouseMove();
-    void isFloating();
-    void panelClosedByButton();
-    void panelClosed(int index);
-    void panelShown(int index);
-    void isAdvanced();
-    void isNormal();
-    void handleMove();
+	void mouseReleased();
+	void mouseMove();
+	void isFloating();
+	void panelClosedByButton();
+	void panelClosed(int index);
+	void panelShown(int index);
+	void isAdvanced();
+	void isNormal();
+	void handleMove();
 
 public slots:
-    void show();
-    void hide();    
-    void toggleExpander();
+	void show();
+	void hide();
+	void toggleExpander();
 
 private slots:
-    void clickCloseButton();
+	void clickCloseButton();
 };
 
 #endif // INDIGOPANEL_H

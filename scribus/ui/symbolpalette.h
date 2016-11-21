@@ -75,7 +75,7 @@ class SCRIBUS_API SymbolPalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-    SymbolPalette(QWidget* parent, const char *name);
+	SymbolPalette(QWidget* parent, const char *name);
 	~SymbolPalette() {};
 	void setMainWindow(ScribusMainWindow *mw);
 	void setDoc(ScribusDoc *);

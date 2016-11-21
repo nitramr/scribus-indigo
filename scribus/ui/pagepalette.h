@@ -35,7 +35,7 @@ class SCRIBUS_API PagePalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-    PagePalette(QWidget* parent, const char *name);
+	PagePalette(QWidget* parent, const char *name);
 	~PagePalette() {};
 	
 	QWidget* currentWidget();

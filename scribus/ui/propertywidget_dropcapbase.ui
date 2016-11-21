@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
+  <property name="frameShape">
+   <enum>QFrame::Box</enum>
+  </property>
+  <property name="lineWidth">
+   <number>0</number>
+  </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
    <item row="1" column="0">
     <widget class="QLabel" name="dropCapLinesLabel">
@@ -30,7 +36,7 @@
       <string> lines</string>
      </property>
      <property name="maximum">
-      <number>10</number>
+      <double>10.000000000000000</double>
      </property>
     </widget>
    </item>

@@ -28,16 +28,16 @@ for which a new license (GPL+exception) is in place.
 
 BookPalette::BookPalette(QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
-    setObjectName(QString::fromLocal8Bit(name));
+	setObjectName(QString::fromLocal8Bit(name));
 	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	BView = new BookMView(this);
 	BView->setMinimumSize(QSize(100,150));
 	setWidget( BView );
 	languageChange();
 
-    // Panel icon
-    IconManager* im = IconManager::instance();
-    setIcon(im->loadPixmap("64/pan-bookmarks.png"));
+	// Panel icon
+	IconManager* im = IconManager::instance();
+	setIcon(im->loadPixmap("64/pan-bookmarks.png"));
 
 }
 

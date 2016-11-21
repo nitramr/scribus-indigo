@@ -36,54 +36,54 @@ class PrefsContext;
 
 class IndigoDockManager: public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    IndigoDockManager(QMainWindow *parent = 0);
+	IndigoDockManager(QMainWindow *parent = 0);
 
-    void addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area = Qt::LeftDockWidgetArea);
-    void addIndigoPanel(IndigoPanel * panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, bool isNewPanel = true, int tabIndex = -1);
-    void addIndigoPanel(IndigoDock * dock, IndigoPanel * panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, bool isNewPanel = true, int tabIndex = -1);
-    void scrollToPanel(QString name);
-    void removePanel(IndigoPanel * panel);
+	void addIndigoDock(IndigoDock *dock, Qt::DockWidgetArea area = Qt::LeftDockWidgetArea);
+	void addIndigoPanel(IndigoPanel * panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, bool isNewPanel = true, int tabIndex = -1);
+	void addIndigoPanel(IndigoDock * dock, IndigoPanel * panel, IndigoPanel::IndigoDockState dockState = IndigoPanel::Docked, bool isNewPanel = true, int tabIndex = -1);
+	void scrollToPanel(QString name);
+	void removePanel(IndigoPanel * panel);
 
-    QList<IndigoDock*> indigoDocks() const;
+	QList<IndigoDock*> indigoDocks() const;
 
-    void saveWorkspace();
-    void loadWorkspace();
+	void saveWorkspace();
+	void loadWorkspace();
 
-    /* Settings */
-    void setMinimumPanelHeight(int height);
-    void setMinimumPanelWidth(int width);
-    void setMinimumPanelSize(QSize size);
-    QSize minimumPanelSize();
+	/* Settings */
+	void setMinimumPanelHeight(int height);
+	void setMinimumPanelWidth(int width);
+	void setMinimumPanelSize(QSize size);
+	QSize minimumPanelSize();
 
 private:
-    QList<IndigoDock*> lst_Docks;
-    QList<IndigoDock*> lst_removeDocks;
-    void connectPanel(IndigoPanel *panel);
-    void removeDock(IndigoDock *dock);
-    void removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock);
+	QList<IndigoDock*> lst_Docks;
+	QList<IndigoDock*> lst_removeDocks;
+	void connectPanel(IndigoPanel *panel);
+	void removeDock(IndigoDock *dock);
+	void removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock);
 
-    int int_minimumPanelHeight;
-    int int_minimumPanelWidth;
-    int int_fadeSpeed;
+	int int_minimumPanelHeight;
+	int int_minimumPanelWidth;
+	int int_fadeSpeed;
 
 protected:
-    virtual void setPrefsContext(QString context);
-    PrefsContext* palettePrefs;
-    QString prefsContextName;
+	virtual void setPrefsContext(QString context);
+	PrefsContext* palettePrefs;
+	QString prefsContextName;
 
 
 signals:
 
 public slots:
-    void hoverDock();
-    void dropPanel();
-    void dragoutPanel();
-    void showTab(int);
-    void hideTab(int);
-    void scrollToPanel();
-    void updateDockSize();
+	void hoverDock();
+	void dropPanel();
+	void dragoutPanel();
+	void showTab(int);
+	void hideTab(int);
+	void scrollToPanel();
+	void updateDockSize();
 
 };
 

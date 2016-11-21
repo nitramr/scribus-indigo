@@ -82,8 +82,8 @@ void CanvasMode_EditSpiral::drawControls(QPainter* p)
 
 void CanvasMode_EditSpiral::drawControlsSpiral(QPainter* psx, PageItem* currItem)
 {
-    QPen p8b = QPen(Qt::blue, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-    QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8b = QPen(Qt::blue, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
 	psx->setTransform(currItem->getTransform(), true);
 	psx->setBrush(Qt::NoBrush);
 	psx->setPen(p8b);

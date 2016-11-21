@@ -86,7 +86,7 @@ CanvasMode::CanvasMode (ScribusView* view) :
 	m_pen["outline"].setCosmetic(true);
 	m_pen["selection"]	= QPen(PrefsManager::instance()->appPrefs.displayPrefs.frameColor, 1.0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 	m_pen["selection"].setCosmetic(true);
-    m_pen["selection-group"] = QPen(PrefsManager::instance()->appPrefs.displayPrefs.frameColor, 1.0 , Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+	m_pen["selection-group"] = QPen(PrefsManager::instance()->appPrefs.displayPrefs.frameColor, 1.0 , Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 	m_pen["selection-group"].setCosmetic(true);
 	m_pen["selection-group-inside"] = QPen(PrefsManager::instance()->appPrefs.displayPrefs.frameGroupColor, 1.0 , Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 	m_pen["selection-group-inside"].setCosmetic(true);
@@ -95,7 +95,7 @@ CanvasMode::CanvasMode (ScribusView* view) :
 	
 	m_brush["outline"]	= Qt::NoBrush;
 	m_brush["selection"]	= Qt::NoBrush;
-	m_brush["selection-group"] = QColor(255,0,0,10);
+	m_brush["selection-group"] = QColor(0,150,255,10);
 	m_brush["selection-group-inside"] = Qt::NoBrush;
 	m_brush["handle"]	= PrefsManager::instance()->appPrefs.displayPrefs.frameColor;
 
@@ -962,7 +962,7 @@ void CanvasMode::drawSnapLine(QPainter* p)
 	QPoint pageOrigin = m_canvas->canvasToLocal(QPointF(xOffset, yOffset));
 	if (ySnap)
 	{
-        p->setPen(QColor(0,150,255));
+		p->setPen(QColor(0,150,255));
 		QPoint pt = m_canvas->canvasToLocal(QPointF(xOffset, ySnap));
 		double w  = (dragToPage->width() + bleedValues.left() + bleedValues.right()) * m_canvas->scale();
 		p->drawLine(pageOrigin.x(), pt.y(), pageOrigin.x() + w, pt.y());
@@ -970,7 +970,7 @@ void CanvasMode::drawSnapLine(QPainter* p)
 	}
 	if (xSnap)
 	{
-        p->setPen(QColor(0,150,255));
+		p->setPen(QColor(0,150,255));
 		QPoint pt = m_canvas->canvasToLocal(QPointF(xSnap, yOffset));
 		double h  = (dragToPage->height() + bleedValues.bottom() + bleedValues.top()) * m_canvas->scale();
 		p->drawLine(pt.x(), pageOrigin.y(), pt.x(), pageOrigin.y() + h);

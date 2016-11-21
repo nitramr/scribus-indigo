@@ -65,37 +65,45 @@ PropertiesPalette_Text::PropertiesPalette_Text( QWidget* parent) : QWidget(paren
 	lineSpacingLabel->setPixmap(IconManager::instance()->loadPixmap("linespacing2.png"));
 
 	paraStyleLabel->setBuddy(paraStyleCombo);
-	paraStyleClear->setIcon(IconManager::instance()->loadPixmap("16/edit-clear.png"));
+	paraStyleClear->setIcon(IconManager::instance()->loadIcon("16/edit-clear.png"));
 	charStyleLabel->setBuddy(charStyleCombo);
-	charStyleClear->setIcon(IconManager::instance()->loadPixmap("16/edit-clear.png"));
+	charStyleClear->setIcon(IconManager::instance()->loadIcon("16/edit-clear.png"));
 
-	colorWidgets = new PropertyWidget_TextColor(textTree);
-	colorWidgetsItem = textTree->addWidget( tr("Color && Effects"), colorWidgets);
+	colorWidgets = new PropertyWidget_TextColor(this);
+	lyt_widgetHolder->addWidget(colorWidgets);
+	//colorWidgetsItem = textTree->addWidget( tr("Color && Effects"), colorWidgets);
 
-	flopBox = new PropertyWidget_Flop(textTree);
-	flopItem = textTree->addWidget( tr("First Line Offset"), flopBox);
+	flopBox = new PropertyWidget_Flop(this);
+	lyt_widgetHolder->addWidget(flopBox);
+	//flopItem = textTree->addWidget( tr("First Line Offset"), flopBox);
 
-	orphanBox = new PropertyWidget_Orphans(textTree);
-	orphanItem = textTree->addWidget( tr("Orphans and Widows"), orphanBox);
+	orphanBox = new PropertyWidget_Orphans(this);
+	lyt_widgetHolder->addWidget(orphanBox);
+	//orphanItem = textTree->addWidget( tr("Orphans and Widows"), orphanBox);
 
-	parEffectWidgets = new PropertyWidget_ParEffect(textTree);
-	parEffectItem = textTree->addWidget( tr("Paragraph Effects"), parEffectWidgets);
+	parEffectWidgets = new PropertyWidget_ParEffect(this);
+	lyt_widgetHolder->addWidget(parEffectWidgets);
+	//parEffectItem = textTree->addWidget( tr("Paragraph Effects"), parEffectWidgets);
 
-	distanceWidgets = new PropertyWidget_Distance(textTree);
-	distanceItem = textTree->addWidget( tr("Columns && Text Distances"), distanceWidgets);
+	distanceWidgets = new PropertyWidget_Distance(this);
+	lyt_widgetHolder->addWidget(distanceWidgets);
+	//distanceItem = textTree->addWidget( tr("Columns && Text Distances"), distanceWidgets);
 
 	//<< Optical Margins
-	optMargins = new PropertyWidget_OptMargins(textTree);
-	optMarginsItem = textTree->addWidget( tr("Optical Margins"), optMargins);
+	optMargins = new PropertyWidget_OptMargins(this);
+	lyt_widgetHolder->addWidget(optMargins);
+	//optMarginsItem = textTree->addWidget( tr("Optical Margins"), optMargins);
 	//>> Optical Margins
 
 	//<<Advanced Settings
-	advancedWidgets = new PropertyWidget_Advanced(textTree);
-	advancedWidgetsItem = textTree->addWidget( tr("Advanced Settings"), advancedWidgets);
+	advancedWidgets = new PropertyWidget_Advanced(this);
+	lyt_widgetHolder->addWidget(advancedWidgets);
+	//advancedWidgetsItem = textTree->addWidget( tr("Advanced Settings"), advancedWidgets);
 	//>>Advanced Settings
 
-	pathTextWidgets = new PropertyWidget_PathText(textTree);
-	pathTextItem = textTree->addWidget( tr("Path Text Properties"), pathTextWidgets);
+	pathTextWidgets = new PropertyWidget_PathText(this);
+	lyt_widgetHolder->addWidget(pathTextWidgets);
+	//pathTextItem = textTree->addWidget( tr("Path Text Properties"), pathTextWidgets);
 	
 	languageChange();
 
@@ -315,30 +323,30 @@ void PropertiesPalette_Text::setCurrentItem(PageItem *i)
 	{
 		setEnabled(false);
 	}
-	if (m_item->asPathText())
-	{
-		flopItem->setHidden(true);
-		distanceItem->setHidden(true);
-		orphanItem->setHidden(true);
-		parEffectItem->setHidden(true);
-		pathTextItem->setHidden(false);
-	}
-	else if (m_item->asTextFrame() || m_item->asTable())
-	{
-		flopItem->setHidden(false);
-		distanceItem->setHidden(false);
-		orphanItem->setHidden(false);
-		parEffectItem->setHidden(false);
-		pathTextItem->setHidden(true);
-	}
-	else
-	{
-		flopItem->setHidden(false);
-		distanceItem->setHidden(false);
-		orphanItem->setHidden(false);
-		parEffectItem->setHidden(false);
-		pathTextItem->setHidden(true);
-	}
+//	if (m_item->asPathText())
+//	{
+//		flopItem->setHidden(true);
+//		distanceItem->setHidden(true);
+//		orphanItem->setHidden(true);
+//		parEffectItem->setHidden(true);
+//		pathTextItem->setHidden(false);
+//	}
+//	else if (m_item->asTextFrame() || m_item->asTable())
+//	{
+//		flopItem->setHidden(false);
+//		distanceItem->setHidden(false);
+//		orphanItem->setHidden(false);
+//		parEffectItem->setHidden(false);
+//		pathTextItem->setHidden(true);
+//	}
+//	else
+//	{
+//		flopItem->setHidden(false);
+//		distanceItem->setHidden(false);
+//		orphanItem->setHidden(false);
+//		parEffectItem->setHidden(false);
+//		pathTextItem->setHidden(true);
+//	}
 
 	m_haveItem = true;
 
@@ -634,14 +642,14 @@ void PropertiesPalette_Text::languageChange()
 	paraStyleLabel->setText( tr("Paragraph St&yle:"));
 	charStyleLabel->setText( tr("Character St&yle:"));
 
-	colorWidgetsItem->setText(0, tr("Color && Effects"));
-	flopItem->setText(0, tr("First Line Offset"));
-	orphanItem->setText(0, tr("Orphans and Widows"));
-	parEffectItem->setText(0, tr("Paragraph Effects"));
-	distanceItem->setText(0, tr("Columns && Text Distances"));
-	optMarginsItem->setText(0, tr("Optical Margins"));
-	advancedWidgetsItem->setText(0, tr("Advanced Settings"));
-	pathTextItem->setText(0, tr("Path Text Properties"));
+//	colorWidgetsItem->setText(0, tr("Color && Effects"));
+//	flopItem->setText(0, tr("First Line Offset"));
+//	orphanItem->setText(0, tr("Orphans and Widows"));
+//	parEffectItem->setText(0, tr("Paragraph Effects"));
+//	distanceItem->setText(0, tr("Columns && Text Distances"));
+//	optMarginsItem->setText(0, tr("Optical Margins"));
+//	advancedWidgetsItem->setText(0, tr("Advanced Settings"));
+//	pathTextItem->setText(0, tr("Path Text Properties"));
 
 	QSignalBlocker lineSpacingModeBlocker(lineSpacingModeCombo);
 	int  oldLineSpacingMode = lineSpacingModeCombo->currentIndex();

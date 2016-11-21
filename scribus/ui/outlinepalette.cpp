@@ -415,9 +415,9 @@ bool OutlineWidget::viewportEvent(QEvent *event)
 OutlinePalette::OutlinePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 //	resize( 220, 240 );
-    //setMinimumSize( QSize( 220, 240 ) );
-    setObjectName(QString::fromLocal8Bit(name));
-    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+//	setMinimumSize( QSize( 220, 240 ) );
+	setObjectName(QString::fromLocal8Bit(name));
+//	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
  
 	filterEdit = new QLineEdit;
@@ -467,8 +467,8 @@ OutlinePalette::OutlinePalette( QWidget* parent, const char* name) : ScDockPalet
 	annotLinkIcon = im->loadPixmap("goto.png");
 	annot3DIcon = im->loadPixmap("22/annot3d.png");
 
-    // Panel icon
-    setIcon(im->loadPixmap("64/pan-outline.png"));
+	// Panel icon
+	setIcon(im->loadPixmap("64/pan-outline.png"));
 
 	selectionTriggered = false;
 	m_MainWindow  = NULL;

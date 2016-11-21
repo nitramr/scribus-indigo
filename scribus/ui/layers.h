@@ -33,7 +33,7 @@ class SCRIBUS_API LayerPalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-    LayerPalette(QWidget* parent, const char *name);
+	LayerPalette(QWidget* parent, const char *name);
 	~LayerPalette() {};
 	
 	virtual void changeEvent(QEvent *e);

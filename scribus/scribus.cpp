@@ -321,7 +321,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 //	{
 //		qApp->setStyleSheet(QString(stylesheet));
 //	}
-    setStyleSheet();
+	setStyleSheet();
 
 	qApp->setLayoutDirection(QLocale(ScCore->getGuiLanguage()).textDirection());
 	previewDinUse = false;
@@ -374,7 +374,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	createMenuBar();
 	initToolBars();
 
-    initPalettes();
+	initPalettes();
 
 	ScCore->pluginManager->setupPluginActions(this);
 	ScCore->pluginManager->enableOnlyStartupPluginActions(this);
@@ -442,7 +442,7 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	csm.findPaletteLocations();
 	csm.findPalettes();
 	csm.findUserPalettes();
-	QString Cpfad = QDir::toNativeSeparators(ScPaths::getApplicationDataDir())+"DefaultColors.xml";
+	QString Cpfad = QDir::toNativeSeparators(ScPaths::applicationDataDir())+"DefaultColors.xml";
 	QFile fc(Cpfad);
 	if (fc.exists())
 		csm.loadPalette(Cpfad, m_doc, m_prefsManager->appPrefs.colorPrefs.DColors, m_prefsManager->appPrefs.defaultGradients, m_prefsManager->appPrefs.defaultPatterns, false);
@@ -474,7 +474,7 @@ ScribusMainWindow::~ScribusMainWindow()
 	if (appModeHelper)
 		delete appModeHelper;
 	delete m_doc;
-    delete m_tocGenerator;
+	delete m_tocGenerator;
 }
 
 void ScribusMainWindow::addScToolBar(ScToolBar *tb, QString name, Qt::ToolBarArea  area)
@@ -495,9 +495,9 @@ void ScribusMainWindow::initToolBars()
 	viewToolBar = new ViewToolBar(this);
 
 	addScToolBar(fileToolBar, fileToolBar->objectName());
-    addScToolBar(editToolBar, editToolBar->objectName());
-    addScToolBar(modeToolBar, modeToolBar->objectName(), Qt::LeftToolBarArea);
-    addScToolBar(pdfToolBar, pdfToolBar->objectName(), Qt::LeftToolBarArea);
+	addScToolBar(editToolBar, editToolBar->objectName());
+	addScToolBar(modeToolBar, modeToolBar->objectName(), Qt::LeftToolBarArea);
+	addScToolBar(pdfToolBar, pdfToolBar->objectName(), Qt::LeftToolBarArea);
 	addScToolBar(viewToolBar, viewToolBar->objectName());
 	connect(modeToolBar, SIGNAL(visibilityChanged(bool)), scrActions["toolsToolbarTools"], SLOT(setChecked(bool)));
 	connect(scrActions["toolsToolbarPDF"], SIGNAL(toggled(bool)), pdfToolBar, SLOT(setVisible(bool)));
@@ -511,14 +511,20 @@ void ScribusMainWindow::setStyleSheet()
 {
     QStringList sysTheme = QStyleFactory::keys();
     QString sTheme = PrefsManager().instance()->appPrefs.uiPrefs.style;
+	QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
 
     if(sysTheme.contains(sTheme)){
         qApp->setStyle(QStyleFactory::create(sTheme));
         QByteArray stylesheet;
         // load alternative styles if available
-        if (loadRawText(ScPaths::getApplicationDataDir() + "/stylesheet.css", stylesheet))
+		if (loadRawText(ScPaths::applicationDataDir() + "/stylesheet.css", stylesheet))
         {
-            qApp->setStyleSheet(QString(stylesheet));
+			QString style(stylesheet);
+			QString iconFolder = ScPaths::instance().iconDir();
+			QString iconset(IconManager::instance()->activePath());
+			style.replace(re, iconFolder + iconset + "\\1");
+
+			qApp->setStyleSheet(style);
         }
 
     }else{
@@ -533,16 +539,13 @@ void ScribusMainWindow::setStyleSheet()
         {
 
             QString style(stylesheet);
+
             sf->parseString(style);
             qApp->setPalette(sf->palette());
 
-            QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
-
             QString iconFolder = ScPaths::instance().iconDir();
             QString iconset(IconManager::instance()->activePath());
-
             style.replace(re, iconFolder + iconset + "\\1");
-
 
             qApp->setStyleSheet(style);
 
@@ -622,14 +625,14 @@ void ScribusMainWindow::initKeyboardShortcuts()
 void ScribusMainWindow::initIndigoDock()
 {
  
-    wdg_indigoDock = new IndigoDock();
+	wdg_indigoDock = new IndigoDock();
  
-    // install IndigoDockManager
-    wdg_indigoDockManager = new IndigoDockManager(this);
-    wdg_indigoDockManager->setMinimumPanelSize(QSize(300,150));
+	// install IndigoDockManager
+	wdg_indigoDockManager = new IndigoDockManager(this);
+	wdg_indigoDockManager->setMinimumPanelSize(QSize(300,150));
  
-    // Add IndigoDock
-    wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
+	// Add IndigoDock
+	wdg_indigoDockManager->addIndigoDock(wdg_indigoDock, Qt::RightDockWidgetArea );
  
  
 }
@@ -637,7 +640,7 @@ void ScribusMainWindow::initIndigoDock()
  
 IndigoDockManager *ScribusMainWindow::indigoDockManager(){
  
-    return wdg_indigoDockManager;
+	return wdg_indigoDockManager;
  
 }
 
@@ -646,171 +649,170 @@ void ScribusMainWindow::initPalettes()
 {
  
  
-    //CB TODO hide the publicly available members of some palettes
-    // these must be filtered too as they take control of the palettes events
+	//CB TODO hide the publicly available members of some palettes
+	// these must be filtered too as they take control of the palettes events
  
-    wdg_indigoDock->setRestoreMode(true);
+	wdg_indigoDock->setRestoreMode(true);
 
-    // Properties
+	// Properties
  
-    propertiesPalette = new PropertiesPalette(this, "Properties");
-    propertiesPalette->setMainWindow(this);
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, propertiesPalette);
-    connect( scrActions["toolsProperties"], SIGNAL(toggled(bool)) , propertiesPalette, SLOT(setPaletteShown(bool)) );
-    connect( propertiesPalette, SIGNAL(paletteShown(bool)), scrActions["toolsProperties"], SLOT(setChecked(bool)));
-    emit UpdateRequest(reqDefFontListUpdate);
-    propertiesPalette->installEventFilter(this);
+	propertiesPalette = new PropertiesPalette(this, "Properties");
+	propertiesPalette->setMainWindow(this);
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, propertiesPalette);
+	connect( scrActions["toolsProperties"], SIGNAL(toggled(bool)) , propertiesPalette, SLOT(setPaletteShown(bool)) );
+	connect( propertiesPalette, SIGNAL(paletteShown(bool)), scrActions["toolsProperties"], SLOT(setChecked(bool)));
+	emit UpdateRequest(reqDefFontListUpdate);
+	propertiesPalette->installEventFilter(this);
  
-    // Aligment
-    alignDistributePalette = new AlignDistributePalette(this, "AlignDistributePalette");
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, alignDistributePalette);
-    connect( scrActions["toolsAlignDistribute"], SIGNAL(toggled(bool)) , alignDistributePalette, SLOT(setPaletteShown(bool)) );
-    connect( alignDistributePalette, SIGNAL(paletteShown(bool)), scrActions["toolsAlignDistribute"], SLOT(setChecked(bool)));
-    connect( alignDistributePalette, SIGNAL(documentChanged()), this, SLOT(slotDocCh()));
-    alignDistributePalette->installEventFilter(this);
+	// Aligment
+	alignDistributePalette = new AlignDistributePalette(this, "AlignDistributePalette");
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, alignDistributePalette);
+	connect( scrActions["toolsAlignDistribute"], SIGNAL(toggled(bool)) , alignDistributePalette, SLOT(setPaletteShown(bool)) );
+	connect( alignDistributePalette, SIGNAL(paletteShown(bool)), scrActions["toolsAlignDistribute"], SLOT(setChecked(bool)));
+	connect( alignDistributePalette, SIGNAL(documentChanged()), this, SLOT(slotDocCh()));
+	alignDistributePalette->installEventFilter(this);
  
-    // Pages
-    pagePalette = new PagePalette(this, "PagePalette");
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pagePalette);
-    connect( scrActions["toolsPages"], SIGNAL(toggled(bool)) , pagePalette, SLOT(setPaletteShown(bool)) );
-    connect( pagePalette, SIGNAL(paletteShown(bool)), scrActions["toolsPages"], SLOT(setChecked(bool)));
-    pagePalette->installEventFilter(this);
+	// Pages
+	pagePalette = new PagePalette(this, "PagePalette");
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, pagePalette);
+	connect( scrActions["toolsPages"], SIGNAL(toggled(bool)) , pagePalette, SLOT(setPaletteShown(bool)) );
+	connect( pagePalette, SIGNAL(paletteShown(bool)), scrActions["toolsPages"], SLOT(setChecked(bool)));
+	pagePalette->installEventFilter(this);
  
-    // Layers
-    layerPalette = new LayerPalette(this, "Layers");
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, layerPalette);
-    connect( scrActions["toolsLayers"], SIGNAL(toggled(bool)) , layerPalette, SLOT(setPaletteShown(bool)) );
-    connect( layerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsLayers"], SLOT(setChecked(bool)));
-    layerPalette->installEventFilter(this);
-    layerPalette->Table->installEventFilter(this);
-    connect(layerPalette, SIGNAL(LayerChanged()), this, SLOT(showLayer()));
+	// Layers
+	layerPalette = new LayerPalette(this, "Layers");
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, layerPalette);
+	connect( scrActions["toolsLayers"], SIGNAL(toggled(bool)) , layerPalette, SLOT(setPaletteShown(bool)) );
+	connect( layerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsLayers"], SLOT(setChecked(bool)));
+	layerPalette->installEventFilter(this);
+	layerPalette->Table->installEventFilter(this);
+	connect(layerPalette, SIGNAL(LayerChanged()), this, SLOT(showLayer()));
  
-    // Outline
-    outlinePalette = new OutlinePalette(this, "Tree");
-    outlinePalette->setMainWindow(this);
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, outlinePalette);
-    connect( scrActions["toolsOutline"], SIGNAL(toggled(bool)) , outlinePalette, SLOT(setPaletteShown(bool)) );
-    connect( outlinePalette, SIGNAL(paletteShown(bool)), scrActions["toolsOutline"], SLOT(setChecked(bool)));
-    connect(outlinePalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
-    connect(outlinePalette, SIGNAL(editElementByItem(PageItem *)), this, SLOT(editItemsFromOutlines(PageItem *)));
-    connect(outlinePalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
-    connect(outlinePalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
+	// Outline
+	outlinePalette = new OutlinePalette(this, "Tree");
+	outlinePalette->setMainWindow(this);
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, outlinePalette);
+	connect( scrActions["toolsOutline"], SIGNAL(toggled(bool)) , outlinePalette, SLOT(setPaletteShown(bool)) );
+	connect( outlinePalette, SIGNAL(paletteShown(bool)), scrActions["toolsOutline"], SLOT(setChecked(bool)));
+	connect(outlinePalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
+	connect(outlinePalette, SIGNAL(editElementByItem(PageItem *)), this, SLOT(editItemsFromOutlines(PageItem *)));
+	connect(outlinePalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
+	connect(outlinePalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
  
-    // Inline
-    inlinePalette = new InlinePalette(this, "Inline");
-    inlinePalette->setMainWindow(this);
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, inlinePalette);
-    connect(scrActions["toolsInline"], SIGNAL(toggled(bool)), inlinePalette, SLOT(setPaletteShown(bool)));
-    connect(inlinePalette, SIGNAL(paletteShown(bool)), scrActions["toolsInline"], SLOT(setChecked(bool)));
-    connect(inlinePalette, SIGNAL(startEdit(int)), this, SLOT(editInlineStart(int)));
-    connect(inlinePalette, SIGNAL(endEdit()), this, SLOT(editInlineEnd()));
-    connect(inlinePalette, SIGNAL(objectDropped(QString)), this, SLOT(PutToInline(QString)));
-    inlinePalette->installEventFilter(this);
+	// Inline
+	inlinePalette = new InlinePalette(this, "Inline");
+	inlinePalette->setMainWindow(this);
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, inlinePalette);
+	connect(scrActions["toolsInline"], SIGNAL(toggled(bool)), inlinePalette, SLOT(setPaletteShown(bool)));
+	connect(inlinePalette, SIGNAL(paletteShown(bool)), scrActions["toolsInline"], SLOT(setChecked(bool)));
+	connect(inlinePalette, SIGNAL(startEdit(int)), this, SLOT(editInlineStart(int)));
+	connect(inlinePalette, SIGNAL(endEdit()), this, SLOT(editInlineEnd()));
+	connect(inlinePalette, SIGNAL(objectDropped(QString)), this, SLOT(PutToInline(QString)));
+	inlinePalette->installEventFilter(this);
  
-    // Bookmarks
-    bookmarkPalette = new BookPalette(this, "Books");
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, bookmarkPalette);
-    connect( scrActions["toolsBookmarks"], SIGNAL(toggled(bool)) , bookmarkPalette, SLOT(setPaletteShown(bool)) );
-    connect( bookmarkPalette, SIGNAL(paletteShown(bool)), scrActions["toolsBookmarks"], SLOT(setChecked(bool)));
-    bookmarkPalette->installEventFilter(this);
-    connect(bookmarkPalette->BView, SIGNAL(MarkMoved()), this, SLOT(StoreBookmarks()));
-    connect(bookmarkPalette->BView, SIGNAL(changed()), this, SLOT(slotDocCh()));
-    connect(bookmarkPalette->BView, SIGNAL(SelectElement(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
+	// Bookmarks
+	bookmarkPalette = new BookPalette(this, "Books");
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, bookmarkPalette);
+	connect( scrActions["toolsBookmarks"], SIGNAL(toggled(bool)) , bookmarkPalette, SLOT(setPaletteShown(bool)) );
+	connect( bookmarkPalette, SIGNAL(paletteShown(bool)), scrActions["toolsBookmarks"], SLOT(setChecked(bool)));
+	bookmarkPalette->installEventFilter(this);
+	connect(bookmarkPalette->BView, SIGNAL(MarkMoved()), this, SLOT(StoreBookmarks()));
+	connect(bookmarkPalette->BView, SIGNAL(changed()), this, SLOT(slotDocCh()));
+	connect(bookmarkPalette->BView, SIGNAL(SelectElement(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
  
-    // Symbol
-    symbolPalette = new SymbolPalette(this, "Symb");
-    symbolPalette->setMainWindow(this);
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, symbolPalette);
-    connect(scrActions["toolsSymbols"], SIGNAL(toggled(bool)), symbolPalette, SLOT(setPaletteShown(bool)));
-    connect(symbolPalette, SIGNAL(paletteShown(bool)), scrActions["toolsSymbols"], SLOT(setChecked(bool)));
-    connect(symbolPalette, SIGNAL(startEdit(QString)), this, SLOT(editSymbolStart(QString)));
-    connect(symbolPalette, SIGNAL(endEdit()), this, SLOT(editSymbolEnd()));
-    connect(symbolPalette, SIGNAL(objectDropped()), this, SLOT(PutToPatterns()));
-    symbolPalette->installEventFilter(this);
+	// Symbol
+	symbolPalette = new SymbolPalette(this, "Symb");
+	symbolPalette->setMainWindow(this);
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, symbolPalette);
+	connect(scrActions["toolsSymbols"], SIGNAL(toggled(bool)), symbolPalette, SLOT(setPaletteShown(bool)));
+	connect(symbolPalette, SIGNAL(paletteShown(bool)), scrActions["toolsSymbols"], SLOT(setChecked(bool)));
+	connect(symbolPalette, SIGNAL(startEdit(QString)), this, SLOT(editSymbolStart(QString)));
+	connect(symbolPalette, SIGNAL(endEdit()), this, SLOT(editSymbolEnd()));
+	connect(symbolPalette, SIGNAL(objectDropped()), this, SLOT(PutToPatterns()));
+	symbolPalette->installEventFilter(this);
  
-    // Scapebook
-    scrapbookPalette = new Biblio(this, "Sclib");
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, scrapbookPalette);
-    connect( scrActions["toolsScrapbook"], SIGNAL(toggled(bool)) , scrapbookPalette, SLOT(setPaletteShown(bool)) );
-    connect( scrapbookPalette, SIGNAL(paletteShown(bool)), scrActions["toolsScrapbook"], SLOT(setChecked(bool)));
-    connect( scrapbookPalette, SIGNAL(pasteToActualPage(QString)), this, SLOT(pasteFromScrapbook(QString)));
-    connect( scrapbookPalette, SIGNAL(scrapbookListChanged()), this, SLOT(rebuildScrapbookMenu()));
-    scrapbookPalette->installEventFilter(this);
+	// Scapebook
+	scrapbookPalette = new Biblio(this, "Sclib");
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, scrapbookPalette);
+	connect( scrActions["toolsScrapbook"], SIGNAL(toggled(bool)) , scrapbookPalette, SLOT(setPaletteShown(bool)) );
+	connect( scrapbookPalette, SIGNAL(paletteShown(bool)), scrActions["toolsScrapbook"], SLOT(setChecked(bool)));
+	connect( scrapbookPalette, SIGNAL(pasteToActualPage(QString)), this, SLOT(pasteFromScrapbook(QString)));
+	connect( scrapbookPalette, SIGNAL(scrapbookListChanged()), this, SLOT(rebuildScrapbookMenu()));
+	scrapbookPalette->installEventFilter(this);
  
-    // Undo
-    undoPalette = new UndoPalette(this, "undoPalette");
-    wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, undoPalette);
-    undoPalette->installEventFilter(this);
-    m_undoManager->registerGui(undoPalette);
-    connect(undoPalette, SIGNAL(paletteShown(bool)), this, SLOT(setUndoPalette(bool)));
-    connect(undoPalette, SIGNAL(objectMode(bool)), this, SLOT(setUndoMode(bool)));
+	// Undo
+	undoPalette = new UndoPalette(this, "undoPalette");
+	wdg_indigoDockManager->addIndigoPanel(wdg_indigoDock, undoPalette);
+	undoPalette->installEventFilter(this);
+	m_undoManager->registerGui(undoPalette);
+	connect(undoPalette, SIGNAL(paletteShown(bool)), this, SLOT(setUndoPalette(bool)));
+	connect(undoPalette, SIGNAL(objectMode(bool)), this, SLOT(setUndoMode(bool)));
  
-    // Node
-    nodePalette = new NodePalette(this);
-    nodePalette->installEventFilter(this);
-    connect(nodePalette, SIGNAL(paletteClosed()), this, SLOT(slotSelect()));
-    connect(nodePalette, SIGNAL(DocChanged()), this, SLOT(slotDocCh()));
+	// Node
+	nodePalette = new NodePalette(this);
+	nodePalette->installEventFilter(this);
+	connect(nodePalette, SIGNAL(paletteClosed()), this, SLOT(slotSelect()));
+	connect(nodePalette, SIGNAL(DocChanged()), this, SLOT(slotDocCh()));
  
-    // Guides
-    guidePalette = new GuideManager(this);
-    connect(scrActions["pageManageGuides"], SIGNAL(toggled(bool)), guidePalette, SLOT(setPaletteShown(bool)));
-    connect(guidePalette, SIGNAL(paletteShown(bool)), scrActions["pageManageGuides"], SLOT(setChecked(bool)));
+	// Guides
+	guidePalette = new GuideManager(this);
+	connect(scrActions["pageManageGuides"], SIGNAL(toggled(bool)), guidePalette, SLOT(setPaletteShown(bool)));
+	connect(guidePalette, SIGNAL(paletteShown(bool)), scrActions["pageManageGuides"], SLOT(setChecked(bool)));
  
-    // Chars
-    charPalette = new CharSelect(this);
-    connect(scrActions["insertGlyph"], SIGNAL(toggled(bool)), charPalette, SLOT(setPaletteShown(bool)));
-    connect(charPalette, SIGNAL(paletteShown(bool)), scrActions["insertGlyph"], SLOT(setChecked(bool)));
+	// Chars
+	charPalette = new CharSelect(this);
+	connect(scrActions["insertGlyph"], SIGNAL(toggled(bool)), charPalette, SLOT(setPaletteShown(bool)));
+	connect(charPalette, SIGNAL(paletteShown(bool)), scrActions["insertGlyph"], SLOT(setChecked(bool)));
  
-    // Download
-    downloadsPalette = new DownloadsPalette(this);
-    connect( scrActions["toolsDownloads"], SIGNAL(toggled(bool)) , downloadsPalette, SLOT(setPaletteShown(bool)) );
-    connect( downloadsPalette, SIGNAL(paletteShown(bool)), scrActions["toolsDownloads"], SLOT(setChecked(bool)));
-    downloadsPalette->installEventFilter(this);
-    connect( scrActions["toolsMeasurements"], SIGNAL(toggledData(bool, int)) , this, SLOT(setAppModeByToggle(bool, int)) );
+	// Download
+	downloadsPalette = new DownloadsPalette(this);
+	connect( scrActions["toolsDownloads"], SIGNAL(toggled(bool)) , downloadsPalette, SLOT(setPaletteShown(bool)) );
+	connect( downloadsPalette, SIGNAL(paletteShown(bool)), scrActions["toolsDownloads"], SLOT(setChecked(bool)));
+	downloadsPalette->installEventFilter(this);
+	connect( scrActions["toolsMeasurements"], SIGNAL(toggledData(bool, int)) , this, SLOT(setAppModeByToggle(bool, int)) );
  
-    // DockChecker
-    docCheckerPalette = new CheckDocument(this, false);   
-    connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , docCheckerPalette, SLOT(setPaletteShown(bool)) );
-    connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , this, SLOT(docCheckToggle(bool)) );
-    connect( docCheckerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsPreflightVerifier"], SLOT(setChecked(bool)));
-    connect( docCheckerPalette, SIGNAL(paletteShown(bool)), this, SLOT(docCheckToggle(bool)));
-    docCheckerPalette->installEventFilter(this);
-    docCheckerPalette->hide();
+	// DockChecker
+	docCheckerPalette = new CheckDocument(this, false);   
+	connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , docCheckerPalette, SLOT(setPaletteShown(bool)) );
+	connect( scrActions["toolsPreflightVerifier"], SIGNAL(toggled(bool)) , this, SLOT(docCheckToggle(bool)) );
+	connect( docCheckerPalette, SIGNAL(paletteShown(bool)), scrActions["toolsPreflightVerifier"], SLOT(setChecked(bool)));
+	connect( docCheckerPalette, SIGNAL(paletteShown(bool)), this, SLOT(docCheckToggle(bool)));
+	docCheckerPalette->installEventFilter(this);
+	docCheckerPalette->hide();
  
-    connect(docCheckerPalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
-    connect(docCheckerPalette, SIGNAL(selectElement(PageItem *, bool, int)), this, SLOT(selectItemFromOutlines(PageItem *, bool, int)));
-    connect(docCheckerPalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
-    connect(docCheckerPalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
+	connect(docCheckerPalette, SIGNAL(selectElementByItem(PageItem *, bool)), this, SLOT(selectItemsFromOutlines(PageItem *, bool)));
+	connect(docCheckerPalette, SIGNAL(selectElement(PageItem *, bool, int)), this, SLOT(selectItemFromOutlines(PageItem *, bool, int)));
+	connect(docCheckerPalette, SIGNAL(selectPage(int)), this, SLOT(selectPagesFromOutlines(int)));
+	connect(docCheckerPalette, SIGNAL(selectMasterPage(QString)), this, SLOT(editMasterPagesStart(QString)));
  
-    // initializing style manager here too even it's not strictly a palette
-    m_styleManager = new StyleManager(this, "styleManager");
-    SMCharacterStyle *tmpCS = new SMCharacterStyle();
-    m_styleManager->addStyle(new SMParagraphStyle(tmpCS));
-    m_styleManager->addStyle(tmpCS);
-    m_styleManager->addStyle(new SMTableStyle());
-    m_styleManager->addStyle(new SMCellStyle());
-    m_styleManager->addStyle(new SMLineStyle());
-    connect( scrActions["editStyles"], SIGNAL(toggled(bool)), m_styleManager, SLOT(setPaletteShown(bool)) );
-    connect( m_styleManager, SIGNAL(paletteShown(bool)), scrActions["editStyles"], SLOT(setChecked(bool)));
-    m_styleManager->installEventFilter(this);
+	// initializing style manager here too even it's not strictly a palette
+	m_styleManager = new StyleManager(this, "styleManager");
+	SMCharacterStyle *tmpCS = new SMCharacterStyle();
+	m_styleManager->addStyle(new SMParagraphStyle(tmpCS));
+	m_styleManager->addStyle(tmpCS);
+	m_styleManager->addStyle(new SMTableStyle());
+	m_styleManager->addStyle(new SMCellStyle());
+	m_styleManager->addStyle(new SMLineStyle());
+	connect( scrActions["editStyles"], SIGNAL(toggled(bool)), m_styleManager, SLOT(setPaletteShown(bool)) );
+	connect( m_styleManager, SIGNAL(paletteShown(bool)), scrActions["editStyles"], SLOT(setChecked(bool)));
+	m_styleManager->installEventFilter(this);
  
-    // initializing mark`s manager
-    marksManager = new MarksManager(this, "marksManager");
-    connect( scrActions["editMarks"], SIGNAL(toggled(bool)), marksManager, SLOT(setPaletteShown(bool)) );
-    connect( marksManager, SIGNAL(paletteShown(bool)), scrActions["editMarks"], SLOT(setChecked(bool)));
-    marksManager->installEventFilter(this);
+	// initializing mark`s manager
+	marksManager = new MarksManager(this, "marksManager");
+	connect( scrActions["editMarks"], SIGNAL(toggled(bool)), marksManager, SLOT(setPaletteShown(bool)) );
+	connect( marksManager, SIGNAL(paletteShown(bool)), scrActions["editMarks"], SLOT(setChecked(bool)));
+	marksManager->installEventFilter(this);
  
-    // initializing notes styles manager
-    nsEditor = new NotesStylesEditor(this, "notesStylesEditor");
-    connect( scrActions["editNotesStyles"], SIGNAL(toggled(bool)), nsEditor, SLOT(setPaletteShown(bool)) );
-    connect( nsEditor, SIGNAL(paletteShown(bool)), scrActions["editNotesStyles"], SLOT(setChecked(bool)));
-    nsEditor->installEventFilter(this);
+	// initializing notes styles manager
+	nsEditor = new NotesStylesEditor(this, "notesStylesEditor");
+	connect( scrActions["editNotesStyles"], SIGNAL(toggled(bool)), nsEditor, SLOT(setPaletteShown(bool)) );
+	connect( nsEditor, SIGNAL(paletteShown(bool)), scrActions["editNotesStyles"], SLOT(setChecked(bool)));
+	nsEditor->installEventFilter(this);
   
 
-    wdg_indigoDock->setRestoreMode(false);
+	wdg_indigoDock->setRestoreMode(false);
 
-    wdg_indigoDockManager->loadWorkspace(); // load startup layout
-
+	wdg_indigoDockManager->loadWorkspace(); // load startup layout
  
 }
 
@@ -2331,7 +2333,7 @@ ScribusDoc *ScribusMainWindow::doFileNew(double width, double height, double top
 	ColorList colorList;
 	QHash<QString, VGradient> gradientsList;
 	QHash<QString, ScPattern> patternsList;
-	QString Cpfad = QDir::toNativeSeparators(ScPaths::getApplicationDataDir())+"DefaultColors.xml";
+	QString Cpfad = QDir::toNativeSeparators(ScPaths::applicationDataDir())+"DefaultColors.xml";
 	QFile fc(Cpfad);
 	if (fc.exists())
 	{
@@ -6648,12 +6650,8 @@ void ScribusMainWindow::slotPrefsOrg()
 		if (oldPrefs.uiPrefs.language != newUILanguage || ScQApp->currGUILanguage()!=newUILanguage)
 			ScQApp->changeGUILanguage(newUILanguage);
 
-
-
-        /* TODO: load new css theme */
-
-
-        qApp->setStyle(QStyleFactory::create("Fusion"));
+		/* TODO: load new css theme */
+		qApp->setStyle(QStyleFactory::create("Fusion"));
 
 //		QString newUIStyle = m_prefsManager->guiStyle();
 //		if (oldPrefs.uiPrefs.style != newUIStyle)
@@ -6663,10 +6661,6 @@ void ScribusMainWindow::slotPrefsOrg()
 //			else
 //				qApp->setStyle(QStyleFactory::create(newUIStyle));
 //		}
-
-
-
-
 		int newUIFontSize = m_prefsManager->guiFontSize();
 		if (oldPrefs.uiPrefs.applicationFontSize != newUIFontSize)
 		{
@@ -7489,7 +7483,7 @@ void ScribusMainWindow::slotChangeUnit(int unitIndex, bool draw)
 {
 	// Hack
 	QByteArray stylesheet;
-	if (loadRawText(ScPaths::getApplicationDataDir() + "/stylesheet.css", stylesheet))
+	if (loadRawText(ScPaths::preferencesDir() + "/stylesheet.css", stylesheet))
 	{
 		qApp->setStyleSheet(QString(stylesheet));
 	}
@@ -9350,7 +9344,7 @@ void ScribusMainWindow::managePaints()
 			propertiesPalette->Cpal->setColors(m_prefsManager->colorSet());
 			m_prefsManager->appPrefs.defaultGradients = dia->dialogGradients;
 			m_prefsManager->appPrefs.defaultPatterns = dia->dialogPatterns;
-			QString Cpfad = QDir::toNativeSeparators(ScPaths::getApplicationDataDir())+"DefaultColors.xml";
+			QString Cpfad = QDir::toNativeSeparators(ScPaths::applicationDataDir())+"DefaultColors.xml";
 			const FileFormat *fmt = LoadSavePlugin::getFormatById(FORMATID_SLA150EXPORT);
 			if (fmt)
 			{

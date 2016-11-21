@@ -95,7 +95,7 @@ void GradientPreview::paintEvent(QPaintEvent *e)
 	p->drawRect(0, 0, width()-20, 37);
 	p->end();
 	delete p;
-    QPainter pw;
+	QPainter pw;
 	pw.begin(this);
 	pw.drawImage(10, 5, pixm);
 	if (isEditable)
@@ -105,9 +105,9 @@ void GradientPreview::paintEvent(QPaintEvent *e)
 			int center = qRound(cstops.at(a)->rampPoint * (width()-20))+10;
 			pw.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			if (StopM[qMax(ActStop,0)] == center)
-                pw.setBrush(QColor(0,150,255));
+				pw.setBrush(QColor(0,150,255));
 			else
-                pw.setBrush(palette().windowText().color());
+				pw.setBrush(palette().windowText().color());
 			QPolygon cr;
 			cr.setPoints(3, center, 43, center-4, 56, center+4, 56);
 			pw.drawPolygon(cr);

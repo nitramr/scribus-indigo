@@ -28,7 +28,7 @@ public:
 	~AutoformButtonGroup() {};
 	void addShape(QMenu* menu, int shapenum);
 	qreal* getShapeData(int a, int *n);
-    QIcon getIconPixmap(int nr, int pixmapSize=22);
+	QIcon getIconPixmap(int nr, int pixmapSize=22);
 	virtual void changeEvent(QEvent *e);
 /*	QButtonGroup* buttonGroup;
 	QToolButton* toolButton1;

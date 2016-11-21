@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>214</width>
-    <height>495</height>
+    <height>289</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -241,13 +241,20 @@
     </widget>
    </item>
    <item>
-    <widget class="ScTreeWidget" name="textTree">
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
-    </widget>
+    <layout class="QVBoxLayout" name="lyt_widgetHolder"/>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -267,11 +274,6 @@
    <class>CharStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>ui/spalette.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ScTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>ui/sctreewidget.h</header>
   </customwidget>
   <customwidget>
    <class>ParaStyleComboBox</class>

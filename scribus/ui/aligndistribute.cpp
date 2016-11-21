@@ -50,7 +50,7 @@ for which a new license (GPL+exception) is in place.
 AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 	setupUi(this);
-    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+	//setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	currDoc=NULL;
 	guideDirection=-1;
 	setObjectName(name);
@@ -67,7 +67,7 @@ AlignDistributePalette::AlignDistributePalette( QWidget* parent, const char* nam
 	alignGuideLabel->setBuddy( alignGuideLineEdit );
 	distributeDistLabel->setBuddy( distributeDistSpinBox );
 	
-    //resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
+	//resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
 	languageChange();
 	init();
 	setDoc(NULL);
@@ -183,8 +183,8 @@ void AlignDistributePalette::init()
 	swapLeftToolButton->setIcon(im->loadIcon("22/swap-left.png"));
 	swapRightToolButton->setIcon(im->loadIcon("22/swap-right.png"));
 
-    // Panel icon
-    setIcon(im->loadPixmap("64/pan-alignment.png"));
+	// Panel icon
+	setIcon(im->loadPixmap("64/pan-alignment.png"));
 
 	QSize s(24,24);
 	alignLeftOutToolButton->setMinimumSize(s);

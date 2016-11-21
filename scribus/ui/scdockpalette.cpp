@@ -66,29 +66,27 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 void ScDockPalette::startup()
 {
 	setFontSize();
-    if (visibleOnStartup())
+	if (visibleOnStartup())
 	{
-        show();
+		show();
 	}
-    else
-        hide();
+	else
+		hide();
 
-    emit paletteShown(visibleOnStartup());
+	emit paletteShown(visibleOnStartup());
 }
-
-
 
 void ScDockPalette::setPaletteShown(bool visible)
 {    
 
-    storeVisibility(visible);
+	storeVisibility(visible);
 
-    if (!visible)
-        hide();
-    else
-    {
-        show();
-    }
+	if (!visible)
+		hide();
+	else
+	{
+		show();
+	}
 }
 
 
@@ -104,7 +102,7 @@ void ScDockPalette::setFontSize()
 
 void ScDockPalette::panelClose(){
 
-    emit paletteShown(false);
+	emit paletteShown(false);
 
 }
 

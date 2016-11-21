@@ -31,7 +31,7 @@ PagePalette::PagePalette(QWidget* parent, const char* name) : ScDockPalette(pare
 	m_scMW = (ScribusMainWindow*) parent;
 	m_view = 0;
 
-    setObjectName(QString::fromLocal8Bit(name));
+	setObjectName(QString::fromLocal8Bit(name));
 
 	QStackedWidget* stackedWidget = new QStackedWidget(this);
 	stackedWidget->setObjectName(QString::fromLocal8Bit("stackedWidget"));
@@ -47,8 +47,8 @@ PagePalette::PagePalette(QWidget* parent, const char* name) : ScDockPalette(pare
 	Rebuild();
 	languageChange();
 
-    // Panel icon
-    setIcon(IconManager::instance()->loadPixmap("64/pan-page.png"));
+	// Panel icon
+	setIcon(IconManager::instance()->loadPixmap("64/pan-page.png"));
 
 }
 

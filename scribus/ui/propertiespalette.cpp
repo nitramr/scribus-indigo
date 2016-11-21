@@ -81,7 +81,7 @@ PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDoc
 	m_haveItem = false;
 	m_unitRatio = 1.0;
 
-    setObjectName(QString::fromLocal8Bit(name));
+	setObjectName(QString::fromLocal8Bit(name));
 //      setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 	TabStack = new ScTreeWidget( this );
@@ -141,8 +141,8 @@ PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDoc
 	TabStack->widget(0)->setEnabled(false);
 	TabStack->setItemEnabled(0, false);
 
-    // Panel icon
-    setIcon(IconManager::instance()->loadPixmap("64/pan-frame.png"));
+	// Panel icon
+	setIcon(IconManager::instance()->loadPixmap("64/pan-frame.png"));
 
 }
 
@@ -167,9 +167,9 @@ void PropertiesPalette::setMainWindow(ScribusMainWindow* mw)
 	m_ScMW=mw;
 //	QPoint p1 = mapToGlobal(pos());
 //	QPoint p2 = m_ScMW->mapFromGlobal(p1);
-//  Qt4 reparent(m_ScMW, this->getWFlags(), p2);
-//  setParent(m_ScMW);
-//  move(p2);
+//	Qt4 reparent(m_ScMW, this->getWFlags(), p2);
+//	setParent(m_ScMW);
+//	move(p2);
 
 	this->xyzPal->setMainWindow(mw);
 	this->shadowPal->setMainWindow(mw);

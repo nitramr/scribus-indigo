@@ -39,29 +39,29 @@
 
 class IndigoTab : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    enum Display{
-        Visible,
-        Hidden
-    };
+	enum Display{
+		Visible,
+		Hidden
+	};
 
-    // unused
-    enum ActiveState{
-        Enabled,
-        Disabeld
-    };
+	// unused
+	enum ActiveState{
+		Enabled,
+		Disabeld
+	};
 
-    IndigoTab(QIcon icon, QWidget* parent = 0);
-    void setIcon(QIcon icon);
-    QIcon Icon();
-    void setDisplayState(Display display);
-    Display displayState();
+	IndigoTab(QIcon icon, QWidget* parent = 0);
+	void setIcon(QIcon icon);
+	QIcon Icon();
+	void setDisplayState(Display display);
+	Display displayState();
 
 private:
-    QIcon ico_icon;
-    Display m_display;
+	QIcon ico_icon;
+	Display m_display;
 
 };
 
@@ -73,80 +73,80 @@ private:
 
 class IndigoTabBar : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-    IndigoTabBar(QWidget* parent = 0);
+	IndigoTabBar(QWidget* parent = 0);
 
-    QList<IndigoTab*> lst_TabList;
+	QList<IndigoTab*> lst_TabList;
 
-    int currentIndex();
-    Qt::Orientation TabOrientation();
-    void setTabOrientation(Qt::Orientation tabDirection);
-    void setTabSize(int side);
-    void setTabSize(int width, int height);
-    bool movableTabs();
-    void setMovableTabs(bool allowMoving);
+	int currentIndex();
+	Qt::Orientation TabOrientation();
+	void setTabOrientation(Qt::Orientation tabDirection);
+	void setTabSize(int side);
+	void setTabSize(int width, int height);
+	bool movableTabs();
+	void setMovableTabs(bool allowMoving);
 
-    void clear();
+	void clear();
 
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent*event);
-    void mouseReleaseEvent(QMouseEvent*event);
-    void mouseMoveEvent(QMouseEvent*event);
-    void leaveEvent(QEvent *event);
+	void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent*event);
+	void mouseReleaseEvent(QMouseEvent*event);
+	void mouseMoveEvent(QMouseEvent*event);
+	void leaveEvent(QEvent *event);
 
 
 private:
-   int int_tabWidth;
-   int int_tabHeight;
-   int int_gap;
-   int int_borderHighlight;
-   int int_hoverIndex;
-   int int_oldIndex;
-   int int_newIndex;
-   bool bool_dragStart;
-   bool bool_dragProceed;
-   bool bool_hover;
-   bool bool_allowDrag;
-   bool bool_enableTooltip;
-   QPoint pnt_dragPosition;
-   QPoint pnt_mouseDown;
-   int int_dragTolerance;
-   int int_realIndex;
-   int int_dragIndex;
-   int int_minDimension;
+	int int_tabWidth;
+	int int_tabHeight;
+	int int_gap;
+	int int_borderHighlight;
+	int int_hoverIndex;
+	int int_oldIndex;
+	int int_newIndex;
+	bool bool_dragStart;
+	bool bool_dragProceed;
+	bool bool_hover;
+	bool bool_allowDrag;
+	bool bool_enableTooltip;
+	QPoint pnt_dragPosition;
+	QPoint pnt_mouseDown;
+	int int_dragTolerance;
+	int int_realIndex;
+	int int_dragIndex;
+	int int_minDimension;
 
-   Qt::Orientation m_tabOrientation;
-   QColor col_colorHighlightAlpha;
-   QColor blendColor(QColor color1, QColor color2, double ratio);
+	Qt::Orientation m_tabOrientation;
+	QColor col_colorHighlightAlpha;
+	QColor blendColor(QColor color1, QColor color2, double ratio);
 
-   int realTabIndex(int mouseAxis);
-   int fakeTabIndex(int mouseAxis);
-   int countVisibleTabs();
-   int countHiddenTabs();
+	int realTabIndex(int mouseAxis);
+	int fakeTabIndex(int mouseAxis);
+	int countVisibleTabs();
+	int countHiddenTabs();
 
-   int limitTabRange(int TabIndex);
+	int limitTabRange(int TabIndex);
 
-   void moveTab();
-   void calculateSize();
-   void leaveTabBar();
+	void moveTab();
+	void calculateSize();
+	void leaveTabBar();
 
 
 
 signals:
-   void tabMoved(int,int);
-   void tabClicked(int);
+	void tabMoved(int,int);
+	void tabClicked(int);
 
 public slots:
 
-   void addTab(QIcon icon, QString toolTip = "");
-   void insertTab(QIcon icon, int index, QString toolTip = "");
-   void removeTab(int index);
-   void hideTab(int index);
-   void showTab(int index);
+	void addTab(QIcon icon, QString toolTip = "");
+	void insertTab(QIcon icon, int index, QString toolTip = "");
+	void removeTab(int index);
+	void hideTab(int index);
+	void showTab(int index);
 
 };
 

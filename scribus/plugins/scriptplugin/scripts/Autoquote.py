@@ -8,10 +8,12 @@
 # (at your option) any later version.
 """
 USAGE
+
 You must have a document open, and a text frame selected.
 There will be a valueDialog asking for your language for the quotes, 
 the default is 'en', but change the default to suit your needs.
 Detected errors shut down the script with an appropriate message.
+
 """
 import scribus
 

@@ -153,15 +153,15 @@ bool SymbolView::viewportEvent(QEvent *event)
 
 SymbolPalette::SymbolPalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
-    //setMinimumSize( QSize( 220, 240 ) );
-    setObjectName(QString::fromLocal8Bit(name));
-    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+//	setMinimumSize( QSize( 220, 240 ) );
+	setObjectName(QString::fromLocal8Bit(name));
+//	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	SymbolViewWidget = new SymbolView(this);
 	SymbolViewWidget->clear();
 	setWidget( SymbolViewWidget );
 
-    IconManager* im = IconManager::instance();
-    setIcon(im->loadPixmap("64/pan-symbol.png"));
+	IconManager* im = IconManager::instance();
+	setIcon(im->loadPixmap("64/pan-symbol.png"));
 
 	unsetDoc();
 	m_scMW  = NULL;

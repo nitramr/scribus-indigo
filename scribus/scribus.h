@@ -54,7 +54,6 @@ class QMdiSubWindow;
 class QQuickView;
 
 // application specific includes
-
 #include "scribusapi.h"
 #include "scribusdoc.h"
 #include "styleoptions.h"
@@ -113,13 +112,6 @@ class UndoManager;
 class UndoPalette;
 class UndoState;
 class ViewToolBar;
-
-/*class IndigoDock;
-class IndigoDockManager;
-class IndigoPanel;
-class IndigoPanelHandle;
-class IndigoTab;
-class IndigoTabBar;*/
 
 extern SCRIBUS_API ScribusQApp* ScQApp;
 
@@ -610,9 +602,9 @@ private:
 	void createMenuBar();
 	void addDefaultWindowMenuItems(); // addDefaultWindowMenuItems adds the basic Windows menu items, excluding the actual list of windows
 	void initStatusBar(); // setup the statusbar
-        void initToolBars(); // setup the toolbars
-        void setStyleSheet(); //set stylesheet for app
-        //Returns false when there are no fonts
+	void initToolBars(); // setup the toolbars
+	void setStyleSheet(); //set stylesheet for app
+	//Returns false when there are no fonts
 	void initHyphenator();
 	void initDefaultValues();
 	void initKeyboardShortcuts();
@@ -627,7 +619,6 @@ private:
 	QLabel* m_mainWindowStatusLabel;
 	QString m_statusLabelText;
 	//QPixmap noIcon;
-
 
 	int m_toolbarMenuTools;
 	int m_toolbarMenuPDFTools;

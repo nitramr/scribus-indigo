@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>211</width>
+    <width>239</width>
     <height>130</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::Box</enum>
+  </property>
+  <property name="lineWidth">
+   <number>0</number>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
    <item row="0" column="0">
@@ -30,7 +36,7 @@
       <string> lines</string>
      </property>
      <property name="maximum">
-      <number>10</number>
+      <double>10.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -47,7 +53,7 @@
       <string> lines</string>
      </property>
      <property name="maximum">
-      <number>10</number>
+      <double>10.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -70,8 +76,8 @@
  <customwidgets>
   <customwidget>
    <class>ScrSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header location="global">ui/scrspinbox.h</header>
+   <extends>QDoubleSpinBox</extends>
+   <header>ui/scrspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

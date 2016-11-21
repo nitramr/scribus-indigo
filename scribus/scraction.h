@@ -71,7 +71,7 @@ public:
 	 */
 	ScrAction( ActionType aType,
 			   const QString &menuText, QKeySequence accel, QObject *parent, QVariant d = QVariant());
-    ScrAction( ActionType aType, const QIcon & icon16, const QIcon & icon22,
+	ScrAction( ActionType aType, const QIcon & icon16, const QIcon & icon22,
 			   const QString &menuText, QKeySequence accel, QObject *parent, QVariant d = QVariant());
 	/*!
 		\author Craig Bradney
@@ -82,7 +82,7 @@ public:
 		\param accel Accelerator QKeySequence
 		\param parent Parent of this action
 	*/
-    ScrAction(const QIcon &icon16, const QIcon &icon22, const QString & menuText, QKeySequence accel, QObject *parent );
+	ScrAction(const QIcon &icon16, const QIcon &icon22, const QString & menuText, QKeySequence accel, QObject *parent );
 	/*!
 	\author Craig Bradney
 	\date Mar 2008

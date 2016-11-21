@@ -46,6 +46,7 @@ for which a new license (GPL+exception) is in place.
 #include "prefsmanager.h"
 #include "query.h"
 #include "scimage.h"
+#include "scpaths.h"
 #include "scpreview.h"
 #include "scribuscore.h"
 #include "util.h"
@@ -261,7 +262,7 @@ void BibView::checkAndChange(QString &text, QString nam, QString dir)
 		dd.mkdir(QDir::cleanPath(QDir::toNativeSeparators(dir + "/" + fid.baseName())));
 	}
 	QString source = "";
-	QString fileDir = QDir::homePath();
+	QString fileDir = ScPaths::scrapbookDir(true);
 	bool first = true;
 	DOC = elem.firstChild();
 	while(!DOC.isNull())
@@ -701,8 +702,8 @@ void BibView::ReadContents(QString name)
 Biblio::Biblio( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 //	resize( 230, 190 );
-    setObjectName(QString::fromLocal8Bit(name));
-    //setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+	setObjectName(QString::fromLocal8Bit(name));
+//	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
 	BiblioLayout = new QVBoxLayout( containerWidget );
 	BiblioLayout->setSpacing( 0 );
@@ -768,8 +769,8 @@ Biblio::Biblio( QWidget* parent, const char* name) : ScDockPalette( parent, name
 	BiblioLayout->addWidget( Frame3 );
 	setWidget( containerWidget );
 
-    IconManager* im = IconManager::instance();
-    setIcon(im->loadPixmap("64/pan-library.png"));
+	IconManager* im = IconManager::instance();
+	setIcon(im->loadPixmap("64/pan-library.png"));
 
 	languageChange();
 	prefs = PrefsManager::instance()->prefsFile->getContext("Scrapbook");
