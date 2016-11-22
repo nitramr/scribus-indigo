@@ -108,7 +108,7 @@ const QString& ScribusCore::getGuiLanguage() const
 	return ScQApp->currGUILanguage();
 }
 
-int ScribusCore::startGUI(bool showSplash, bool showFontInfo, bool showProfileInfo, const QString newGuiLanguage, const QString prefsUserFile)
+int ScribusCore::startGUI(bool showSplash, bool showFontInfo, bool showProfileInfo, const QString newGuiLanguage)
 {
 	ScribusMainWindow* scribus = new ScribusMainWindow();
 	Q_CHECK_PTR(scribus);
@@ -116,7 +116,7 @@ int ScribusCore::startGUI(bool showSplash, bool showFontInfo, bool showProfileIn
 		return(EXIT_FAILURE);
 	m_ScMWList.append(scribus);
 	m_currScMW=0;
-	int retVal=initScribusCore(showSplash, showFontInfo, showProfileInfo,newGuiLanguage, prefsUserFile);
+	int retVal=initScribusCore(showSplash, showFontInfo, showProfileInfo,newGuiLanguage);
 	if (retVal == EXIT_FAILURE)
 		return(EXIT_FAILURE);
 	
@@ -162,7 +162,7 @@ int ScribusCore::startGUI(bool showSplash, bool showFontInfo, bool showProfileIn
 }
 
 int ScribusCore::initScribusCore(bool showSplash, bool showFontInfo, bool showProfileInfo, 
-								 const QString newGuiLanguage, const QString prefsUserFile)
+								 const QString newGuiLanguage)
 {
 	CommonStrings::languageChange();
 	m_iconManager = IconManager::instance();
@@ -192,21 +192,18 @@ int ScribusCore::initScribusCore(bool showSplash, bool showFontInfo, bool showPr
 	setSplashStatus( tr("Initializing Keyboard Shortcuts") );
 	m_prefsManager->initDefaultActionKeys();
 	setSplashStatus( tr("Reading Preferences") );
-	if (prefsUserFile.isEmpty())
-		m_prefsManager->ReadPrefs();
-	else
-		m_prefsManager->ReadPrefs(prefsUserFile);
+	m_prefsManager->ReadPrefs();
 	m_prefsManager->appPrefs.uiPrefs.showSplashOnStartup=showSplash;
 	if (!m_iconManager->setActiveFromPrefs(m_prefsManager->appPrefs.uiPrefs.iconSet))
 	{
 		//reset prefs name to chosen name based on version, when prefs is empty or not found
 		m_prefsManager->appPrefs.uiPrefs.iconSet=m_iconManager->activeSetBasename();
 	}
-        if (!m_themeManager->setActiveFromPrefs(m_prefsManager->appPrefs.uiPrefs.style))
-        {
-                //reset prefs name to chosen name based on version, when prefs is empty or not found
-                m_prefsManager->appPrefs.uiPrefs.style=m_themeManager->activeSetBasename();
-        }
+	if (!m_themeManager->setActiveFromPrefs(m_prefsManager->appPrefs.uiPrefs.style))
+	{
+		//reset prefs name to chosen name based on version, when prefs is empty or not found
+		m_prefsManager->appPrefs.uiPrefs.style=m_themeManager->activeSetBasename();
+	}
 
 	m_HaveGS = testGSAvailability();
 	m_HavePngAlpha = testGSDeviceAvailability("pngalpha");

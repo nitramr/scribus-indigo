@@ -12,6 +12,9 @@ for which a new license (GPL+exception) is in place.
 #include <QStandardPaths>
 
 #include "scconfig.h"
+#include "scribusapp.h"
+
+extern ScribusQApp* ScQApp;
 
 // On Qt/Mac we need CoreFoundation to discover the location
 // of the app bundle.
@@ -491,6 +494,29 @@ QStringList ScPaths::systemCreatePalettesDirs(void)
 	return createDirs;
 }
 
+QString ScPaths::oldApplicationDataDir(void)
+{
+#ifdef Q_OS_WIN32
+	QString appData = windowsSpecialDir(CSIDL_APPDATA);
+	if (QDir(appData).exists())
+#ifdef APPLICATION_DATA_DIR
+	return (appData + "/" + APPLICATION_DATA_DIR + "/");
+#else
+	return (appData + "/Scribus/");
+#endif
+#endif
+
+#ifdef APPLICATION_DATA_DIR
+	return QDir::homePath() + "/" + APPLICATION_DATA_DIR + "/";
+#else
+	#ifdef Q_OS_MAC
+		return (QDir::homePath() + "/Library/Preferences/Scribus/");
+	#else
+		return (QDir::homePath() + "/.scribus/");
+	#endif
+#endif
+}
+
 QString ScPaths::applicationDataDir(bool createIfNotExists)
 {
 	QString dataDir;
@@ -507,6 +533,9 @@ QString ScPaths::applicationDataDir(bool createIfNotExists)
 
 QString ScPaths::preferencesDir(bool createIfNotExists)
 {
+	//If we have been passed a dir on cmd line, use this. Start up errors if it does not exist.
+	if (!ScQApp->userPrefsDir().isEmpty())
+		return ScQApp->userPrefsDir();
 	QString prefsDir;
 #ifdef APPLICATION_CONFIG_DIR
 	prefsDir =  QDir::homePath() + "/" + APPLICATION_CONFIG_DIR + "/";

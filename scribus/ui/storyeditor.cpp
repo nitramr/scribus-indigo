@@ -114,7 +114,7 @@ public:
 SideBar::SideBar(QWidget *pa) : QLabel(pa)
 {
 	QPalette pal;
-	pal.setColor(QPalette::Window, QColor(255,255,255));
+	pal.setColor(QPalette::Window, palette().base().color());
 	setAutoFillBackground(true);
 	setPalette(pal);
 	offs = 0;
@@ -1526,7 +1526,7 @@ StoryEditor::StoryEditor(QWidget* parent) : QMainWindow(parent, Qt::Window), // 
 	m_spellActive=false;
 	prefsManager=PrefsManager::instance();
 #ifdef Q_OS_MAC
-	noIcon = IconManager::instance()->loadPixmap("noicon.xpm");
+	noIcon = IconManager::instance()->loadIcon("noicon.xpm");
 #endif
 	buildGUI();
 	/*
@@ -1631,13 +1631,13 @@ void StoryEditor::initActions()
 {
 	IconManager* im = IconManager::instance();
 	//File Menu
-	seActions.insert("fileNew", new ScrAction(im->loadPixmap("16/document-new.png"), im->loadPixmap("22/document-new.png"), "", Qt::CTRL+Qt::Key_N, this));
-	seActions.insert("fileRevert", new ScrAction(im->loadPixmap("reload16.png"), im->loadPixmap("reload.png"), "", QKeySequence(), this));
-	seActions.insert("fileSaveToFile", new ScrAction(im->loadPixmap("16/document-save.png"), im->loadPixmap("22/document-save.png"), "", QKeySequence(), this));
-	seActions.insert("fileLoadFromFile", new ScrAction(im->loadPixmap("16/document-open.png"),  im->loadPixmap("22/document-open.png"), "", QKeySequence(), this));
+	seActions.insert("fileNew", new ScrAction(im->loadIcon("16/document-new.png"), im->loadIcon("22/document-new.png"), "", Qt::CTRL+Qt::Key_N, this));
+	seActions.insert("fileRevert", new ScrAction(im->loadIcon("reload16.png"), im->loadIcon("reload.png"), "", QKeySequence(), this));
+	seActions.insert("fileSaveToFile", new ScrAction(im->loadIcon("16/document-save.png"), im->loadIcon("22/document-save.png"), "", QKeySequence(), this));
+	seActions.insert("fileLoadFromFile", new ScrAction(im->loadIcon("16/document-open.png"),  im->loadIcon("22/document-open.png"), "", QKeySequence(), this));
 	seActions.insert("fileSaveDocument", new ScrAction("", Qt::CTRL+Qt::Key_S, this));
-	seActions.insert("fileUpdateAndExit", new ScrAction(im->loadPixmap("ok.png"), im->loadPixmap("ok22.png"), "", Qt::CTRL+Qt::Key_W,  this));
-	seActions.insert("fileExit", new ScrAction(im->loadPixmap("exit.png"), im->loadPixmap("exit22.png"), "", QKeySequence(),  this));
+	seActions.insert("fileUpdateAndExit", new ScrAction(im->loadIcon("ok.png"), im->loadIcon("ok22.png"), "", Qt::CTRL+Qt::Key_W,  this));
+	seActions.insert("fileExit", new ScrAction(im->loadIcon("exit.png"), im->loadIcon("exit22.png"), "", QKeySequence(),  this));
 
 	connect( seActions["fileNew"], SIGNAL(triggered()), this, SLOT(Do_new()) );
 	connect( seActions["fileRevert"], SIGNAL(triggered()), this, SLOT(slotFileRevert()) );
@@ -1648,15 +1648,15 @@ void StoryEditor::initActions()
 	connect( seActions["fileExit"], SIGNAL(triggered()), this, SLOT(Do_leave()) );
 
 	//Edit Menu
-	seActions.insert("editCut", new ScrAction(im->loadPixmap("16/edit-cut.png"), QPixmap(), "", Qt::CTRL+Qt::Key_X, this));
-	seActions.insert("editCopy", new ScrAction(im->loadPixmap("16/edit-copy.png"), QPixmap(), "", Qt::CTRL+Qt::Key_C, this));
-	seActions.insert("editPaste", new ScrAction(im->loadPixmap("16/edit-paste.png"), QPixmap(), "", Qt::CTRL+Qt::Key_V, this));
-	seActions.insert("editClear", new ScrAction(im->loadPixmap("16/edit-delete.png"), QPixmap(), "", Qt::Key_Delete, this));
-	seActions.insert("editSelectAll", new ScrAction(im->loadPixmap("16/edit-select-all.png"), QPixmap(), "", Qt::CTRL+Qt::Key_A, this));
-	seActions.insert("editSearchReplace", new ScrAction(im->loadPixmap("16/edit-find-replace.png"), QPixmap(), "", Qt::CTRL+Qt::Key_F, this));
+	seActions.insert("editCut", new ScrAction(im->loadIcon("16/edit-cut.png"), QIcon(), "", Qt::CTRL+Qt::Key_X, this));
+	seActions.insert("editCopy", new ScrAction(im->loadIcon("16/edit-copy.png"), QIcon(), "", Qt::CTRL+Qt::Key_C, this));
+	seActions.insert("editPaste", new ScrAction(im->loadIcon("16/edit-paste.png"), QIcon(), "", Qt::CTRL+Qt::Key_V, this));
+	seActions.insert("editClear", new ScrAction(im->loadIcon("16/edit-delete.png"), QIcon(), "", Qt::Key_Delete, this));
+	seActions.insert("editSelectAll", new ScrAction(im->loadIcon("16/edit-select-all.png"), QIcon(), "", Qt::CTRL+Qt::Key_A, this));
+	seActions.insert("editSearchReplace", new ScrAction(im->loadIcon("16/edit-find-replace.png"), QIcon(), "", Qt::CTRL+Qt::Key_F, this));
 	//seActions.insert("editEditStyle", new ScrAction("", QKeySequence(), this));
 	seActions.insert("editFontPreview", new ScrAction("", QKeySequence(), this));
-	seActions.insert("editUpdateFrame", new ScrAction(im->loadPixmap("compfile16.png"),im->loadPixmap("compfile.png"), "", Qt::CTRL+Qt::Key_U, this));
+	seActions.insert("editUpdateFrame", new ScrAction(im->loadIcon("compfile16.png"),im->loadIcon("compfile.png"), "", Qt::CTRL+Qt::Key_U, this));
 
 	connect( seActions["editCut"], SIGNAL(triggered()), this, SLOT(Do_cut()) );
 	connect( seActions["editCopy"], SIGNAL(triggered()), this, SLOT(Do_copy()) );
@@ -1669,9 +1669,9 @@ void StoryEditor::initActions()
 	connect( seActions["editUpdateFrame"], SIGNAL(triggered()), this, SLOT(updateTextFrame()) );
 
 	//Insert Menu
-	seActions.insert("insertGlyph", new ScrAction(QPixmap(), QPixmap(), "", QKeySequence(), this));
+	seActions.insert("insertGlyph", new ScrAction(QIcon(), QIcon(), "", QKeySequence(), this));
 	connect( seActions["insertGlyph"], SIGNAL(triggered()), this, SLOT(Do_insSp()) );
-	seActions.insert("insertSampleText", new ScrAction(QPixmap(), QPixmap(), "", QKeySequence(), this));
+	seActions.insert("insertSampleText", new ScrAction(QIcon(), QIcon(), "", QKeySequence(), this));
 	connect(seActions["insertSampleText"], SIGNAL(triggered()), this, SLOT(insertSampleText()));
 
 	//Settings Menu
@@ -1819,7 +1819,7 @@ void StoryEditor::buildGUI()
 	seActions["unicodeSoftHyphen"]->setEnabled(false);//CB TODO doesn't work in SE yet.
 	buildMenus();
 
-	setWindowIcon(IconManager::instance()->loadPixmap("AppIcon.png"));
+	setWindowIcon(IconManager::instance()->loadIcon("AppIcon.png"));
 	StoryEd2Layout = new QHBoxLayout;
 	StoryEd2Layout->setSpacing( 5 );
 	StoryEd2Layout->setMargin( 5 );

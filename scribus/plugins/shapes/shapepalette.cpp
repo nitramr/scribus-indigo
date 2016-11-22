@@ -279,7 +279,6 @@ void ShapeView::updateShapeList()
 
 ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
-
 	setMinimumSize( QSize( 220, 240 ) );
 	// setMinimumSize(minimumResizeWidth(),minimumResizeHeight());
 	//resize( QSize(100, 100).expandedTo(minimumSizeHint()) );

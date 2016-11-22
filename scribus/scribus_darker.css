@@ -82,6 +82,13 @@ IndigoPanel QScrollBar:vertical {width: 10px;}
 IndigoDock QScrollBar:horizontal,
 IndigoPanel QScrollBar:horizontal {height: 10px;}
 
+SEditor,
+QTextEdit#outputEdit,
+QTextEdit#commandEdit {
+    background-color: rgb(255,255,255);
+    color: rgb(0,0,0);
+}
+
 QLabel#OldC,
 QLabel#NewC {
     border: 1px solid rgb(15,15,15);
@@ -662,6 +669,8 @@ QProgressBar {
     background-color: palette(base);
     padding-top: 2px;
     padding-bottom: 2px;
+    height: 24px;
+    color: rgb(0,0,0);
 }
 
 QProgressBar::chunk {

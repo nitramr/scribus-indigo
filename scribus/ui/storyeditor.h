@@ -527,7 +527,7 @@ protected:
 	PrefsContext* prefs;
 
 	QStringList unicodeCharActionNames;
-	QPixmap noIcon;
+	QIcon noIcon;
 
 	QToolBar* FileTools;
 	SToolBFont* FontTools;

@@ -84,9 +84,9 @@ void RulerT::paintEvent(QPaintEvent *)
 	p.begin(this);
 	p.drawLine(0, 24, width(), 24);
 	p.translate(-offset, 0);
-	p.setBrush(Qt::black);
+	p.setBrush(palette().windowText().color());
 	p.setFont(font());
-	p.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+	p.setPen(QPen(palette().windowText().color(), 1, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 	for (xl = 0; xl < width()+offset; xl += iter)
 	{
 		if (xl < offset)
@@ -129,9 +129,9 @@ void RulerT::paintEvent(QPaintEvent *)
 		for (int yg = 0; yg < static_cast<int>(tabValues.count()); yg++)
 		{
 			if (yg == actTab)
-				p.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+				p.setPen(QPen(QColor(0,150,255), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			else
-				p.setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+				p.setPen(QPen(palette().windowText().color(), 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			switch (static_cast<int>(tabValues[yg].tabType))
 			{
 				case 0:

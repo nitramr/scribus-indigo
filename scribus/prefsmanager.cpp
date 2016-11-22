@@ -121,7 +121,7 @@ void PrefsManager::setup()
 	setupPreferencesLocation();
 
 	m_importingFrom12=copyOldAppConfigAndData();
-	prefsFile = new PrefsFile( m_prefsLocation + "/prefs150.xml" );
+	prefsFile = new PrefsFile( m_prefsLocation + "prefs150.xml" );
 	if (m_importingFrom12)
 		convert12Preferences();
 	//<<CB TODO Reset keyboard shortcuts of all 1.3 users as too many
@@ -273,7 +273,6 @@ void PrefsManager::initDefaults()
 	appPrefs.opToolPrefs.magMin = 1;
 	appPrefs.opToolPrefs.magMax = 32000;
 	appPrefs.opToolPrefs.magStep = 25;
-//	qDebug()<<ScQApp->currGUILanguage();
 	appPrefs.docSetupPrefs.docUnitIndex = unitIndexFromString(LocaleManager::instance()->unitForLocale(ScQApp->currGUILanguage()));
 	appPrefs.itemToolPrefs.polyCorners = 4;
 	appPrefs.itemToolPrefs.polyFactor = 0.5;
@@ -750,7 +749,7 @@ bool PrefsManager::copyOldAppConfigAndData()
 	QFileInfo oldPi3 = QFileInfo(oldPR3);
 	if (oldPi3.exists())
 		moveFile(oldPR3, m_prefsLocation+"scrap.scs");
-	QString oldPrefsLocation(QDir::homePath()+"/.scribus/");
+	QString oldPrefsLocation(ScPaths::oldApplicationDataDir());
 	QString oldPR4 = QDir::toNativeSeparators(oldPrefsLocation + "scribus150.rc");
 	QFileInfo oldPi4 = QFileInfo(oldPR4);
 	if (oldPi4.exists())
@@ -882,17 +881,12 @@ void PrefsManager::convert12Preferences()
 	}
 }
 
-void PrefsManager::ReadPrefs(const QString & fname)
+void PrefsManager::ReadPrefs()
 {
-	QString realFile;
-	if (fname.isEmpty())
-		realFile = m_prefsLocation + "/scribus150.rc";
-	else
-		realFile = fname;
-
-	if (QFile::exists(realFile))
+	QString prefsFile(m_prefsLocation + "scribus150.rc");
+	if (QFile::exists(prefsFile))
 	{
-		if (!ReadPref(realFile))
+		if (!ReadPref(prefsFile))
 		{
 			alertLoadPrefsFailed();
 			return;
@@ -977,7 +971,7 @@ void PrefsManager::ReadPrefsXML()
 }
 
 
-void PrefsManager::SavePrefs(const QString & fname)
+void PrefsManager::SavePrefs()
 {
 	// If closing because of a crash don't save prefs as we can
 	// accidentally nuke the settings if the crash is before prefs are loaded
@@ -998,12 +992,7 @@ void PrefsManager::SavePrefs(const QString & fname)
 	}
 	ScCore->primaryMainWindow()->getDefaultPrinter(appPrefs.printerPrefs.PrinterName, appPrefs.printerPrefs.PrinterFile, appPrefs.printerPrefs.PrinterCommand);
 	SavePrefsXML();
-	QString realFile;
-	if (fname.isNull())
-		realFile = m_prefsLocation+"/scribus150.rc";
-	else
-		realFile = fname;
-	if (!WritePref(realFile))
+	if (!WritePref(m_prefsLocation+"scribus150.rc"))
 		alertSavePrefsFailed();
 	emit prefsChanged();
 }
@@ -1969,8 +1958,8 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
 			appPrefs.uiPrefs.wheelJump = dc.attribute("ScrollWheelJump").toInt();
 			appPrefs.uiPrefs.mouseMoveTimeout = dc.attribute("MouseMoveTimeout", "150").toInt();
-			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "14").toInt();
-			appPrefs.uiPrefs.paletteFontSize = dc.attribute("PaletteFontSize", "14").toInt();
+			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
+			appPrefs.uiPrefs.paletteFontSize = dc.attribute("PaletteFontSize", "10").toInt();
 			appPrefs.uiPrefs.recentDocCount = dc.attribute("RecentDocumentCount","5").toUInt();
 			appPrefs.uiPrefs.showStartupDialog = static_cast<bool>(dc.attribute("ShowStartupDialog", "1").toInt());
 			appPrefs.uiPrefs.showSplashOnStartup = static_cast<bool>(dc.attribute("UI_SHOWSPLASHSCREEN", "1").toInt());
