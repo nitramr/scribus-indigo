@@ -263,6 +263,12 @@ void SideBar::setRepaint(bool r)
 
 SEditor::SEditor(QWidget* parent, ScribusDoc *docc, StoryEditor* parentSE) : QTextEdit(parent)
 {
+//	QPalette pal;
+//	pal.setColor(QPalette::Base, PrefsManager().instance()->appPrefs.storyEditorPrefs.guiFontColorBackground);
+//	pal.setColor(QPalette::Text, Qt::black);
+	setAutoFillBackground(true);
+//	setPalette(pal);
+
 	setCurrentDocument(docc);
 	parentStoryEditor=parentSE;
 	wasMod = false;
@@ -272,7 +278,6 @@ SEditor::SEditor(QWidget* parent, ScribusDoc *docc, StoryEditor* parentSE) : QTe
 	viewport()->setAcceptDrops(false);
 	unicodeTextEditMode = false;
 	blockContentsChangeHook = 0;
-	setAutoFillBackground(true);
 	connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(ClipChange()));
 	connect(this->document(), SIGNAL(contentsChange(int, int, int)), this, SLOT(handleContentsChange(int, int, int)));
 	SuspendContentsChange = 0;
@@ -1953,15 +1958,12 @@ void StoryEditor::buildGUI()
 
 void StoryEditor::setupEditorGUI()
 {
+	QString style = "*{background-color:rgb(%1, %2, %3); color:rgb(0,0,0);}";
+	QColor newColor(prefsManager->appPrefs.storyEditorPrefs.guiFontColorBackground);
 	QFont fo;
 	fo.fromString(prefsManager->appPrefs.storyEditorPrefs.guiFont);
-	Editor->setFont(fo);
-	QPalette pal;
-	QColor newColor(prefsManager->appPrefs.storyEditorPrefs.guiFontColorBackground);
-	pal.setColor(QPalette::Active, QPalette::Base, newColor);
-	pal.setColor(QPalette::Inactive, QPalette::Base, newColor);
-	pal.setColor(QPalette::Disabled, QPalette::Base, newColor);
-	Editor->setPalette(pal);
+	Editor->setFont(fo);	
+	Editor->setStyleSheet(style.arg(newColor.red()).arg(newColor .green()).arg(newColor.blue())); // override styles
 	EditorBar->setFrameStyle(Editor->frameStyle());
 	EditorBar->setLineWidth(Editor->lineWidth());
 }
@@ -3099,7 +3101,7 @@ void StoryEditor::changeStyleSB(int pa, const QString& name)
 		updateProps(0, 0);
 	}
 
-	Editor-> repaint();
+	Editor->repaint();
 	modifiedText();
 	Editor->setFocus();
 }

@@ -82,7 +82,6 @@ IndigoPanel QScrollBar:vertical {width: 10px;}
 IndigoDock QScrollBar:horizontal,
 IndigoPanel QScrollBar:horizontal {height: 10px;}
 
-SEditor,
 QTextEdit#outputEdit,
 QTextEdit#commandEdit {
     background-color: rgb(255,255,255);

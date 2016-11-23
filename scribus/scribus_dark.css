@@ -82,7 +82,6 @@ IndigoPanel QScrollBar:vertical {width: 10px;}
 IndigoDock QScrollBar:horizontal,
 IndigoPanel QScrollBar:horizontal {height: 10px;}
 
-SEditor,
 QTextEdit#outputEdit,
 QTextEdit#commandEdit {
     background-color: rgb(255,255,255);
@@ -114,14 +113,12 @@ ColorListBox::item{
     background-color: palette(light);
 }
 
-
 /* QMdiArea */
 
 QMdiArea QTabBar::tab:selected {
     margin-left: 0px;
     margin-right: 0px;
 }
-
 
 /* QStatusBar */
 
