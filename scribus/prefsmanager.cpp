@@ -255,6 +255,8 @@ void PrefsManager::initDefaults()
 	appPrefs.displayPrefs.showPageShadow = true;
 	appPrefs.displayPrefs.showVerifierWarningsOnCanvas = true;
 	appPrefs.displayPrefs.showAutosaveClockOnCanvas = false;
+	appPrefs.displayPrefs.pathEditColor = QColor(55,171,200);
+	appPrefs.displayPrefs.pathEditHandleColor = QColor(255,85,135);
 	appPrefs.displayPrefs.frameColor = QColor(55,171,200);
 	appPrefs.displayPrefs.frameNormColor = QColor(Qt::black);
 	appPrefs.displayPrefs.frameGroupColor = QColor(Qt::darkCyan);
@@ -868,7 +870,7 @@ void PrefsManager::convert12Preferences()
 {
 	// Import 1.2 font search path prefs
 	QFile fontPrefsFile12(QDir::toNativeSeparators(m_prefsLocation+"/scribusfont.rc"));
-	if (fontPrefsFile12.open(QIODevice::ReadOnly))
+	if (fontPrefsFile12.exists() && fontPrefsFile12.open(QIODevice::ReadOnly))
 	{
 		PrefsContext *pc = prefsFile->getContext("Fonts");
 		PrefsTable *fontPrefs = pc->getTable("ExtraFontDirs");
@@ -922,9 +924,7 @@ void PrefsManager::setupMainWindow(ScribusMainWindow* mw)
 		appPrefs.verifierPrefs.curCheckProfile = CommonStrings::PostScript;
 	}
 	if (!appPrefs.uiPrefs.mainWinState.isEmpty())
-	{
 		mw->restoreState(appPrefs.uiPrefs.mainWinState);
-	}
 }
 
 void PrefsManager::ReadPrefsXML()
@@ -1450,6 +1450,8 @@ bool PrefsManager::WritePref(QString ho)
 	deDisplay.setAttribute("ShowPageShadow",static_cast<int>(appPrefs.displayPrefs.showPageShadow));
 	deDisplay.setAttribute("PageColor",appPrefs.displayPrefs.paperColor.name());
 	deDisplay.setAttribute("ScratchColor",appPrefs.displayPrefs.scratchColor.name());
+	deDisplay.setAttribute("PathEditColor",appPrefs.displayPrefs.pathEditColor.name());
+	deDisplay.setAttribute("PathEditHandleColor",appPrefs.displayPrefs.pathEditHandleColor.name());
 	deDisplay.setAttribute("FrameSelectedColor",appPrefs.displayPrefs.frameColor.name());
 	deDisplay.setAttribute("FrameNormColor",appPrefs.displayPrefs.frameNormColor.name());
 	deDisplay.setAttribute("FrameGroupColor",appPrefs.displayPrefs.frameGroupColor.name());
@@ -2020,10 +2022,12 @@ bool PrefsManager::ReadPref(QString ho)
 				appPrefs.displayPrefs.scratchColor = QColor(dc.attribute("ScratchColor"));
 			else
 				appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
+			appPrefs.displayPrefs.pathEditColor = QColor(dc.attribute("PathEditColor","#37abc8"));
+			appPrefs.displayPrefs.pathEditHandleColor = QColor(dc.attribute("PathEditHandleColor","#ff5587"));
 			appPrefs.displayPrefs.frameColor = QColor(dc.attribute("FrameSelectedColor","#37abc8"));
 			appPrefs.displayPrefs.frameNormColor = QColor(dc.attribute("FrameNormColor","#000000"));
 			appPrefs.displayPrefs.frameGroupColor = QColor(dc.attribute("FrameGroupColor","#008080"));
-			appPrefs.displayPrefs.frameLockColor = QColor(dc.attribute("FrameLockColor","#ff7873"));
+			appPrefs.displayPrefs.frameLockColor = QColor(dc.attribute("FrameLockColor","#ff5587"));
 			appPrefs.displayPrefs.frameLinkColor = QColor(dc.attribute("FrameLinkColor","#37ab82"));
 			appPrefs.displayPrefs.frameAnnotationColor = QColor(dc.attribute("FrameAnnotationColor","#0000ff"));
 			appPrefs.displayPrefs.pageBorderColor = QColor(dc.attribute("PageBorderColor","#000000"));

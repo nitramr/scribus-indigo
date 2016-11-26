@@ -96,10 +96,16 @@ void CanvasMode_EditArc::drawControls(QPainter* p)
 
 void CanvasMode_EditArc::drawControlsArc(QPainter* psx, PageItem* currItem)
 {
-	QPen p1b = QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	QPen p1bd = QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
-	QPen p8b = QPen(Qt::blue, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+	QColor colorPathHandle = PrefsManager().instance()->appPrefs.displayPrefs.pathEditHandleColor;
+
+	QPen p1b = QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+	QPen p1bd = QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
+	QPen p8b = QPen(colorPath, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8r = QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8w = QPen(Qt::white, 6.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	//QPen p8r = QPen(colorPath, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin); // active
+	psx->setRenderHint(QPainter::Antialiasing);
 	psx->setTransform(currItem->getTransform(), true);
 	psx->setPen(p1b);
 	psx->setBrush(Qt::NoBrush);
@@ -118,27 +124,35 @@ void CanvasMode_EditArc::drawControlsArc(QPainter* psx, PageItem* currItem)
 	psx->setPen(p1bd);
 	psx->drawLine(mPoint, m_widthPoint);
 	psx->drawLine(mPoint, m_heightPoint);
+
 	psx->setPen(p8b);
-	if (m_arcPoint == useControlStart)
-		psx->setPen(p8r);
-	else
-		psx->setPen(p8b);
 	psx->drawPoint(m_startPoint);
-	if (m_arcPoint == useControlSweep)
-		psx->setPen(p8r);
-	else
-		psx->setPen(p8b);
+	if (m_arcPoint != useControlStart){
+		psx->setPen(p8w);
+		psx->drawPoint(m_startPoint);
+	}
+
+	psx->setPen(p8b);
 	psx->drawPoint(m_endPoint);
-	if (m_arcPoint == useControlWidth)
-		psx->setPen(p8r);
-	else
-		psx->setPen(p8b);
+	if (m_arcPoint != useControlSweep){
+		psx->setPen(p8w);
+		psx->drawPoint(m_endPoint);
+	}
+
+	psx->setPen(p8r);
 	psx->drawPoint(m_widthPoint);
-	if (m_arcPoint == useControlHeight)
-		psx->setPen(p8r);
-	else
-		psx->setPen(p8b);
+	if (m_arcPoint != useControlWidth){
+		psx->setPen(p8w);
+		psx->drawPoint(m_widthPoint);
+	}
+
+	psx->setPen(p8r);
 	psx->drawPoint(m_heightPoint);
+	if (m_arcPoint != useControlHeight){
+		psx->setPen(p8w);
+		psx->drawPoint(m_heightPoint);
+	}
+
 }
 
 void CanvasMode_EditArc::enterEvent(QEvent *)

@@ -34,6 +34,7 @@
 #include <QWidgetAction>
 
 #include "appmodes.h"
+#include "prefsmanager.h"
 #include "canvas.h"
 #include "fpoint.h"
 #include "pageitem_spiral.h"
@@ -82,20 +83,29 @@ void CanvasMode_EditSpiral::drawControls(QPainter* p)
 
 void CanvasMode_EditSpiral::drawControlsSpiral(QPainter* psx, PageItem* currItem)
 {
-	QPen p8b = QPen(Qt::blue, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+
+	QPen p8b = QPen(colorPath, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p6w = QPen(Qt::white, 6.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	psx->setRenderHints(QPainter::Antialiasing);
 	psx->setTransform(currItem->getTransform(), true);
 	psx->setBrush(Qt::NoBrush);
 	psx->setPen(p8b);
 	if (m_arcPoint == useControlStart)
-		psx->setPen(p8r);
-	else
 		psx->setPen(p8b);
+	else {
+		psx->setPen(p8b);
+		psx->drawPoint(m_startPoint);
+		psx->setPen(p6w);
+	}
 	psx->drawPoint(m_startPoint);
 	if (m_arcPoint == useControlEnd)
-		psx->setPen(p8r);
-	else
 		psx->setPen(p8b);
+	else {
+		psx->setPen(p8b);
+		psx->drawPoint(m_endPoint);
+		psx->setPen(p6w);
+	}
 	psx->drawPoint(m_endPoint);
 }
 

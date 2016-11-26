@@ -179,10 +179,13 @@ void CanvasMode_Edit::rulerPreview(double base, double xp)
 void CanvasMode_Edit::drawControls(QPainter* p)
 {
 	commonDrawControls(p, false);
+
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+
 	PageItem* currItem;
 	if (GetItem(&currItem))
 	{
-		QPen pp = QPen(Qt::blue, 1.0 / m_canvas->scale(), Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+		QPen pp = QPen(colorPath, 1.0 / m_canvas->scale(), Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 		pp.setCosmetic(true);
 		PageItem_TextFrame* textframe = currItem->asTextFrame();
 		if (textframe)
@@ -193,7 +196,7 @@ void CanvasMode_Edit::drawControls(QPainter* p)
 				QPointF itPos = mm.map(QPointF(0, currItem->yPos()));
 				p->save();
 				p->setTransform(mm, true);
-				p->setPen(QPen(Qt::blue, 1.0 / m_canvas->scale(), Qt::DashLine, Qt::FlatCap, Qt::MiterJoin));
+				p->setPen(QPen(colorPath, 1.0 / m_canvas->scale(), Qt::DashLine, Qt::FlatCap, Qt::MiterJoin));
 				p->setClipRect(QRectF(0.0, 0.0, currItem->width(), currItem->height()));
 				p->setBrush(Qt::NoBrush);
 				p->setRenderHint(QPainter::Antialiasing);
@@ -209,7 +212,7 @@ void CanvasMode_Edit::drawControls(QPainter* p)
 			p->setTransform(mm, true);
 			p->setClipRect(QRectF(0.0, 0.0, currItem->width(), currItem->height()));
 			p->setPen(pp);
-			p->setBrush(QColor(0,0,255,10));
+			p->setBrush(QColor(colorPath.red(),colorPath.green(),colorPath.blue(),10));
 			p->setRenderHint(QPainter::Antialiasing);
 			if (currItem->imageFlippedH())
 			{
@@ -226,12 +229,12 @@ void CanvasMode_Edit::drawControls(QPainter* p)
 			p->drawRect(0, 0, currItem->OrigW*currItem->imageXScale(), currItem->OrigH*currItem->imageYScale());
 			p->translate(currItem->OrigW*currItem->imageXScale() / 2, currItem->OrigH*currItem->imageYScale() / 2);
 			p->scale(1.0 / m_canvas->scale(), 1.0 / m_canvas->scale());
-			QPen pps = QPen(Qt::blue, 1.0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+			QPen pps = QPen(colorPath, 1.0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
 			pps.setCosmetic(true);
 			p->setPen(pps);
 			p->drawLine(-10, 0, 10, 0);
 			p->drawLine(0, -10, 0, 10);
-			p->setBrush(QColor(0,0,255,70));
+			p->setBrush(QColor(colorPath.red(),colorPath.green(),colorPath.blue(),70));
 			p->drawEllipse(QPointF(0.0, 0.0), 10.0, 10.0);
 			p->restore();
 		}

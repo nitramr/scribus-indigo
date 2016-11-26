@@ -88,10 +88,14 @@ void CanvasMode_EditPolygon::drawControls(QPainter* p)
 
 void CanvasMode_EditPolygon::drawControlsPolygon(QPainter* psx, PageItem* currItem)
 {
-	QPen p1b = QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	QPen p1bd = QPen(Qt::red, 1.0 / m_canvas->m_viewMode.scale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
-	QPen p8b = QPen(Qt::blue, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+	QColor colorPathHandle = PrefsManager().instance()->appPrefs.displayPrefs.pathEditHandleColor;
+	QPen p1b = QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+	QPen p1bd = QPen(colorPathHandle, 1.0 / m_canvas->m_viewMode.scale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
+	QPen p8e = QPen(Qt::white, 6.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8b = QPen(colorPath, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin); //active
+	QPen p8h = QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin); //active
+	psx->setRenderHint(QPainter::Antialiasing);
 	psx->setTransform(currItem->getTransform(), true);
 	psx->setPen(p1b);
 	psx->setBrush(Qt::NoBrush);
@@ -105,29 +109,36 @@ void CanvasMode_EditPolygon::drawControlsPolygon(QPainter* psx, PageItem* currIt
 		psx->drawLine(m_endPoint, m_innerCPoint);
 		psx->drawLine(m_startPoint, m_outerCPoint);
 	}
+
 	psx->setPen(p8b);
-	if (m_polygonPoint == useControlOuter)
-		psx->setPen(p8r);
-	else
-		psx->setPen(p8b);
 	psx->drawPoint(m_startPoint);
-	if (m_polygonPoint == useControlInner)
-		psx->setPen(p8r);
-	else
-		psx->setPen(p8b);
+	if (m_polygonPoint != useControlOuter){
+		psx->setPen(p8e);
+		psx->drawPoint(m_startPoint);		
+	}
+
+	psx->setPen(p8b);
 	psx->drawPoint(m_endPoint);
+	if (m_polygonPoint != useControlInner){
+		psx->setPen(p8e);
+		psx->drawPoint(m_endPoint);
+	}
+
 	if (m_polyUseFactor)
 	{
-		if (m_polygonPoint == useControlInnerCurve)
-			psx->setPen(p8r);
-		else
-			psx->setPen(p8b);
+		psx->setPen(p8h);
 		psx->drawPoint(m_innerCPoint);
-		if (m_polygonPoint == useControlOuterCurve)
-			psx->setPen(p8r);
-		else
-			psx->setPen(p8b);
+		if (m_polygonPoint != useControlInnerCurve){
+			psx->setPen(p8e);
+			psx->drawPoint(m_innerCPoint);
+		}
+
+		psx->setPen(p8h);
 		psx->drawPoint(m_outerCPoint);
+		if (m_polygonPoint != useControlOuterCurve){
+			psx->setPen(p8e);
+			psx->drawPoint(m_outerCPoint);
+		}		
 	}
 }
 

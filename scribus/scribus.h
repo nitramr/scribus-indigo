@@ -256,8 +256,6 @@ public:
 	QString LoadEnc;
 	AppModeHelper *appModeHelper;
 
-	QProcess *ExternalApp;
-
 	QMap<QString, QPointer<ScrAction> > scrActions;
 	QMap<QString, QPointer<ScrAction> > scrRecentFileActions;
 	QMap<QString, QPointer<ScrAction> > scrWindowsActions;
@@ -519,7 +517,6 @@ public slots:
 	void SetSnapElements(bool b);
 	void EditTabs();
 	void SearchText();
-	void imageEditorExited(int, QProcess::ExitStatus);
 	/*! \brief call gimp and wait upon completion */
 	void callImageEditor();
 	void docCheckToggle(bool visible);

@@ -30,6 +30,8 @@ Prefs_Display::Prefs_Display(QWidget* parent, ScribusDoc* doc) : Prefs_Pane(pare
 	if (m_doc == NULL && !ScCore->primaryMainWindow()->HaveDoc)
 	{
 		connect(scratchSpaceColorButton, SIGNAL(clicked()), this, SLOT(changeScratchColor()));
+		connect(pathEditColorButton, SIGNAL(clicked()), this, SLOT(changePathEditColor()));
+		connect(pathEditHandleColorButton, SIGNAL(clicked()), this, SLOT(changePathEditHandleColor()));
 		connect(frameSelectedColorButton, SIGNAL(clicked()), this, SLOT(changeFrameColor()));
 		connect(frameColorButton, SIGNAL(clicked()), this, SLOT(changeNormFrameColor()));
 		connect(frameGroupedColorButton, SIGNAL(clicked()), this, SLOT(changeGroupFrameColor()));
@@ -45,6 +47,8 @@ Prefs_Display::Prefs_Display(QWidget* parent, ScribusDoc* doc) : Prefs_Pane(pare
 	else
 	{
 		scratchSpaceColorButton->setEnabled(false);
+		pathEditColorButton->setEnabled(false);
+		pathEditHandleColorButton->setEnabled(false);
 		frameSelectedColorButton->setEnabled(false);
 		frameColorButton->setEnabled(false);
 		frameGroupedColorButton->setEnabled(false);
@@ -178,6 +182,16 @@ void Prefs_Display::restoreDefaults(struct ApplicationPrefs *prefsData)
 	colorControlChars = prefsData->displayPrefs.controlCharColor;
 	textControlCharsButton->setText( QString::null );
 	textControlCharsButton->setIcon(pm);
+
+	pm.fill(prefsData->displayPrefs.pathEditColor);
+	colorPathEdit = prefsData->displayPrefs.pathEditColor;
+	pathEditColorButton->setText( QString::null );
+	pathEditColorButton->setIcon(pm);
+
+	pm.fill(prefsData->displayPrefs.pathEditHandleColor);
+	colorPathEditHandle = prefsData->displayPrefs.pathEditHandleColor;
+	pathEditHandleColorButton->setText( QString::null );
+	pathEditHandleColorButton->setIcon(pm);
 
 	displayScale=prefsData->displayPrefs.displayScale;
 
@@ -386,6 +400,30 @@ void Prefs_Display::changePageBorderColor()
 	}
 }
 
+void Prefs_Display::changePathEditColor()
+{
+	QColor newColor(QColorDialog::getColor(colorPathEdit, this));
+	if (newColor.isValid())
+	{
+		QPixmap pm(100, 30);
+		pm.fill(newColor);
+		colorPathEdit = newColor;
+		pathEditColorButton->setIcon(pm);
+	}
+}
+
+void Prefs_Display::changePathEditHandleColor()
+{
+	QColor newColor(QColorDialog::getColor(colorPathEditHandle, this));
+	if (newColor.isValid())
+	{
+		QPixmap pm(100, 30);
+		pm.fill(newColor);
+		colorPathEditHandle = newColor;
+		pathEditHandleColorButton->setIcon(pm);
+	}
+}
+
 void Prefs_Display::changeControlCharsColor()
 {
 	QColor newColor(QColorDialog::getColor(colorControlChars, this));
@@ -429,6 +467,8 @@ void Prefs_Display::saveGuiToPrefs(struct ApplicationPrefs *prefsData) const
 	prefsData->displayPrefs.frameLockColor=colorFrameLocked;
 	prefsData->displayPrefs.frameAnnotationColor=colorFrameAnnotation;
 	prefsData->displayPrefs.pageBorderColor=colorPageBorder;
+	prefsData->displayPrefs.pathEditColor=colorPathEdit;
+	prefsData->displayPrefs.pathEditHandleColor=colorPathEditHandle;
 	prefsData->displayPrefs.controlCharColor=colorControlChars;
 	prefsData->displayPrefs.displayScale=displayScale;
 }

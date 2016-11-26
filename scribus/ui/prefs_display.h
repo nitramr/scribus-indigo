@@ -57,6 +57,8 @@ class SCRIBUS_API Prefs_Display : public Prefs_Pane, Ui::Prefs_Display
 		virtual void changeLockFrameColor();
 		virtual void changeAnnotFrameColor();
 		virtual void changePageBorderColor();
+		virtual void changePathEditColor();
+		virtual void changePathEditHandleColor();
 		virtual void changeControlCharsColor();
 
 
@@ -72,6 +74,8 @@ class SCRIBUS_API Prefs_Display : public Prefs_Pane, Ui::Prefs_Display
 		QColor colorFrameLinked;
 		QColor colorFrameAnnotation;
 		QColor colorPageBorder;
+		QColor colorPathEdit;
+		QColor colorPathEditHandle;
 		QColor colorControlChars;
 		double displayScale;
 		ScribusDoc* m_doc;

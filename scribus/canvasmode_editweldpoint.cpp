@@ -96,14 +96,17 @@ void CanvasMode_EditWeldPoint::drawControls(QPainter* p)
 
 void CanvasMode_EditWeldPoint::drawControlsWeldPoint(QPainter* psx, PageItem* currItem)
 {
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+
 	psx->translate(static_cast<int>(currItem->xPos()), static_cast<int>(currItem->yPos()));
 	psx->rotate(currItem->rotation());
+	psx->setRenderHint(QPainter::Antialiasing);
 	psx->setBrush(Qt::NoBrush);
 	for (int i = 0 ; i <  currItem->weldList.count(); i++)
 	{
 		PageItem::WeldingInfo wInf =  currItem->weldList.at(i);
 		if (i == m_selectedPoint)
-			psx->setPen(QPen(Qt::red, 8.0 / m_canvas->scale(), Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+			psx->setPen(QPen(colorPath, 8.0 / m_canvas->scale(), Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		else
 			psx->setPen(QPen(Qt::yellow, 8.0 / m_canvas->scale(), Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(wInf.weldPoint.x(), wInf.weldPoint.y()));

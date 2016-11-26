@@ -375,6 +375,8 @@ struct DisplayPrefs
 	bool showPageShadow; //! Show a shadow around the pages
 	QColor paperColor; //! Color of paper (onscreen only)
 	QColor scratchColor; //! Color of scratch space (onscreen only)
+	QColor pathEditColor; //! Color of path border (onscreen only)
+	QColor pathEditHandleColor; //! Color of active path handle (onscreen only)
 	QColor frameColor; //! Color of frame border (onscreen only)
 	QColor frameNormColor; //! Color of normal frame border (onscreen only)
 	QColor frameGroupColor; //! Color of border of grouped frames (onscreen only)

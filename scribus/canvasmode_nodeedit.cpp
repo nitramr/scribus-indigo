@@ -26,6 +26,7 @@
 #include "iconmanager.h"
 #include "nodeeditcontext.h"
 #include "pageitem.h"
+#include "prefsmanager.h"
 #include "scraction.h"
 #include "scribus.h"
 #include "scribusXml.h"
@@ -59,12 +60,16 @@ void CanvasMode_NodeEdit::drawControls(QPainter* p)
 		return;
 	PageItem* currItem = m_doc->m_Selection->itemAt(0);
 	FPointArray cli;
-	
+
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+	QColor colorPathHandle = PrefsManager().instance()->appPrefs.displayPrefs.pathEditHandleColor;
+
 	p->save();
+	p->setRenderHint(QPainter::Antialiasing);
 	p->scale(m_canvas->scale(), m_canvas->scale());
 	p->translate(-m_doc->minCanvasCoordinate.x(), -m_doc->minCanvasCoordinate.y());
 	p->setTransform(currItem->getTransform(), true);
-	p->setPen(QPen(Qt::blue, 1 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+	p->setPen(QPen(colorPath, 1 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 	p->setBrush(Qt::NoBrush);
 
 	if ((m_doc->nodeEdit.isContourLine()) && (currItem->ContourLine.size() != 0))
@@ -95,7 +100,7 @@ void CanvasMode_NodeEdit::drawControls(QPainter* p)
 		{
 			if (cli.isMarker(poi))
 				continue;
-			p->setPen(QPen(Qt::blue, onePerScale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+			p->setPen(QPen(colorPath, onePerScale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 			FPoint a1 = cli.point(poi);
 			FPoint a2 = cli.point(poi+1);
 			FPoint a3 = cli.point(poi+3);
@@ -104,7 +109,7 @@ void CanvasMode_NodeEdit::drawControls(QPainter* p)
 			Bez.moveTo(a1.x(), a1.y());
 			Bez.cubicTo(a2.x(), a2.y(), a3.x(), a3.y(), a4.x(), a4.y());
 			p->drawPath(Bez);
-			p->setPen(QPen(Qt::blue, onePerScale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin));
+			p->setPen(QPen(colorPath, onePerScale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin));
 			p->drawLine(QPointF(a1.x(), a1.y()), QPointF(a2.x(), a2.y()));
 			p->drawLine(QPointF(a3.x(), a3.y()), QPointF(a4.x(), a4.y()));
 		}
@@ -116,41 +121,50 @@ void CanvasMode_NodeEdit::drawControls(QPainter* p)
 			continue;
 		if (m_doc->nodeEdit.edPoints())
 		{
-			if (m_doc->nodeEdit.clre() == static_cast<int>(a+1))
-				p->setPen(QPen(Qt::red, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
-			else
-				p->setPen(QPen(Qt::magenta, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+			p->setPen(QPen(colorPathHandle, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 			cli.point(a+1, &x, &y);
 			p->drawPoint(QPointF(x, y));
-			if (m_doc->nodeEdit.clre() == static_cast<int>(a))
-				p->setPen(QPen(Qt::red, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
-			else
-				p->setPen(QPen(Qt::blue, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+			if (m_doc->nodeEdit.clre() != static_cast<int>(a+1)){
+				p->setPen(QPen(Qt::white, 6 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+				p->drawPoint(QPointF(x, y));
+			}
+
+			p->setPen(QPen(colorPath, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 			cli.point(a, &x, &y);
 			p->drawPoint(QPointF(x, y));
+			if (m_doc->nodeEdit.clre() != static_cast<int>(a)){
+				p->setPen(QPen(Qt::white, 6 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+				p->drawPoint(QPointF(x, y));
+			}
+
 		}
 		else
 		{
-			if (m_doc->nodeEdit.clre() == static_cast<int>(a))
-				p->setPen(QPen(Qt::red, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
-			else
-				p->setPen(QPen(Qt::blue, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+			p->setPen(QPen(colorPath, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 			cli.point(a, &x, &y);
 			p->drawPoint(QPointF(x, y));
-			if (m_doc->nodeEdit.clre() == static_cast<int>(a+1))
-				p->setPen(QPen(Qt::red, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
-			else
-				p->setPen(QPen(Qt::magenta, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+			if (m_doc->nodeEdit.clre() != static_cast<int>(a)){
+				p->setPen(QPen(Qt::white, 6 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+				p->drawPoint(QPointF(x, y));
+			}
+
+			p->setPen(QPen(colorPathHandle, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 			cli.point(a+1, &x, &y);
 			p->drawPoint(QPointF(x, y));
+			if (m_doc->nodeEdit.clre() != static_cast<int>(a+1)){
+				p->setPen(QPen(Qt::white, 6 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+				p->drawPoint(QPointF(x, y));
+			}
 		}
 	}
 	
 	if (m_doc->nodeEdit.clre() != -1)
 	{
-		p->setPen(QPen(Qt::red, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		p->setPen(QPen(colorPathHandle, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		cli.point(m_doc->nodeEdit.clre(), &x, &y);
 		p->drawPoint(QPointF(x, y));
+
+		p->setPen(QPen(colorPath, 8 / scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		QList<int>::Iterator itm;
 		for (itm = m_doc->nodeEdit.selNode().begin(); itm != m_doc->nodeEdit.selNode().end(); ++itm)
 		{

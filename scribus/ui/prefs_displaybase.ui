@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>521</width>
-    <height>415</height>
+    <height>460</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -368,8 +368,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>212</width>
-            <height>292</height>
+            <width>479</width>
+            <height>357</height>
            </rect>
           </property>
           <layout class="QFormLayout" name="formLayout_2">
@@ -499,6 +499,23 @@
              </property>
             </widget>
            </item>
+           <item row="9" column="1">
+            <widget class="QPushButton" name="textControlCharsButton">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Edit Path:</string>
+             </property>
+            </widget>
+           </item>
            <item row="9" column="0">
             <widget class="QLabel" name="label_32">
              <property name="text">
@@ -506,8 +523,22 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="1">
-            <widget class="QPushButton" name="textControlCharsButton">
+           <item row="11" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Edit Path Active Handle:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1">
+            <widget class="QPushButton" name="pathEditColorButton">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
+            <widget class="QPushButton" name="pathEditHandleColorButton">
              <property name="text">
               <string/>
              </property>

@@ -84,13 +84,17 @@ void CanvasMode_EditGradient::drawControls(QPainter* p)
 
 void CanvasMode_EditGradient::drawControlsGradientVectors(QPainter* psx, PageItem *currItem)
 {
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+	QColor colorPathHandle = PrefsManager().instance()->appPrefs.displayPrefs.pathEditHandleColor;
 	psx->setTransform(currItem->getTransform(), true);
-	psx->setPen(QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+	psx->setPen(QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 	psx->setBrush(Qt::NoBrush);
+	psx->setRenderHint(QPainter::Antialiasing);
+
 	if (m_view->editStrokeGradient == 1)
 	{
 		psx->drawLine(QPointF(currItem->GrStrokeStartX, currItem->GrStrokeStartY), QPointF(currItem->GrStrokeEndX, currItem->GrStrokeEndY));
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(currItem->GrStrokeStartX, currItem->GrStrokeStartY));
 		psx->drawPoint(QPointF(currItem->GrStrokeEndX, currItem->GrStrokeEndY));
 		double radEnd = distance(currItem->GrStrokeEndX - currItem->GrStrokeStartX, currItem->GrStrokeEndY - currItem->GrStrokeStartY);
@@ -122,15 +126,15 @@ void CanvasMode_EditGradient::drawControlsGradientVectors(QPainter* psx, PageIte
 		m.rotate(currItem->GrStrokeSkew);
 		m.translate(radEnd * currItem->GrStrokeScale, 0);
 		QPointF shP = m.map(QPointF(0,0));
-		psx->setPen(QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 		psx->drawLine(QPointF(currItem->GrStrokeStartX, currItem->GrStrokeStartY), shP);
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(shP);
 	}
 	else if (m_view->editStrokeGradient == 2)
 	{
 		psx->drawLine(QPointF(currItem->GrMaskStartX, currItem->GrMaskStartY), QPointF(currItem->GrMaskEndX, currItem->GrMaskEndY));
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(currItem->GrMaskStartX, currItem->GrMaskStartY));
 		psx->drawPoint(QPointF(currItem->GrMaskEndX, currItem->GrMaskEndY));
 		double radEnd = distance(currItem->GrMaskEndX - currItem->GrMaskStartX, currItem->GrMaskEndY - currItem->GrMaskStartY);
@@ -162,15 +166,15 @@ void CanvasMode_EditGradient::drawControlsGradientVectors(QPainter* psx, PageIte
 		m.rotate(currItem->GrMaskSkew);
 		m.translate(radEnd * currItem->GrMaskScale, 0);
 		QPointF shP = m.map(QPointF(0,0));
-		psx->setPen(QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 		psx->drawLine(QPointF(currItem->GrMaskStartX, currItem->GrMaskStartY), shP);
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(shP);
 	}
 	else if (m_view->editStrokeGradient == 0)
 	{
 		psx->drawLine(QPointF(currItem->GrStartX, currItem->GrStartY), QPointF(currItem->GrEndX, currItem->GrEndY));
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(currItem->GrStartX, currItem->GrStartY));
 		psx->drawPoint(QPointF(currItem->GrEndX, currItem->GrEndY));
 		double radEnd = distance(currItem->GrEndX - currItem->GrStartX, currItem->GrEndY - currItem->GrStartY);
@@ -205,14 +209,14 @@ void CanvasMode_EditGradient::drawControlsGradientVectors(QPainter* psx, PageIte
 		m.rotate(currItem->GrSkew);
 		m.translate(radEnd * currItem->GrScale, 0);
 		QPointF shP = m.map(QPointF(0,0));
-		psx->setPen(QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 		psx->drawLine(QPointF(currItem->GrStartX, currItem->GrStartY), shP);
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(shP);
 	}
 	else if (m_view->editStrokeGradient == 3)
 	{
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(currItem->GrControl1.x(), currItem->GrControl1.y()));
 		psx->drawPoint(QPointF(currItem->GrControl2.x(), currItem->GrControl2.y()));
 		psx->drawPoint(QPointF(currItem->GrControl3.x(), currItem->GrControl3.y()));
@@ -220,7 +224,7 @@ void CanvasMode_EditGradient::drawControlsGradientVectors(QPainter* psx, PageIte
 	}
 	else if (m_view->editStrokeGradient == 4)
 	{
-		psx->setPen(QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(currItem->GrControl1.x(), currItem->GrControl1.y()));
 		psx->drawPoint(QPointF(currItem->GrControl2.x(), currItem->GrControl2.y()));
 		psx->drawPoint(QPointF(currItem->GrControl3.x(), currItem->GrControl3.y()));
