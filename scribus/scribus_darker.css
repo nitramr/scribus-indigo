@@ -211,6 +211,11 @@ IndigoPanel QToolButton {
     outline: none;
 }
 
+QToolButton:checked {
+    background-color: palette(base);
+    border: 1px solid rgb(15,15,15);
+}
+
 /* QPushButton + QToolButton*/
 
 QToolButton {
@@ -273,6 +278,8 @@ QComboBox {
     height: 16px;
     color: palette(button-text);
     background-color: palette(button);
+    selection-color: palette(button-text);
+    selection-background-color: palette(button);
     border-width: 1px;
     border-color: rgb(15,15,15);
     border-style: solid;
