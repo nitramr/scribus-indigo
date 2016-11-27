@@ -20,8 +20,8 @@ PropertyWidget_TextColor::PropertyWidget_TextColor(QWidget* parent) : QFrame(par
 
 	setupUi(this);
 
-	setFrameStyle(QFrame::Box | QFrame::Plain);
-	setLineWidth(1);
+	//setFrameStyle(QFrame::Box | QFrame::Plain);
+	//setLineWidth(1);
 
 	layout()->setAlignment( Qt::AlignLeft );
 
@@ -545,6 +545,7 @@ void PropertyWidget_TextColor::languageChange()
 
 	textEffects->languageChange();
 
+	lblTitle->setText(tr("Color && Effects"));
 	fillColor->setToolTip( "<qt>" + tr("Color of selected text. If Outline text decoration is enabled, this color will be the fill color. If Drop Shadow Text is enabled, then this will be the top most color.") + "</qt>" );
 	strokeColor->setToolTip( "<qt>" + tr("Color of text stroke and/or drop shadow, depending which is chosen. If both are chosen, then they share the same color.") + "</qt>" );
 	backColor->setToolTip( "<qt>" + tr("Background color of selected text") + "</qt>" );

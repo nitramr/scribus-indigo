@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>158</height>
+    <width>280</width>
+    <height>156</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
   <property name="frameShape">
-   <enum>QFrame::Box</enum>
+   <enum>QFrame::NoFrame</enum>
   </property>
   <property name="frameShadow">
    <enum>QFrame::Plain</enum>
@@ -24,188 +24,200 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
-   <property name="spacing">
-    <number>3</number>
+   <property name="horizontalSpacing">
+    <number>5</number>
    </property>
-   <item row="0" column="0" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="2">
-      <widget class="QLabel" name="scaleVLabel">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="ScrSpinBox" name="minWordTrackingSpinBox">
-       <property name="minimum">
-        <double>1.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>200.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QLabel" name="normWordTrackingLabel">
-       <property name="text">
-        <string>Max:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="textBaseLabel">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="trackingLabel">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="scaleHLabel">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="minWordTrackingLabel">
-       <property name="text">
-        <string>Min:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="ScrSpinBox" name="tracking"/>
-     </item>
-     <item row="1" column="1">
-      <widget class="ScrSpinBox" name="scaleH"/>
-     </item>
-     <item row="1" column="3">
-      <widget class="ScrSpinBox" name="scaleV"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="ScrSpinBox" name="textBase">
-       <property name="minimum">
-        <double>-100.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="ScrSpinBox" name="normWordTrackingSpinBox">
-       <property name="minimum">
-        <double>1.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>2000.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="minGlyphExtensionLabel">
-       <property name="text">
-        <string>Min:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="ScrSpinBox" name="minGlyphExtSpinBox">
-       <property name="minimum">
-        <double>90.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>110.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="QLabel" name="maxGlyphExtensionLabel">
-       <property name="text">
-        <string>Max:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="3">
-      <widget class="ScrSpinBox" name="maxGlyphExtSpinBox">
-       <property name="minimum">
-        <double>90.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>110.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" colspan="4">
-      <widget class="QLabel" name="wordTrackingLabel">
-       <property name="text">
-        <string>Word Spacing</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="4">
-      <widget class="QLabel" name="glyphExtensionLabel">
-       <property name="text">
-        <string>Glyph Extension</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <property name="verticalSpacing">
+    <number>2</number>
+   </property>
+   <item row="4" column="3">
+    <widget class="ScrSpinBox" name="normWordTrackingSpinBox">
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>2000.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="4">
+    <widget class="QLabel" name="wordTrackingLabel">
+     <property name="text">
+      <string>Word Spacing</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QLabel" name="maxGlyphExtensionLabel">
+     <property name="text">
+      <string>Max:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLabel" name="trackingLabel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLabel" name="normWordTrackingLabel">
+     <property name="text">
+      <string>Max:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="textBaseLabel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lblTitle">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Advanced</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
+    <widget class="ScrSpinBox" name="maxGlyphExtSpinBox">
+     <property name="minimum">
+      <double>90.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>110.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="ScrSpinBox" name="textBase">
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="ScrSpinBox" name="scaleH"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="ScrSpinBox" name="scaleV"/>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QLabel" name="glyphExtensionLabel">
+     <property name="text">
+      <string>Glyph Extension</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="ScrSpinBox" name="minGlyphExtSpinBox">
+     <property name="minimum">
+      <double>90.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>110.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="minWordTrackingLabel">
+     <property name="text">
+      <string>Min:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="scaleVLabel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="minGlyphExtensionLabel">
+     <property name="text">
+      <string>Min:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="ScrSpinBox" name="minWordTrackingSpinBox">
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>200.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="scaleHLabel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="ScrSpinBox" name="tracking"/>
    </item>
   </layout>
  </widget>

@@ -24,8 +24,8 @@ PropertyWidget_Advanced::PropertyWidget_Advanced(QWidget* parent) : QFrame(paren
 
 	setupUi(this);
 
-	setFrameStyle(QFrame::Box | QFrame::Plain);
-	setLineWidth(1);
+	//setFrameStyle(QFrame::Box | QFrame::Plain);
+	//setLineWidth(1);
 
 	layout()->setAlignment( Qt::AlignLeft );
 
@@ -368,6 +368,7 @@ void PropertyWidget_Advanced::changeEvent(QEvent *e)
 
 void PropertyWidget_Advanced::languageChange()
 {
+	lblTitle->setText( tr("Advanced Settings"));
 	wordTrackingLabel->setText( tr("Word Tracking"));
 	minWordTrackingLabel->setText( tr("Min:"));
 	normWordTrackingLabel->setText( tr("Norm:"));

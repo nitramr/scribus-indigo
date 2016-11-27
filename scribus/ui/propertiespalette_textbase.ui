@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>214</width>
-    <height>289</height>
+    <height>163</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
@@ -244,20 +250,11 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="lyt_widgetHolder"/>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <layout class="QVBoxLayout" name="lyt_widgetHolder" stretch="">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -268,15 +265,15 @@
    <header>ui/scrspinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>CharStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>ui/spalette.h</header>
+  </customwidget>
+  <customwidget>
    <class>FontComboH</class>
    <extends>QWidget</extends>
    <header>ui/fontcombo.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CharStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>ui/spalette.h</header>
   </customwidget>
   <customwidget>
    <class>ParaStyleComboBox</class>

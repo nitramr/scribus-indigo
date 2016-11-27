@@ -24,8 +24,8 @@ for which a new license (GPL+exception) is in place.
 PropertyWidget_ParEffect::PropertyWidget_ParEffect(QWidget *parent) : QFrame(parent), m_enhanced(NULL), m_item(NULL), m_ScMW(NULL)
 {
 	setupUi(this);
-	setFrameStyle(QFrame::Box | QFrame::Plain);
-	setLineWidth(1);
+	//setFrameStyle(QFrame::Box | QFrame::Plain);
+	//setLineWidth(1);
 	layout()->setAlignment( Qt::AlignTop );
 
 	languageChange();
@@ -565,6 +565,7 @@ void PropertyWidget_ParEffect::handleChanges(PageItem *item, ParagraphStyle &new
 
 void PropertyWidget_ParEffect::languageChange()
 {
+	lblTitle->setText(tr("Paragraph Effects"));
 	fillPECombo();
 	retranslateUi(this);
 }

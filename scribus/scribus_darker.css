@@ -46,7 +46,7 @@ ColorFormat
 
 */
 Palette::dark {
-	[all]		alternate-base:		rgb(53,53,53);
+	[all]		alternate-base:		rgb(35,35,35);
 	[all]		background:		rgb(46,46,46);
 	[all]		base:			rgb(25,25,25);
 	[all]		bright-text:		rgb(204,204,204);
@@ -580,12 +580,17 @@ QListView::item{
     border: 1px solid transparent;
 }
 
+QListView::item:alternate {
+    background-color: palette(alternate-base);
+}
+
 QListView::item:selected:!active,
 QListView::item:selected,
 QListView::item:selected:active {
     border: 1px solid palette(highlight);
 }
 
+QListView::item:alternate:hover,
 QListView::item:hover{
     background-color: palette(button);
 }

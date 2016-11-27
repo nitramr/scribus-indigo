@@ -478,6 +478,7 @@ void PropertiesPalette::setCurrentItem(PageItem *i)
 		TabStack->setItemEnabled(idTableItem, false);
 	}
 	connect(TabStack, SIGNAL(currentChanged2(int)), this, SLOT(SelTab(int)));
+
 }
 
 void  PropertiesPalette::handleSelectionChanged()

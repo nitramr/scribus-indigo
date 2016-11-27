@@ -58,7 +58,7 @@ PropertiesPalette_Text::PropertiesPalette_Text( QWidget* parent) : QWidget(paren
 	m_unitRatio = 1.0;
 
 	setupUi(this);
-	setSizePolicy( QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+	//setSizePolicy( QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
 
 	fontSize->setPrefix( "" );
 	fontSizeLabel->setPixmap(IconManager::instance()->loadPixmap("Zeichen.xpm"));
@@ -105,6 +105,8 @@ PropertiesPalette_Text::PropertiesPalette_Text( QWidget* parent) : QWidget(paren
 	lyt_widgetHolder->addWidget(pathTextWidgets);
 	//pathTextItem = textTree->addWidget( tr("Path Text Properties"), pathTextWidgets);
 	
+	lyt_widgetHolder->addStretch();
+
 	languageChange();
 
 	connect(lineSpacing   , SIGNAL(valueChanged(double)), this, SLOT(handleLineSpacing()));
@@ -323,30 +325,30 @@ void PropertiesPalette_Text::setCurrentItem(PageItem *i)
 	{
 		setEnabled(false);
 	}
-//	if (m_item->asPathText())
-//	{
-//		flopItem->setHidden(true);
-//		distanceItem->setHidden(true);
-//		orphanItem->setHidden(true);
-//		parEffectItem->setHidden(true);
-//		pathTextItem->setHidden(false);
-//	}
-//	else if (m_item->asTextFrame() || m_item->asTable())
-//	{
-//		flopItem->setHidden(false);
-//		distanceItem->setHidden(false);
-//		orphanItem->setHidden(false);
-//		parEffectItem->setHidden(false);
-//		pathTextItem->setHidden(true);
-//	}
-//	else
-//	{
-//		flopItem->setHidden(false);
-//		distanceItem->setHidden(false);
-//		orphanItem->setHidden(false);
-//		parEffectItem->setHidden(false);
-//		pathTextItem->setHidden(true);
-//	}
+	if (m_item->asPathText())
+	{
+		flopBox->setHidden(true);
+		distanceWidgets->setHidden(true);
+		orphanBox->setHidden(true);
+		parEffectWidgets->setHidden(true);
+		pathTextWidgets->setHidden(false);
+	}
+	else if (m_item->asTextFrame() || m_item->asTable())
+	{
+		flopBox->setHidden(false);
+		distanceWidgets->setHidden(false);
+		orphanBox->setHidden(false);
+		parEffectWidgets->setHidden(false);
+		pathTextWidgets->setHidden(true);
+	}
+	else
+	{
+		flopBox->setHidden(false);
+		distanceWidgets->setHidden(false);
+		orphanBox->setHidden(false);
+		parEffectWidgets->setHidden(false);
+		pathTextWidgets->setHidden(true);
+	}
 
 	m_haveItem = true;
 
