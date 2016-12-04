@@ -1,5 +1,11 @@
-Scribus - Open Source Desktop Publishing 
-==============================
+Scribus-Indigo 
+==============
+The Scribus-Indigo branch is an unofficial experimental user interface version of the original open source Scribus desktop publishing software. The project includes:
+* a new application layout
+* control elements 
+* different color themes inclusive dark and bright icon sets
+* workflow improvements
+
 [![Build Status](https://travis-ci.org/nitramr/scribus-indigo.svg?branch=master)](https://travis-ci.org/nitramr/scribus-indigo) 
 
 ## Status
@@ -102,7 +108,7 @@ sudo make install
 ```
 
 You can find Scribus in following location:  
-./user/local/bin/  
+```/usr/local/bin/```  
 
 
 For uninstalling use following commands:  
