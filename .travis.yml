@@ -22,11 +22,11 @@ matrix:
 
 before_install:
 # Linux
-- if [ $TRAVIS_OS_NAME == linux ]; then 
+- if [ $TRAVIS_OS_NAME == linux ]; then
       sudo apt-add-repository ppa:beineri/opt-qt57-trusty -y;
       sudo apt-add-repository ppa:as-bahanta/raqm -y;
       sudo apt-add-repository ppa:ricotz/testing -y;
-      sudo apt-get update -qq; 
+      sudo apt-get update -qq;
       sudo apt-get install --force-yes cmake libboost-python-dev libcups2-dev libhunspell-dev
       libhyphen-dev liblcms2-dev libpodofo-dev libtiff-dev libxml2-dev
       python-all-dev zlib1g-dev qt57base qt57declarative
@@ -40,7 +40,8 @@ before_install:
 - if [ $TRAVIS_OS_NAME == osx ]; then brew update; 
       brew outdated cmake --verbose || brew upgrade cmake; 
       brew tap homebrew/dupes && brew install homebrew/dupes/zlib && brew link --force zlib;
-      brew install xz little-cms2 cairo qt5 hunspell ghostscript graphicsmagick poppler podofo; 
+      brew install icu4c && brew link --force icu4c;
+      brew install xz little-cms2 cairo qt5 hunspell ghostscript graphicsmagick poppler podofo harfbuzz;
       brew outdated jpeg --verbose || brew upgrade jpeg;
       brew outdated libtiff --verbose || brew upgrade libtiff; 
       brew outdated fontconfig --verbose || brew upgrade fontconfig; 
@@ -71,7 +72,7 @@ script:
       cmake . -DWANT_CPP11=1 -DWANT_HUNSPELL=1 -DWITH_PODOFO=1 -DWANT_GRAPHICSMAGICK=1 -DWANT_DEBUG=0 -DWANT_SVNVERSION=0 -DWANT_GUI_LANG=en_US -DWANT_NOEXAMPLES=1 -DWANT_NOTEMPLATES=1 -DCMAKE_PREFIX_PATH=/usr/local/opt/zlib -DBUILD_OSX_BUNDLE=1 -DCMAKE_OSX_ARCHITECTURES="x86_64" -DQT_PREFIX=/usr/local/opt/qt5;
       make -j8;
     fi
-    
+
 notifications:
   irc:
     channels:

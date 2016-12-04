@@ -14,8 +14,8 @@ PropertyWidget_Orphans::PropertyWidget_Orphans(QWidget* parent) : QFrame(parent)
 {
 	setupUi(this);
 
-	//setFrameStyle(QFrame::Box | QFrame::Plain);
-	//setLineWidth(1);
+	setFrameStyle(QFrame::Box | QFrame::Plain);
+	setLineWidth(1);
 	layout()->setAlignment( Qt::AlignTop );
 	keepLinesStart->setDecimals(0);
 	keepLinesEnd->setDecimals(0);
@@ -93,7 +93,6 @@ void PropertyWidget_Orphans::changeEvent(QEvent *e)
 
 void PropertyWidget_Orphans::languageChange()
 {
-	lblTitle->setText(tr("Orphans and Widows"));
 	keepLabelStart->setText (tr ("Don't separate first"));
 	keepLabelEnd->setText (tr ("Don't separate last"));
 	keepLinesStart->setSuffix (tr (" lines"));

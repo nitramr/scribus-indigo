@@ -22,8 +22,8 @@ PropertyWidget_OptMargins::PropertyWidget_OptMargins(QWidget* parent) : QFrame(p
 
 	setupUi(this);
 
-	//setFrameStyle(QFrame::Box | QFrame::Plain);
-	//setLineWidth(1);
+	setFrameStyle(QFrame::Box | QFrame::Plain);
+	setLineWidth(1);
 	layout()->setAlignment( Qt::AlignTop );
 
 	languageChange();
@@ -215,7 +215,6 @@ void PropertyWidget_OptMargins::changeEvent(QEvent *e)
 
 void PropertyWidget_OptMargins::languageChange()
 {
-	lblTitle->setText(tr("Optical Margins"));
 	optMarginRadioNone->setText( tr("None","optical margins") );
 	optMarginRadioBoth->setText( tr("Both Sides","optical margins") );
 	optMarginRadioLeft->setText( tr("Left Only","optical margins") );

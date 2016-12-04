@@ -115,12 +115,11 @@ void ShapePlugin::deleteAboutData(const AboutData* about) const
 
 bool ShapePlugin::initPlugin()
 {
-    ScribusMainWindow * mw = ScCore->primaryMainWindow();
+	ScribusMainWindow * mw = ScCore->primaryMainWindow();
 
-    sc_palette = new ShapePalette(mw, "Shap");
-    sc_palette->readFromPrefs();
-
-    return true;
+	sc_palette = new ShapePalette(mw, "Shap");
+	sc_palette->readFromPrefs();
+	return true;
 }
 
 bool ShapePlugin::cleanupPlugin()

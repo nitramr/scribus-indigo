@@ -29,8 +29,8 @@ PropertyWidget_Distance::PropertyWidget_Distance(QWidget* parent) : QFrame(paren
 
 	setupUi(this);
 
-	//setFrameStyle(QFrame::Box | QFrame::Plain);
-	//setLineWidth(1);
+	setFrameStyle(QFrame::Box | QFrame::Plain);
+	setLineWidth(1);
 
 	layout()->setAlignment( Qt::AlignTop );
 
@@ -436,7 +436,6 @@ void PropertyWidget_Distance::changeEvent(QEvent *e)
 
 void PropertyWidget_Distance::languageChange()
 {
-	lblTitle->setText( tr("Columns && Text Distances"));
 	columnsLabel->setText( tr("Colu&mns:"));
 
 	verticalAlignLabel->setText( tr("Vertical Alignment:"));

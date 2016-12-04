@@ -91,7 +91,7 @@ class PLUGIN_API ShapePalette : public ScDockPalette
 	Q_OBJECT
 
 public:
-    ShapePalette(QWidget* parent, const char *name);
+	ShapePalette(QWidget* parent, const char *name);
 	~ShapePalette() {};
 
 	void writeToPrefs();

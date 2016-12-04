@@ -7,37 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>227</width>
-    <height>172</height>
+    <height>152</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <property name="frameShape">
-   <enum>QFrame::NoFrame</enum>
-  </property>
-  <property name="lineWidth">
-   <number>0</number>
-  </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
-   <item row="1" column="0" colspan="2">
-    <widget class="QCheckBox" name="dropCapBox">
-     <property name="text">
-      <string>use Drop Caps</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="ScrSpinBox" name="dropCapLines">
-     <property name="suffix">
-      <string> lines</string>
-     </property>
-     <property name="maximum">
-      <double>10.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="dropCapLinesLabel">
      <property name="toolTip">
       <string>Number of lines used by the drop cap</string>
@@ -47,40 +24,44 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QLabel" name="dropCapCharStyleLabel">
-     <property name="text">
-      <string>Use Character Style</string>
+   <item row="1" column="1">
+    <widget class="ScrSpinBox" name="dropCapLines">
+     <property name="suffix">
+      <string> lines</string>
+     </property>
+     <property name="maximum">
+      <number>10</number>
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="CharStyleComboBox" name="dropCapCharStyleCombo"/>
-   </item>
-   <item row="5" column="1">
-    <widget class="ScrSpinBox" name="dropCapOffset">
-     <property name="minimum">
-      <double>-99.989999999999995</double>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="dropCapOffsetLabel">
      <property name="text">
       <string>Offset</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblTitle">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="dropCapCharStyleLabel">
      <property name="text">
-      <string>Drop Caps</string>
+      <string>Use Character Style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="CharStyleComboBox" name="dropCapCharStyleCombo"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="ScrSpinBox" name="dropCapOffset">
+     <property name="minimum">
+      <double>-99.989999999999995</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QCheckBox" name="dropCapBox">
+     <property name="text">
+      <string>use Drop Caps</string>
      </property>
     </widget>
    </item>

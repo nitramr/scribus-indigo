@@ -124,8 +124,6 @@ public:
 	ScColorTransform defaultCMYKToRGBTrans;
 	ScColorTransform defaultLabToRGBTrans;
 	ScColorTransform defaultLabToCMYKTrans;
-	//CB FIXME protect
-// 	QWidget *m_PaletteParent;
 	
 protected:
 	void initCMS();

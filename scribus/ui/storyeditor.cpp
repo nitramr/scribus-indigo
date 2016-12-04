@@ -54,6 +54,7 @@ for which a new license (GPL+exception) is in place.
 
 #include "actionmanager.h"
 #include "alignselect.h"
+#include "directionselect.h"
 #include "colorcombo.h"
 #include "colorlistbox.h"
 #include "commonstrings.h"
@@ -304,15 +305,9 @@ void SEditor::inputMethodEvent(QInputMethodEvent *event)
 	pos = -1;
 	if(!uc.isEmpty())
 	{
-		if ((*doc->AllFonts)[CurrFont].canRender(uc[0]))
-		{
-			pos = textCursor().hasSelection() ? textCursor().selectionStart() : textCursor().position();
-			pos = qMin(pos, StyledText.length());
-		}
-		else
-		{
-			event->setCommitString("");
-		}
+		pos = textCursor().hasSelection() ? textCursor().selectionStart() : textCursor().position();
+		pos = qMin(pos, StyledText.length());
+
 	}
 	QTextEdit::inputMethodEvent(event);
 	SuspendContentsChange = 0;
@@ -326,14 +321,6 @@ void SEditor::inputMethodEvent(QInputMethodEvent *event)
 		emit SideBarUp(true);
 		emit SideBarUpdate();
 	}
-/*	if ((!uc.isEmpty()) && ((*doc->AllFonts)[CurrFont].canRender(uc[0])))
-	{
-		// Should be processed by the handleContentsChange slot
-		// insertCharsInternal(event->commitString());
-		QTextEdit::inputMethodEvent(event);
-		emit SideBarUp(true);
-		emit SideBarUpdate();
-	} */
 }
 
 void SEditor::keyPressEvent(QKeyEvent *k)
@@ -461,7 +448,7 @@ void SEditor::keyPressEvent(QKeyEvent *k)
 			case Qt::Key_End:
 				break;
 			default:
-				if ((!k->text().isEmpty()) && ((*doc->AllFonts)[CurrFont].canRender(uc[0])))
+				if (!k->text().isEmpty())
 				{
 					QTextEdit::keyPressEvent(k);
 					emit SideBarUp(true);
@@ -644,7 +631,7 @@ void SEditor::setAlign(int align)
 void SEditor::setAlign(QTextCursor& tCursor, int align)
 {
 	++blockContentsChangeHook;
-	QTextBlockFormat blockFormat;
+	QTextBlockFormat blockFormat = tCursor.blockFormat();
 	switch (align)
 	{
 	case 0:
@@ -663,10 +650,34 @@ void SEditor::setAlign(QTextCursor& tCursor, int align)
 	default:
 		break;
 	}
-	tCursor.setBlockFormat(blockFormat);
+	tCursor.mergeBlockFormat(blockFormat);
 	--blockContentsChangeHook;
 }
 
+void SEditor::setDirection(int dir)
+{
+	QTextCursor tCursor = this->textCursor();
+	setDirection(tCursor, dir);
+}
+
+void SEditor::setDirection(QTextCursor& tCursor, int dir)
+{
+	++blockContentsChangeHook;
+	QTextBlockFormat blockFormat = tCursor.blockFormat();
+	switch (dir)
+	{
+	case 0:
+		blockFormat.setLayoutDirection(Qt::LeftToRight);
+		break;
+	case 1:
+		blockFormat.setLayoutDirection(Qt::RightToLeft);
+		break;
+	default:
+		break;
+	}
+	tCursor.mergeBlockFormat(blockFormat);
+	--blockContentsChangeHook;
+}
 
 void SEditor::loadItemText(PageItem *currItem)
 {
@@ -729,7 +740,9 @@ void SEditor::insertUpdate(int position, int len)
 	int end  = qMin(StyledText.length(), position + len);
 	int cSty = StyledText.charStyle(position).effects();
 	int pAli = StyledText.paragraphStyle(position).alignment();
+	int dir = StyledText.paragraphStyle(position).direction();
 	setAlign(pAli);
+	setDirection(dir);
 	setEffects(cSty);
 	for (int pos = position; pos < end; ++pos)
 	{
@@ -741,6 +754,7 @@ void SEditor::insertUpdate(int position, int len)
 			const ParagraphStyle& pstyle(StyledText.paragraphStyle(pos));
 			pAli = pstyle.alignment();
 			setAlign(pAli);
+			setDirection(dir);
 			setEffects(cSty);
 			insertPlainText(text);
 			cSty = cstyle.effects();
@@ -758,6 +772,7 @@ void SEditor::insertUpdate(int position, int len)
 				ch == SpecialChars::LINEBREAK)
 		{
 			setAlign(pAli);
+			setDirection(dir);
 			setEffects(cSty);
 			insertPlainText(text);
 			cSty = cstyle.effects();
@@ -818,6 +833,7 @@ void SEditor::insertUpdate(int position, int len)
 	{
 		const ParagraphStyle& pstyle(StyledText.paragraphStyle(end - 1));
 		setAlign(pstyle.alignment());
+		setDirection(pstyle.direction());
 	}
 	setEffects(cSty);
 	insertPlainText(text);
@@ -866,6 +882,7 @@ void SEditor::updateFromChars(int pa)
 	tCursor.setPosition(SelEnd, QTextCursor::KeepAnchor);
 	setEffects(tCursor, effects);
 	setAlign(tCursor, StyledText.paragraphStyle(start).alignment());
+	setDirection(tCursor, StyledText.paragraphStyle(start).direction());
 	tCursor.clearSelection();
 	setUpdatesEnabled(true);
 	tCursor = textCursor();
@@ -1364,11 +1381,15 @@ SToolBAlign::SToolBAlign(QMainWindow* parent) : QToolBar( tr("Style Settings"), 
 	GroupAlign = new AlignSelect(this);
 	groupAlignAction=addWidget(GroupAlign);
 	groupAlignAction->setVisible(true);
+	GroupDirection = new DirectionSelect(this);
+	groupDirectionAction=addWidget(GroupDirection);
+	groupDirectionAction->setVisible(true);
 	paraStyleCombo = new ParaStyleComboBox(this);
 	paraStyleComboAction=addWidget(paraStyleCombo);
 	paraStyleComboAction->setVisible(true);
 	connect(paraStyleCombo, SIGNAL(newStyle(const QString&)), this, SIGNAL(newParaStyle(const QString& )));
 	connect(GroupAlign, SIGNAL(State(int)), this, SIGNAL(newAlign(int )));
+	connect(GroupDirection, SIGNAL(State(int)), this, SIGNAL(newDirection(int )));
 
 	languageChange();
 }
@@ -1390,11 +1411,16 @@ void SToolBAlign::languageChange()
 	paraStyleCombo->setToolTip( tr("Style of current paragraph"));
 }
 
-
 void SToolBAlign::SetAlign(int s)
 {
+	GroupAlign->setStyle(s, GroupDirection->getStyle());
 	QSignalBlocker sigBlocker(GroupAlign);
-	GroupAlign->setStyle(s);
+}
+
+void SToolBAlign::SetDirection(int s)
+{
+	GroupDirection->setStyle(s);
+	QSignalBlocker sigBlocker(GroupDirection);
 }
 
 void SToolBAlign::SetParaStyle(QString s)
@@ -1402,7 +1428,6 @@ void SToolBAlign::SetParaStyle(QString s)
 	QSignalBlocker sigBlocker(paraStyleCombo);
 	paraStyleCombo->setFormat(s);
 }
-
 
 /* Toolbar for Font related Settings */
 SToolBFont::SToolBFont(QMainWindow* parent) : QToolBar( tr("Font Settings"), parent)
@@ -1547,6 +1572,7 @@ StoryEditor::StoryEditor(QWidget* parent) : QMainWindow(parent, Qt::Window), // 
 StoryEditor::~StoryEditor()
 {
 	savePrefs();
+	delete StoryEd2Layout;
 }
 
 void StoryEditor::showEvent(QShowEvent *)
@@ -2063,6 +2089,7 @@ void StoryEditor::connectSignals()
 //	connect(EditorBar, SIGNAL(sigEditStyles()), this, SLOT(slotEditStyles()));
 	connect(AlignTools, SIGNAL(newParaStyle(const QString&)), this, SLOT(newStyle(const QString&)));
 	connect(AlignTools, SIGNAL(newAlign(int)), this, SLOT(newAlign(int)));
+	connect(AlignTools, SIGNAL(newDirection(int)), this, SLOT(newDirection(int)));
 	connect(FillTools, SIGNAL(NewColor(int, int)), this, SLOT(newTxFill(int, int)));
 	connect(StrokeTools, SIGNAL(NewColor(int, int)), this, SLOT(newTxStroke(int, int)));
 	connect(FontTools, SIGNAL(newSize(double )), this, SLOT(newTxSize(double)));
@@ -2447,6 +2474,7 @@ void StoryEditor::updateProps(int p, int ch)
 			const ParagraphStyle parStyle(pos < Editor->StyledText.length()? m_item->itemText.paragraphStyle(pos) : m_item->itemText.defaultStyle());
 			Editor->currentParaStyle = parStyle.parent();
 			Editor->CurrAlign = parStyle.alignment();
+			Editor->CurrDirection = parStyle.direction();
 			Editor->CurrTextFill = curstyle.fillColor();
 			Editor->CurrTextFillSh = curstyle.fillShade();
 			Editor->CurrTextStroke = curstyle.strokeColor();
@@ -2496,6 +2524,7 @@ void StoryEditor::updateProps(int p, int ch)
 			StrokeTools->SetColor(c);
 			AlignTools->SetAlign(Editor->CurrAlign);
 			AlignTools->SetParaStyle(Editor->currentParaStyle);
+			AlignTools->SetDirection(Editor->CurrDirection);
 			StyleTools->SetKern(Editor->CurrTextKern);
 			StyleTools->SetStyle(Editor->CurrentEffects);
 			StyleTools->SetShadow(Editor->CurrTextShadowX, Editor->CurrTextShadowY);
@@ -2543,6 +2572,7 @@ void StoryEditor::updateProps(int p, int ch)
 		Editor->CurrTextStrikePos = parStyle.charStyle().strikethruOffset();
 		Editor->CurrTextStrikeWidth = parStyle.charStyle().strikethruWidth();
 		Editor->setAlign(Editor->CurrAlign);
+		Editor->setDirection(Editor->CurrDirection);
 		Editor->setEffects(Editor->CurrentEffects);
 	}
 	else
@@ -2568,6 +2598,7 @@ void StoryEditor::updateProps(int p, int ch)
 		const ParagraphStyle& paraStyle(Editor->StyledText.paragraphStyle(start));
 		const CharStyle& charStyle(Editor->StyledText.charStyle(start));
 		Editor->CurrAlign = paraStyle.alignment();
+		Editor->CurrDirection = paraStyle.direction();
 		Editor->CurrTextFill = charStyle.fillColor();
 		Editor->CurrTextFillSh = charStyle.fillShade();
 		Editor->CurrTextStroke = charStyle.strokeColor();
@@ -2637,6 +2668,7 @@ void StoryEditor::updateProps(int p, int ch)
 	FontTools->SetScaleV(Editor->CurrTextScaleV);
 	AlignTools->SetAlign(Editor->CurrAlign);
 	AlignTools->SetParaStyle(Editor->currentParaStyle);
+	AlignTools->SetDirection(Editor->CurrDirection);
 	updateUnicodeActions();
 	updateStatus();
 }
@@ -3018,6 +3050,16 @@ void StoryEditor::newAlign(int st)
 	changeAlign(st);
 }
 
+void StoryEditor::newDirection(int dir)
+{
+	Editor->CurrDirection = dir;
+	if (dir == ParagraphStyle::LTR && Editor->CurrAlign == ParagraphStyle::Rightaligned)
+		Editor->CurrAlign = ParagraphStyle::Leftaligned;
+	else if (dir == ParagraphStyle::RTL && Editor->CurrAlign == ParagraphStyle::Leftaligned)
+		Editor->CurrAlign = ParagraphStyle::Rightaligned;
+	changeDirection(dir);
+}
+
 
 void StoryEditor::newStyle(const QString& name)
 {
@@ -3246,6 +3288,60 @@ void StoryEditor::changeAlign(int )
 	Editor->setFocus();
 }
 
+void StoryEditor::changeDirection(int )
+{
+	int p = 0;
+	bool sel = false;
+	ParagraphStyle newStyle;
+
+	newStyle.setDirection(static_cast<ParagraphStyle::DirectionType>(Editor->CurrDirection));
+	newStyle.setAlignment(static_cast<ParagraphStyle::AlignmentType>(Editor->CurrAlign));
+
+	int pos = Editor->textCursor().position();
+	p = Editor->StyledText.nrOfParagraph(pos);
+	if (Editor->StyledText.length() != 0)
+	{
+		disconnect(Editor, SIGNAL(cursorPositionChanged()), this, SLOT(updateProps()));
+		disconnect(Editor, SIGNAL(textChanged()), this, SLOT(modifiedText()));
+		disconnect(Editor, SIGNAL(textChanged()), EditorBar, SLOT(doRepaint()));
+		int PStart = 0;
+		int PEnd = 0;
+		int SelStart = 0;
+		int SelEnd = 0;
+		if (Editor->textCursor().hasSelection())
+		{
+			PStart = Editor->StyledText.nrOfParagraph(Editor->textCursor().selectionStart());
+			PEnd = Editor->StyledText.nrOfParagraph(Editor->textCursor().selectionEnd());
+			SelStart = Editor->textCursor().selectionStart();
+			SelEnd = Editor->textCursor().selectionEnd();
+			sel = true;
+		}
+		else
+		{
+			PStart = p;
+			PEnd = p;
+		}
+		for (int pa = PStart; pa <= PEnd; ++pa)
+		{
+			Editor->StyledText.applyStyle(Editor->StyledText.startOfParagraph(pa), newStyle);
+			Editor->updateFromChars(pa);
+		}
+		QTextCursor textCursor = Editor->textCursor();
+		textCursor.setPosition(sel ? SelStart : pos);
+		if (sel)
+			textCursor.setPosition(SelEnd, QTextCursor::KeepAnchor);
+		Editor->setTextCursor(textCursor);
+		Editor->ensureCursorVisible();
+		updateProps();
+		EditorBar->doRepaint();
+		connect(Editor, SIGNAL(cursorPositionChanged()), this, SLOT(updateProps()));
+		connect(Editor, SIGNAL(textChanged()), this, SLOT(modifiedText()));
+		connect(Editor, SIGNAL(textChanged()), EditorBar, SLOT(doRepaint()));
+	}
+	modifiedText();
+	Editor->repaint();
+	Editor->setFocus();
+}
 
 void StoryEditor::modifiedText()
 {
@@ -3382,5 +3478,5 @@ void StoryEditor::specialActionKeyEvent(int unicodevalue)
 void StoryEditor::updateUnicodeActions()
 {
 	if (Editor->prevFont!=Editor->CurrFont)
-		ScCore->primaryMainWindow()->actionManager->enableUnicodeActions(&seActions, true, Editor->CurrFont);
+		ScCore->primaryMainWindow()->actionManager->enableUnicodeActions(&seActions, true);
 }

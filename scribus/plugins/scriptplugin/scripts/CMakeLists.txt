@@ -1,8 +1,8 @@
-INCLUDE_DIRECTORIES(
+include_directories(
 "${CMAKE_SOURCE_DIR}/scribus"
 )
 
-INSTALL(FILES
+install(FILES
 Autoquote.py
 Autoquote2.py
 CalendarWizard.py
@@ -10,6 +10,7 @@ ColorChart.py
 DirectImageImport.py
 FontSample.py
 InfoBox.py
+Ligatursatz.py
 ChangeLog
 NEWS
 ReadMe

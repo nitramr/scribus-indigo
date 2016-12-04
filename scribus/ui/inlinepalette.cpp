@@ -108,7 +108,7 @@ InlinePalette::InlinePalette( QWidget* parent, const char* name) : ScDockPalette
 	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	InlineViewWidget = new InlineView(this);
 	InlineViewWidget->clear();
-	setWidget( InlineViewWidget ); 
+	setWidget( InlineViewWidget );
 
 	// Panel icon
 	setIcon(IconManager::instance()->loadPixmap("64/pan-inline.png"));

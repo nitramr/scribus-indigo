@@ -376,8 +376,8 @@ void CanvasMode_Edit::mouseDoubleClickEvent(QMouseEvent *m)
 				if (validPos && currItem->itemText.hasObject(oldCp))
 				{
 					currItem->itemText.select(oldCp, 1, true);
-					PageItem *iItem = currItem->itemText.object(oldCp);
-					m_ScMW->editInlineStart(iItem->inlineCharID);
+					InlineFrame iItem = currItem->itemText.object(oldCp);
+					m_ScMW->editInlineStart(iItem.getInlineCharID());
 				}
 				else
 				{
@@ -673,7 +673,7 @@ void CanvasMode_Edit::mousePressEvent(QMouseEvent *m)
 							else
 								currItem->itemText.setCursorPosition(currItem->itemText.startOfParagraph());
 						}
-						currItem->asTextFrame()->ExpandSel(dir, oldP);
+						currItem->asTextFrame()->ExpandSel(oldP);
 						oldCp = oldP;
 					}
 				}

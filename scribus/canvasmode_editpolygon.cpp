@@ -109,7 +109,6 @@ void CanvasMode_EditPolygon::drawControlsPolygon(QPainter* psx, PageItem* currIt
 		psx->drawLine(m_endPoint, m_innerCPoint);
 		psx->drawLine(m_startPoint, m_outerCPoint);
 	}
-
 	psx->setPen(p8b);
 	psx->drawPoint(m_startPoint);
 	if (m_polygonPoint != useControlOuter){

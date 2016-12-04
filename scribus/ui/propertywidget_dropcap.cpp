@@ -19,8 +19,8 @@ PropertyWidget_DropCap::PropertyWidget_DropCap(QWidget *parent) : QFrame(parent)
 	m_ScMW = 0;
 
     setupUi(this);
-	//setFrameStyle(QFrame::Box | QFrame::Plain);
-	//setLineWidth(1);
+	setFrameStyle(QFrame::Box | QFrame::Plain);
+	setLineWidth(1);
 	layout()->setAlignment( Qt::AlignTop );
 
 	languageChange();
@@ -276,7 +276,6 @@ void PropertyWidget_DropCap::changeEvent(QEvent *e)
 
 void PropertyWidget_DropCap::languageChange()
 {
-	//lblTitle->setText();
 	dropCapBox->setText(tr("Use Drop Caps"));
 	dropCapLinesLabel->setText(tr("Drop Caps lines"));
 	dropCapOffsetLabel->setText(tr("Drop Caps offset"));

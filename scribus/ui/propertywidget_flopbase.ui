@@ -6,74 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>97</height>
+    <width>218</width>
+    <height>88</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
   <property name="frameShape">
-   <enum>QFrame::NoFrame</enum>
+   <enum>QFrame::StyledPanel</enum>
   </property>
   <property name="frameShadow">
-   <enum>QFrame::Plain</enum>
+   <enum>QFrame::Raised</enum>
   </property>
-  <property name="lineWidth">
-   <number>0</number>
-  </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="1" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QRadioButton" name="flopRealHeight">
      <property name="text">
       <string>Maximum Ascent</string>
      </property>
      <attribute name="buttonGroup">
-      <string notr="true">flopGroup</string>
+      <string>flopGroup</string>
      </attribute>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QRadioButton" name="flopLineSpacing">
-     <property name="text">
-      <string>Line Spacing</string>
-     </property>
-     <attribute name="buttonGroup">
-      <string notr="true">flopGroup</string>
-     </attribute>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item>
     <widget class="QRadioButton" name="flopFontAscent">
      <property name="text">
       <string>Font Ascent</string>
      </property>
      <attribute name="buttonGroup">
-      <string notr="true">flopGroup</string>
+      <string>flopGroup</string>
      </attribute>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item>
+    <widget class="QRadioButton" name="flopLineSpacing">
+     <property name="text">
+      <string>Line Spacing</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string>flopGroup</string>
+     </attribute>
+    </widget>
+   </item>
+   <item>
     <widget class="QRadioButton" name="flopBaselineGrid">
      <property name="text">
       <string>Baseline Grid</string>
      </property>
      <attribute name="buttonGroup">
-      <string notr="true">flopGroup</string>
+      <string>flopGroup</string>
      </attribute>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblTitle">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>First Line Offset</string>
-     </property>
     </widget>
    </item>
   </layout>

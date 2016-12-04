@@ -239,137 +239,137 @@ void Vruler::unitChange()
 	int docUnitIndex = m_doc->unitIndex();
 	switch (docUnitIndex)
 	{
-	case SC_PT:
-		if (sc > 1 && sc <= 4)
-			cor = 2;
-		if (sc > 4)
-			cor = 10;
-		if (sc < 0.3)
-		{
-			iter = unitRulerGetIter1FromIndex(docUnitIndex) * 3;
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 3;
-		}
-		else if (sc < 0.2)
-		{
-			iter = unitRulerGetIter1FromIndex(docUnitIndex) * 2;
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 2;
-		}
-		else
-		{
+		case SC_PT:
+			if (sc > 1 && sc <= 4)
+				cor = 2;
+			if (sc > 4)
+				cor = 10;
+			if (sc < 0.3)
+			{
+				iter = unitRulerGetIter1FromIndex(docUnitIndex) * 3;
+	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 3;
+			}
+			else if (sc < 0.2)
+			{
+				iter = unitRulerGetIter1FromIndex(docUnitIndex) * 2;
+	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) * 2;
+			}
+			else
+			{
+				iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
+	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
+	  		}
+			break;
+		case SC_MM:
+			if (sc > 1)
+				cor = 10;
 			iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
-		}
-		break;
-	case SC_MM:
-		if (sc > 1)
-			cor = 10;
-		iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
-		iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
-		break;
-	case SC_IN:
-		iter = unitRulerGetIter1FromIndex(docUnitIndex);
-		iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
-		if (sc > 1 && sc <= 4)
-		{
-			cor = 2;
-			iter /= cor;
-			iter2 /= cor;
-		}
-		if (sc > 4)
-		{
-			cor = 4;
-			iter /= cor;
-			iter2 /= cor;
-		}
-		if (sc < 0.25)
-		{
-			cor = 0.5;
-			iter = 72.0*16.0;
-			iter2 = 72.0*2.0;
-		}
-		break;
-	case SC_P:
-		iter = unitRulerGetIter1FromIndex(docUnitIndex);
-		iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
-		if (sc >= 1 && sc <= 4)
-		{
-			cor = 1;
-			iter = 12.0;
-			iter2 = 60.0;
-		}
-		if (sc > 4)
-		{
-			cor = 2;
-			iter = 6.0;
-			iter2 = 12.0;
-		}
-		if (sc < 0.3)
-		{
-			cor = 0.25;
-			iter = 12.0*4;
-			iter2 = 60.0*4;
-		}
-		else
-			if (sc < 1)
+  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
+			break;
+		case SC_IN:
+			iter = unitRulerGetIter1FromIndex(docUnitIndex);
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
+			if (sc > 1 && sc <= 4)
+			{
+				cor = 2;
+				iter /= cor;
+				iter2 /= cor;
+			}
+			if (sc > 4)
+			{
+				cor = 4;
+				iter /= cor;
+				iter2 /= cor;
+			}
+			if (sc < 0.25)
+			{
+				cor = 0.5;
+				iter = 72.0*16.0;
+				iter2 = 72.0*2.0;
+			}
+			break;
+		case SC_P:
+			iter = unitRulerGetIter1FromIndex(docUnitIndex);
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
+			if (sc >= 1 && sc <= 4)
 			{
 				cor = 1;
 				iter = 12.0;
 				iter2 = 60.0;
 			}
-		break;
-	case SC_CM:
-		if (sc > 1 && sc <= 4)
-			cor = 1;
-		if (sc > 4)
-			cor = 10;
-		if (sc < 0.6)
-		{
-			cor=0.1;
-			iter = 720.0/25.4;
-			iter2 = 7200.0/25.4;
-		}
-		else
-		{
-			iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
-			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
-		}
-		break;
-	case SC_C:
-		iter = unitRulerGetIter1FromIndex(docUnitIndex);
-		iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
-		if (sc >= 1 && sc <= 4)
-		{
-			cor = 1;
-			iter = 72.0/25.4*4.512;
-			iter2 = 72.0/25.4*4.512*5.0;
-		}
-		if (sc > 4)
-		{
-			cor = 2;
-			iter = 72.0/25.4*4.512/2.0;
-			iter2 = 72.0/25.4*4.512;
-		}
-		if (sc < 0.3)
-		{
-			cor = 0.1;
-			iter = 72.0/25.4*4.512*10;
-			iter2 = 72.0/25.4*4.512*5.0*10;
-		}
-		else
-			if (sc < 1)
+			if (sc > 4)
+			{
+				cor = 2;
+				iter = 6.0;
+				iter2 = 12.0;
+			}
+			if (sc < 0.3)
+			{
+				cor = 0.25;
+				iter = 12.0*4;
+				iter2 = 60.0*4;
+			}
+			else
+				if (sc < 1)
+			{
+				cor = 1;
+				iter = 12.0;
+				iter2 = 60.0;
+			}
+			break;
+		case SC_CM:
+			if (sc > 1 && sc <= 4)
+				cor = 1;
+			if (sc > 4)
+				cor = 10;
+			if (sc < 0.6)
+			{
+				cor=0.1;
+				iter = 720.0/25.4;
+				iter2 = 7200.0/25.4;
+			}
+			else
+			{
+				iter = unitRulerGetIter1FromIndex(docUnitIndex) / cor;
+	  			iter2 = unitRulerGetIter2FromIndex(docUnitIndex) / cor;
+	  		}
+			break;
+		case SC_C:
+			iter = unitRulerGetIter1FromIndex(docUnitIndex);
+			iter2 = unitRulerGetIter2FromIndex(docUnitIndex);
+			if (sc >= 1 && sc <= 4)
 			{
 				cor = 1;
 				iter = 72.0/25.4*4.512;
 				iter2 = 72.0/25.4*4.512*5.0;
 			}
-		break;
-	default:
-		if (sc > 1 && sc <= 4)
-			cor = 2;
-		if (sc > 4)
-			cor = 10;
-		iter = unitRulerGetIter1FromIndex(0) / cor;
-		iter2 = unitRulerGetIter2FromIndex(0) / cor;
-		break;
+			if (sc > 4)
+			{
+				cor = 2;
+				iter = 72.0/25.4*4.512/2.0;
+				iter2 = 72.0/25.4*4.512;
+			}
+			if (sc < 0.3)
+			{
+				cor = 0.1;
+				iter = 72.0/25.4*4.512*10;
+				iter2 = 72.0/25.4*4.512*5.0*10;
+			}
+			else
+				if (sc < 1)
+			{
+				cor = 1;
+				iter = 72.0/25.4*4.512;
+				iter2 = 72.0/25.4*4.512*5.0;
+			}
+			break;
+		default:
+			if (sc > 1 && sc <= 4)
+				cor = 2;
+			if (sc > 4)
+				cor = 10;
+			iter = unitRulerGetIter1FromIndex(0) / cor;
+	 		iter2 = unitRulerGetIter2FromIndex(0) / cor;
+			break;
 	}
 }

@@ -124,7 +124,6 @@ void CanvasMode_EditArc::drawControlsArc(QPainter* psx, PageItem* currItem)
 	psx->setPen(p1bd);
 	psx->drawLine(mPoint, m_widthPoint);
 	psx->drawLine(mPoint, m_heightPoint);
-
 	psx->setPen(p8b);
 	psx->drawPoint(m_startPoint);
 	if (m_arcPoint != useControlStart){

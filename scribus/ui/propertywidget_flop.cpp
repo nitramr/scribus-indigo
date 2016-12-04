@@ -14,8 +14,8 @@ PropertyWidget_Flop::PropertyWidget_Flop(QWidget* parent) : QFrame(parent)
 {
 	setupUi(this);
 
-	//setFrameStyle(QFrame::Box | QFrame::Plain);
-	//setLineWidth(1);
+	setFrameStyle(QFrame::Box | QFrame::Plain);
+	setLineWidth(1);
 	layout()->setAlignment( Qt::AlignTop );
 	
 	flopRealHeight->setChecked(true);
@@ -51,7 +51,6 @@ void PropertyWidget_Flop::changeEvent(QEvent *e)
 
 void PropertyWidget_Flop::languageChange()
 {
-	lblTitle->setText(tr("First Line Offset"));
 	flopRealHeight->setText( tr("Maximum Ascent") );
 	flopFontAscent->setText( tr("Font Ascent") );
 	flopLineSpacing->setText( tr("Line Spacing") );

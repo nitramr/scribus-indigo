@@ -6,21 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>134</width>
-    <height>155</height>
+    <width>147</width>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
   <property name="frameShape">
-   <enum>QFrame::NoFrame</enum>
+   <enum>QFrame::StyledPanel</enum>
   </property>
   <property name="frameShadow">
-   <enum>QFrame::Plain</enum>
-  </property>
-  <property name="lineWidth">
-   <number>0</number>
+   <enum>QFrame::Raised</enum>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -38,19 +35,6 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
-   <item>
-    <widget class="QLabel" name="lblTitle">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Color &amp; Effects</string>
-     </property>
-    </widget>
-   </item>
    <item>
     <layout class="QHBoxLayout" name="fillLayout">
      <property name="spacing">
@@ -215,22 +199,6 @@
      </item>
      <item>
       <widget class="StyleSelect" name="textEffects" native="true"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="revertButton">
-       <property name="maximumSize">
-        <size>
-         <width>22</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>

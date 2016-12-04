@@ -280,11 +280,9 @@ void ShapeView::updateShapeList()
 ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
 	setMinimumSize( QSize( 220, 240 ) );
-	// setMinimumSize(minimumResizeWidth(),minimumResizeHeight());
-	//resize( QSize(100, 100).expandedTo(minimumSizeHint()) );
 	setObjectName(QString::fromLocal8Bit(name));
 	//setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
-	containerWidget = new QWidget(this);   
+	containerWidget = new QWidget(this);
 	vLayout = new QVBoxLayout( containerWidget );
 	vLayout->setSpacing( 0 );
 	vLayout->setMargin( 0 );
