@@ -37,6 +37,7 @@ for which a new license (GPL+exception) is in place.
 #include "scribusdoc.h"
 #include "scribusview.h"
 #include "selection.h"
+#include "textpalette.h"
 #include "undomanager.h"
 #include "units.h"
 #include "util.h"
@@ -468,7 +469,7 @@ OutlinePalette::OutlinePalette( QWidget* parent, const char* name) : ScDockPalet
 	annot3DIcon = im->loadPixmap("22/annot3d.png");
 
 	// Panel icon
-	setIcon(im->loadPixmap("64/pan-outline.png"));
+	setIcon(im->loadIcon("64/pan-outline.png"));
 
 	selectionTriggered = false;
 	m_MainWindow  = NULL;
@@ -670,6 +671,7 @@ void OutlinePalette::slotDoRename(QTreeWidgetItem *ite , int col)
 					{
 						item->PageItemObject->setItemName(NameNew);
 						m_MainWindow->propertiesPalette->setCurrentItem(item->PageItemObject);
+						m_MainWindow->textPalette->setCurrentItem(item->PageItemObject);
 						currDoc->setModified(true);
 					}
 				}

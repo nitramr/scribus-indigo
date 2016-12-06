@@ -536,6 +536,7 @@ set(SCRIBUS_MOC_CLASSES
 	ui/tabmanager.h
 	ui/tabpdfoptions.h
 	ui/tabruler.h
+	ui/textpalette.h
 	ui/transformdialog.h
 	ui/transparencypalette.h
 	tt/simpletreemodel/treemodel.h
@@ -1017,6 +1018,7 @@ set(SCRIBUS_SOURCES
 	ui/tabmanager.cpp
 	ui/tabpdfoptions.cpp
 	ui/tabruler.cpp
+	ui/textpalette.cpp
 	ui/transformdialog.cpp
 	ui/transparencypalette.cpp
 	tt/simpletreemodel/treeitem.cpp

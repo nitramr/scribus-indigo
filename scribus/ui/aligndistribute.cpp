@@ -184,7 +184,7 @@ void AlignDistributePalette::init()
 	swapRightToolButton->setIcon(im->loadIcon("22/swap-right.png"));
 
 	// Panel icon
-	setIcon(im->loadPixmap("64/pan-alignment.png"));
+	setIcon(im->loadIcon("64/pan-alignment.png"));
 
 	QSize s(24,24);
 	alignLeftOutToolButton->setMinimumSize(s);

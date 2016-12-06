@@ -264,12 +264,6 @@ void SideBar::setRepaint(bool r)
 
 SEditor::SEditor(QWidget* parent, ScribusDoc *docc, StoryEditor* parentSE) : QTextEdit(parent)
 {
-//	QPalette pal;
-//	pal.setColor(QPalette::Base, PrefsManager().instance()->appPrefs.storyEditorPrefs.guiFontColorBackground);
-//	pal.setColor(QPalette::Text, Qt::black);
-	setAutoFillBackground(true);
-//	setPalette(pal);
-
 	setCurrentDocument(docc);
 	parentStoryEditor=parentSE;
 	wasMod = false;
@@ -279,6 +273,7 @@ SEditor::SEditor(QWidget* parent, ScribusDoc *docc, StoryEditor* parentSE) : QTe
 	viewport()->setAcceptDrops(false);
 	unicodeTextEditMode = false;
 	blockContentsChangeHook = 0;
+	setAutoFillBackground(true);
 	connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(ClipChange()));
 	connect(this->document(), SIGNAL(contentsChange(int, int, int)), this, SLOT(handleContentsChange(int, int, int)));
 	SuspendContentsChange = 0;

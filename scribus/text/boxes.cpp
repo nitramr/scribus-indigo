@@ -292,7 +292,6 @@ void LineBox::addBox(const Box* box)
 {
 	m_boxes.append(const_cast<Box*>(box));
 	update();
-
 }
 
 void LineBox::removeBox(int i)

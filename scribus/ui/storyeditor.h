@@ -226,7 +226,7 @@ class SCRIBUS_API SToolBColorF : public QToolBar
 
 public:
 	SToolBColorF(QMainWindow* parent, ScribusDoc *doc);
-	~SToolBColorF() {};
+	~SToolBColorF() {}
 	
 	virtual void changeEvent(QEvent *e);
 	

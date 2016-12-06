@@ -31,7 +31,7 @@ before_install:
       libhyphen-dev liblcms2-dev libpodofo-dev libtiff-dev libxml2-dev
       python-all-dev zlib1g-dev qt57base qt57declarative
       qt57tools libgraphicsmagick++1-dev
-      libpoppler-dev libcairo2-dev libwpg-dev libmspub-dev
+      libopenscenegraph-dev libpoppler-dev libcairo2-dev libwpg-dev libmspub-dev
       libcdr-dev libvisio-dev libharfbuzz-dev libharfbuzz-icu0
       coreutils binutils python-tk;
     fi
@@ -49,7 +49,7 @@ before_install:
       brew outdated pkg-config --verbose || brew upgrade pkg-config; 
       brew outdated boost || brew upgrade boost; 
       brew outdated freetype || brew upgrade freetype; 
-      brew install librevenge libwpg libvisio libmspub libcdr libpagemaker libfreehand; 
+      brew install librevenge libwpg libvisio libmspub libcdr libpagemaker libfreehand open-scene-graph; 
     fi
   # - export LDFLAGS+=-L/usr/local/opt/zlib/lib:-L/usr/local/opt/gettext/lib:-L/usr/local/opt/libffi/lib:-L/usr/local/opt/qt5/lib:-L/usr/local/opt/sqlite/lib:-L/usr/local/opt/openssl/lib:-L/usr/local/opt/icu4c/lib
   # - export CXXFLAGS+=-I/usr/local/opt/zlib/include:-I/usr/local/opt/gettext/include:-I/usr/local/opt/qt5/include:-I/usr/local/opt/sqlite/include:-I/usr/local/opt/openssl/include:-I/usr/local/opt/icu4c/include 

@@ -444,24 +444,25 @@ void IndigoDockManager::loadWorkspace(){
 		// remove all dock and save copies to restore
 		removeAllDocks(lst_tmpPanels, lst_tmpDocks);
 
-		int i = 0;
+		IndigoDock * newDock;
+		int d = 0;
+		//int p = 0;
 
 
-		// Value Format: Shap;AlignDistributePalette;PagePalette;Layers;Tree;Inline;Books;Symb;Sclib;undoPalette||1|PropertiesPalette
+		//# Create panels from settings file
+
+		// Value Format: Shap;AlignDistributePalette;PagePalette;Layers;Tree;Inline;Books;Symb;Sclib;undoPalette|PropertiesPalette
 		// | = dock divider
 		// ; = panel divider
 
 
-		QStringList valueList = value.split('|');
-
-
+		QStringList valueList = value.split('|');		
 		QString s_docks;
 		foreach(s_docks, valueList){
 
-			IndigoDock * newDock;
 
-			if(i < lst_tmpDocks.size()){
-				newDock = lst_tmpDocks.at(i);
+			if(d < lst_tmpDocks.size()){
+				newDock = lst_tmpDocks.at(d);
 			}else newDock = new IndigoDock(this);
 
 			newDock->setRestoreMode(true);
@@ -480,20 +481,43 @@ void IndigoDockManager::loadWorkspace(){
 				foreach(sortPanel, lst_tmpPanels){
 
 					if (sortPanel->objectName() == panelNames){
-
+						//p++;
 						newDock->addIndigoPanel(sortPanel);
-
+						//sortPanel->setCaption("Index-Sort"+QString::number(p));
 					}
 				}
-
 			}
 
 
 			newDock->setRestoreMode(false);
 			newDock->updateMinHeight();
 
-			i++;
+			d++;
 		}
+
+
+		// FIX IT: if an existing panel is missing in prefs it will add in an own floating window frame instead of additional to any dock.
+
+//		//# Create panels which exists but not in prefs file
+//		if(0<lst_tmpPanels.size()){
+
+//			if(1 <= lst_tmpDocks.size()){
+//				newDock = lst_tmpDocks.at(0);
+//			}else newDock = new IndigoDock(this);
+
+//			newDock->setRestoreMode(true);
+//			addIndigoDock(newDock, Qt::RightDockWidgetArea);
+
+//			for(int u=0;u<=lst_tmpPanels.size();u++)
+//			{
+//				IndigoPanel * unsortPanel = lst_tmpPanels.at(u);
+//				newDock->addIndigoPanel(unsortPanel);
+//				unsortPanel->setCaption("Index" + QString::number(u));
+//			}
+
+//			newDock->setRestoreMode(false);
+//			newDock->updateMinHeight();
+//		}
 
 
 		lst_tmpDocks.clear();

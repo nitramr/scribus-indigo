@@ -306,7 +306,7 @@ ShapePalette::ShapePalette( QWidget* parent, const char* name) : ScDockPalette( 
 	vLayout->addWidget(Frame3);
 
 	// Panel icon
-	setIcon(IconManager::instance()->loadPixmap("64/pan-shapes.png"));
+	setIcon(IconManager::instance()->loadIcon("64/pan-shapes.png"));
 
 	setWidget(containerWidget);
 

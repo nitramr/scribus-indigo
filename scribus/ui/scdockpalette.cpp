@@ -62,7 +62,6 @@ ScDockPalette::ScDockPalette( QWidget * parent, const QString& prefsContext)
 
 }
 
-
 void ScDockPalette::startup()
 {
 	setFontSize();

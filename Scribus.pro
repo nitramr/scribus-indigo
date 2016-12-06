@@ -621,6 +621,7 @@ HEADERS += scribus/actionmanager.h \
            scribus/ui/tabmanager.h \
            scribus/ui/tabpdfoptions.h \
            scribus/ui/tabruler.h \
+           scribus/ui/textpalette.h\
            scribus/ui/transformdialog.h \
            scribus/ui/transparencypalette.h \
            scribus/ui/unicodesearch.h \
@@ -1699,6 +1700,7 @@ SOURCES += scribus/actionmanager.cpp \
            scribus/ui/tabmanager.cpp \
            scribus/ui/tabpdfoptions.cpp \
            scribus/ui/tabruler.cpp \
+           scribus/ui/textpalette.cpp\
            scribus/ui/transformdialog.cpp \
            scribus/ui/transparencypalette.cpp \
            scribus/ui/unicodesearch.cpp \

@@ -111,7 +111,7 @@ InlinePalette::InlinePalette( QWidget* parent, const char* name) : ScDockPalette
 	setWidget( InlineViewWidget );
 
 	// Panel icon
-	setIcon(IconManager::instance()->loadPixmap("64/pan-inline.png"));
+	setIcon(IconManager::instance()->loadIcon("64/pan-inline.png"));
 
 	unsetDoc();
 	m_scMW  = NULL;

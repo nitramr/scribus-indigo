@@ -41,7 +41,6 @@ for which a new license (GPL+exception) is in place.
 
 LayerPalette::LayerPalette(QWidget* parent, const char* name) : ScDockPalette( parent, name), m_Doc(0)
 {
-
 	setObjectName(QString::fromLocal8Bit(name));
 	//setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	containerWidget = new QWidget(this);
@@ -81,7 +80,7 @@ LayerPalette::LayerPalette(QWidget* parent, const char* name) : ScDockPalette( p
 	Table->setHorizontalHeaderItem(7, new QTableWidgetItem( tr("Name")));
 
 	// Panel icon
-	setIcon(im->loadPixmap("64/pan-layer.png"));
+	setIcon(im->loadIcon("64/pan-layer.png"));
 
 	QHeaderView *header = Table->horizontalHeader();
 	header->setStretchLastSection(true);

@@ -48,7 +48,7 @@ PagePalette::PagePalette(QWidget* parent, const char* name) : ScDockPalette(pare
 	languageChange();
 
 	// Panel icon
-	setIcon(IconManager::instance()->loadPixmap("64/pan-page.png"));
+	setIcon(IconManager::instance()->loadIcon("64/pan-page.png"));
 
 }
 

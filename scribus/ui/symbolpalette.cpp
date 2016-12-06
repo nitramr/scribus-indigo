@@ -161,7 +161,7 @@ SymbolPalette::SymbolPalette( QWidget* parent, const char* name) : ScDockPalette
 	setWidget( SymbolViewWidget );
 
 	IconManager* im = IconManager::instance();
-	setIcon(im->loadPixmap("64/pan-symbol.png"));
+	setIcon(im->loadIcon("64/pan-symbol.png"));
 
 	unsetDoc();
 	m_scMW  = NULL;

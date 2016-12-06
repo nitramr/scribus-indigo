@@ -37,7 +37,7 @@ BookPalette::BookPalette(QWidget* parent, const char* name) : ScDockPalette( par
 
 	// Panel icon
 	IconManager* im = IconManager::instance();
-	setIcon(im->loadPixmap("64/pan-bookmarks.png"));
+	setIcon(im->loadIcon("64/pan-bookmarks.png"));
 
 }
 
