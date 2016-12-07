@@ -40,7 +40,7 @@ The best way to compile Scribus is via Cmake.
 
 If Cmake is not installed on your system open terminal and type in following command and press enter (you have to input your admin password afterwards):  
 
-```C++
+```
 sudo apt-get install cmake
 ```
 
@@ -51,8 +51,7 @@ If Cmake is already installed do following steps.
 4. Create a new folder "bin" in your Scribus folder on desktop (Desktop/Scribus/bin)  
 5. Open terminal and enter following commands to compile the source code:  
 
-
-```C++
+```
 cd ~/Desktop/Scribus/bin
 cmake --debug-output ../scribus-indigo-master
 make -j4
@@ -60,19 +59,19 @@ make -j4
 
 After compiling was successfully you have to install the compiled file and necessary resources. Enter following command:  
 
-
-```C++
+```
 sudo make install
 ```
 
 You can find Scribus in following location:  
-```/usr/local/bin/```  
 
+```
+/usr/local/bin/
+```  
 
 For uninstalling use following commands:  
-```C++
+
+```
 cd ~/Desktop/Scribus/bin
 sudo make uninstall
 ```
-
-
