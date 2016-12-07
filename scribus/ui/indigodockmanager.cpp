@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QPropertyAnimation>
 #include <QStyle>
+#include <QHash>
 
 #include "prefscontext.h"
 #include "prefsfile.h"
@@ -127,7 +128,7 @@ void IndigoDockManager::removeDock(IndigoDock * dock){
 
 
 
-void IndigoDockManager::removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock){
+void IndigoDockManager::removeAllDocks(QList<IndigoDock *> &lst_outDocks, QHash<QString, IndigoPanel *> &lst_outPanels){
 
 	QMainWindow * main = qobject_cast<QMainWindow *>(parent());
 
@@ -136,14 +137,13 @@ void IndigoDockManager::removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList
 		IndigoDock * dock;
 		foreach (dock, lst_Docks) {
 
-
 			// Make copy of dock
-			lst_outDock.append(dock);
+			lst_outDocks.append(dock);
 
 			// make copy of panels
 			IndigoPanel * panel;
 			foreach(panel, dock->getPanels()){
-				lst_outPanel.append(panel);
+				lst_outPanels.insert(panel->objectName(), panel);
 			}
 
 			// clear dock
@@ -151,8 +151,6 @@ void IndigoDockManager::removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList
 
 			// remove dock
 			main->removeDockWidget(dock);
-
-
 		}
 
 		lst_Docks.clear();
@@ -437,19 +435,25 @@ void IndigoDockManager::loadWorkspace(){
 
 		if(value == "") return;
 
-
 		QList<IndigoDock*> lst_tmpDocks;
-		QList<IndigoPanel*> lst_tmpPanels;
+		//QList<IndigoPanel*> lst_tmpPanels;
+		QHash<QString, IndigoPanel*> lst_tmpPanels;
 
 		// remove all dock and save copies to restore
-		removeAllDocks(lst_tmpPanels, lst_tmpDocks);
+		removeAllDocks(lst_tmpDocks, lst_tmpPanels);
+
+		//QHash<QString, IndigoPanel*> hashPanels;
+
+		// Add all panels in QHashMap
+//		IndigoPanel * pan;
+//		foreach(pan, lst_tmpPanels){
+//			hashPanels.insert(pan->objectName(),pan);
+//		}
 
 		IndigoDock * newDock;
 		int d = 0;
-		//int p = 0;
 
-
-		//# Create panels from settings file
+		//# Add docks and panels settings based
 
 		// Value Format: Shap;AlignDistributePalette;PagePalette;Layers;Tree;Inline;Books;Symb;Sclib;undoPalette|PropertiesPalette
 		// | = dock divider
@@ -476,15 +480,9 @@ void IndigoDockManager::loadWorkspace(){
 
 			foreach(panelNames, panels){
 
-				IndigoPanel * sortPanel;
-
-				foreach(sortPanel, lst_tmpPanels){
-
-					if (sortPanel->objectName() == panelNames){
-						//p++;
-						newDock->addIndigoPanel(sortPanel);
-						//sortPanel->setCaption("Index-Sort"+QString::number(p));
-					}
+				if(lst_tmpPanels.keys().contains(panelNames)){
+					newDock->addIndigoPanel(lst_tmpPanels.value(panelNames));
+					lst_tmpPanels.remove(panelNames);
 				}
 			}
 
@@ -496,29 +494,28 @@ void IndigoDockManager::loadWorkspace(){
 		}
 
 
-		// FIX IT: if an existing panel is missing in prefs it will add in an own floating window frame instead of additional to any dock.
+		//# Add panels which are not already sorted yet
 
-//		//# Create panels which exists but not in prefs file
-//		if(0<lst_tmpPanels.size()){
+		if(lst_tmpPanels.count() > 0){
 
-//			if(1 <= lst_tmpDocks.size()){
-//				newDock = lst_tmpDocks.at(0);
-//			}else newDock = new IndigoDock(this);
+			if(1 <= lst_tmpDocks.size()){
+				newDock = lst_tmpDocks.at(0);
+			}else newDock = new IndigoDock(this);
 
-//			newDock->setRestoreMode(true);
-//			addIndigoDock(newDock, Qt::RightDockWidgetArea);
+			newDock->setRestoreMode(true);
+			addIndigoDock(newDock, Qt::RightDockWidgetArea);
 
-//			for(int u=0;u<=lst_tmpPanels.size();u++)
-//			{
-//				IndigoPanel * unsortPanel = lst_tmpPanels.at(u);
-//				newDock->addIndigoPanel(unsortPanel);
-//				unsortPanel->setCaption("Index" + QString::number(u));
-//			}
+			QHashIterator<QString, IndigoPanel*> i(lst_tmpPanels);
+			while (i.hasNext()) {
+				i.next();
+				IndigoPanel * unsortPanel = i.value();
+				newDock->addIndigoPanel(unsortPanel);
+			}
 
-//			newDock->setRestoreMode(false);
-//			newDock->updateMinHeight();
-//		}
+			newDock->setRestoreMode(false);
+			newDock->updateMinHeight();
 
+		}
 
 		lst_tmpDocks.clear();
 		lst_tmpPanels.clear();

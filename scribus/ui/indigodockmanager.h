@@ -30,6 +30,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QSize>
+#include <QHash>
 #include "indigodock.h"
 
 class PrefsContext;
@@ -62,7 +63,7 @@ private:
 	QList<IndigoDock*> lst_removeDocks;
 	void connectPanel(IndigoPanel *panel);
 	void removeDock(IndigoDock *dock);
-	void removeAllDocks(QList<IndigoPanel *> &lst_outPanel, QList<IndigoDock *> &lst_outDock);
+	void removeAllDocks(QList<IndigoDock *> &lst_outDocks, QHash<QString, IndigoPanel *> &lst_outPanels);
 
 	int int_minimumPanelHeight;
 	int int_minimumPanelWidth;
