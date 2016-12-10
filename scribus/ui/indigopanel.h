@@ -37,6 +37,8 @@
 #include <QVBoxLayout>
 #include <QBoxLayout>
 
+#include "griphandle.h"
+
 
 class PrefsContext;
 
@@ -129,7 +131,6 @@ public:
 
 	void setOrientation(Qt::Orientation orientation);
 	void setHandleWidth(int width);
-	void setGripColor(QColor color);
 	void setWindowTitle(const QString &title);
 	void setVisible(bool visible);
 
@@ -149,7 +150,6 @@ public:
 
 protected:
 	bool eventFilter(QObject *object, QEvent *e);
-	bool mouseInGrip(QPoint mousePos);
 
 	/** @brief Set the Preferences context to be used for storage of startup visibility and position and size */
 	virtual void setPrefsContext(QString context);
@@ -162,8 +162,7 @@ protected:
 
 
 private:
-	QWidget * wdg_grip;
-	QColor col_grip;
+	GripHandle * wdg_grip;
 	QVBoxLayout *lyt_innerArea;
 	// FlowLayout * lyt_normalArea;
 	QBoxLayout *lyt_main;
@@ -181,9 +180,6 @@ private:
 	bool bool_showClose;
 
 	Qt::Orientation m_orientation;
-	int int_handleWidth;
-	bool resizing;
-	QPoint oldPos;
 
 	int int_minWidth;
 	int int_minHeight;
@@ -210,6 +206,7 @@ public slots:
 
 private slots:
 	void clickCloseButton();
+	void handleMoved();
 };
 
 #endif // INDIGOPANEL_H

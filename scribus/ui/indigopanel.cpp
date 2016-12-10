@@ -26,7 +26,7 @@
 #include <QDrag>
 #include <QStyle>
 #include <QStyleOptionDockWidget>
-
+#include <QStylePainter>
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -207,7 +207,6 @@ void IndigoPanelHandle::enableCloseButton(bool visible){
 }
 
 
-
 /*#####################
  #
  #
@@ -227,8 +226,6 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 {
 	int int_padding = 5;
 
-	resizing = false;
-	int_handleWidth = 6;
 	int_minHeight = 50;
 	int_minWidth = 80;
 	int_dockHeight = 50;
@@ -244,12 +241,8 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 	wdg_handle = new IndigoPanelHandle(this);
 	wdg_handle->installEventFilter(this);
 
-	wdg_grip = new QWidget();
+	wdg_grip = new GripHandle(this);
 	wdg_grip->setObjectName("IndigoPanelGrip");
-	// wdg_grip->setAutoFillBackground(true);
-	wdg_grip->installEventFilter(this);
-	wdg_grip->setMouseTracking(true);
-	wdg_grip->setBackgroundRole(QPalette::Window);
 
 	lyt_content = new QVBoxLayout();
 	lyt_content->addWidget(wdg_widget);
@@ -278,19 +271,20 @@ IndigoPanel::IndigoPanel(QString name, QWidget *dock) :
 	// General Properties
 	setMouseTracking(true);
 	setAutoFillBackground( true );
-	setBackgroundRole(QPalette::Background);
-	col_grip = QColor(this->palette().color(QPalette::Background));
+	setBackgroundRole(QPalette::Window);
 	// setMinimumWidth(150);
 	setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
 	setCaption(name);
 	setAccessibleName(name);
 	setObjectName(name);
 	setIcon(icon, 0);
-	setHandleWidth(int_handleWidth);
+	setHandleWidth(6);
 	enableExpanderButton(bool_showExpander);
 	enableCloseButton(bool_showClose);
 
 	setPrefsContext(name);
+
+	connect(wdg_grip, SIGNAL(handleMove()), this, SLOT(handleMoved()));
 }
 
 
@@ -465,25 +459,29 @@ void IndigoPanel::clickCloseButton(){
 }
 
 
+void IndigoPanel::handleMoved(){
+
+	switch(m_orientation){
+
+	case Qt::Vertical:
+		int_dockHeight = height();
+		setMinimumWidth(minimumResizeWidth());
+		break;
+	case Qt::Horizontal:
+		int_dockWidth = width();
+		setMinimumHeight(minimumResizeHeight());
+		break;
+	}
+
+	emit handleMove();
+}
+
+
 /**********************
  *
  * Events
  *
  * *******************/
-
-
-bool IndigoPanel::mouseInGrip(QPoint mousePos)
-{
-	QRect size = QRect(0,0, wdg_grip->width(), wdg_grip->height());
-
-	if(size.contains(mousePos)){
-		return true;
-	}
-
-	return false;
-
-}
-
 
 
 bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
@@ -495,20 +493,6 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 	{
 
 		QMouseEvent *me = static_cast<QMouseEvent *>(event);
-
-		if(object == wdg_grip && me->buttons() == Qt::LeftButton){
-
-			// Check if we hit the grip handle
-			if (mouseInGrip(me->pos())) {
-
-				pnt_relativeOffset = me->globalPos();
-
-				resizing = true;
-			} else {
-				resizing = false;
-			}
-		}
-
 
 		if(object == wdg_handle && me->buttons() == Qt::LeftButton){
 			QPoint point = me->globalPos();
@@ -524,59 +508,6 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 	case QEvent::MouseMove:
 	{
 		QMouseEvent *me = static_cast<QMouseEvent *>(event);
-
-		if(object == wdg_grip){
-
-			switch(m_orientation){
-
-			case Qt::Vertical:
-				this->setCursor(Qt::SizeVerCursor);
-				break;
-			case Qt::Horizontal:
-				this->setCursor(Qt::SizeHorCursor);
-				break;
-			}
-
-			if (me->buttons() == Qt::LeftButton) {
-
-				QPoint point = me->globalPos();
-
-				QPoint delta = point - pnt_relativeOffset;
-				pnt_relativeOffset = me->globalPos();
-
-				if (resizing) {
-
-					switch(m_orientation){
-
-					case Qt::Vertical:{
-
-						int _height = height()+delta.y();
-						if(_height <= minimumResizeHeight()) _height = minimumResizeHeight();
-
-						setDockHeight(_height);
-
-						break;
-					}
-					case Qt::Horizontal:
-					{
-
-						int _width = width()+delta.x();
-						if(_width <= minimumResizeWidth()) _width = minimumResizeWidth();
-
-						setDockWidth(_width);
-
-						break;
-					}
-					}
-
-					emit handleMove();
-				}
-
-
-			}
-
-		}
-
 
 		if(object == wdg_handle && me->buttons() == Qt::LeftButton){
 			// undock Panel if not already undocked
@@ -615,19 +546,6 @@ bool IndigoPanel::eventFilter(QObject *object, QEvent *event)
 	case QEvent::MouseButtonDblClick:
 		if(object == wdg_handle){
 			toggleExpander();
-		}
-		break;
-
-	case QEvent::Leave:
-		if(object == wdg_grip){
-			this->setCursor(Qt::ArrowCursor);
-		}
-		break;
-	case QEvent::Paint:
-
-		if(object == wdg_grip){
-			QPainter p(wdg_grip);
-			p.fillRect(wdg_grip->rect(),col_grip);
 		}
 		break;
 
@@ -788,8 +706,8 @@ void IndigoPanel::setOrientation(Qt::Orientation orientation){
 		break;
 	}
 
-
-	setHandleWidth(int_handleWidth);
+	wdg_grip->setOrientation(m_orientation);
+	setHandleWidth(wdg_grip->handleWidth());
 
 }
 
@@ -797,30 +715,9 @@ void IndigoPanel::setOrientation(Qt::Orientation orientation){
 
 void IndigoPanel::setHandleWidth(int width){
 
-	int_handleWidth = width;
-
-	switch(m_orientation){
-
-	case Qt::Vertical:
-		wdg_grip->setFixedHeight(int_handleWidth);
-		wdg_grip->setMaximumWidth(QWIDGETSIZE_MAX);
-		break;
-	case Qt::Horizontal:
-		wdg_grip->setFixedWidth(int_handleWidth);
-		wdg_grip->setMaximumHeight(QWIDGETSIZE_MAX);
-		break;
-	}
+	wdg_grip->setHandleWidth(width);
 
 }
-
-
-void IndigoPanel::setGripColor(QColor color){
-
-	col_grip = color;
-	wdg_grip->update();
-
-}
-
 
 
 IndigoPanelHandle::IndigoExpanderState IndigoPanel::expanderState(){

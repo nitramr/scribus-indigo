@@ -28,7 +28,6 @@
 #include <QMessageBox>
 #include <QPropertyAnimation>
 #include <QStyle>
-#include <QHash>
 
 #include "prefscontext.h"
 #include "prefsfile.h"

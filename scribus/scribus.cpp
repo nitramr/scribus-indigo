@@ -3703,7 +3703,7 @@ bool ScribusMainWindow::loadDoc(QString fileName)
 		if (doc->checkerProfiles().count() == 0)
 		{
 			m_prefsManager->initDefaultCheckerPrefs(&(doc->checkerProfiles()));
-			doc->setCurCheckProfile(CommonStrings::PostScript);
+			doc->setCurCheckProfile(CommonStrings::PDF_1_4);
 		}
 		if (doc->pdfOptions().LPISettings.count() == 0)
 		{
@@ -9874,7 +9874,7 @@ bool ScribusMainWindow::editMarkDlg(Mark *mrk, PageItem_TextFrame* currItem)
 
 	bool docWasChanged = false;
 
-	editMDialog->setWindowTitle(tr("Edit ") + editMDialog->windowTitle());
+	editMDialog->setWindowTitle(tr("Edit %1").arg(editMDialog->windowTitle()));
 	if (editMDialog->exec())
 	{
 		Mark oldMark = *mrk;

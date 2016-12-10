@@ -356,6 +356,7 @@ set(SCRIBUS_MOC_CLASSES
 	ui/gradienteditor.h
 	ui/gradientvectordialog.h
 	ui/gradientpreview.h
+	ui/griphandle.h
 	ui/gtdialogs.h
 	ui/gtfiledialog.h
 	ui/guidemanager.h
@@ -364,7 +365,7 @@ set(SCRIBUS_MOC_CLASSES
 	ui/hyask.h
 	ui/imageinfodialog.h
 	ui/indigodock.h
-        ui/indigodockmanager.h
+	ui/indigodockmanager.h
 	ui/indigopanel.h
 	ui/indigotabbar.h
 	ui/inlinepalette.h
@@ -755,7 +756,7 @@ set(SCRIBUS_SOURCES
 	tableutils.cpp
 	textwriter.cpp
 	themefactory.cpp
-        thememanager.cpp
+	thememanager.cpp
 	third_party/fparser/fpoptimizer.cc
 	third_party/fparser/fparser.cc
 	tocgenerator.cpp
@@ -832,6 +833,7 @@ set(SCRIBUS_SOURCES
 	ui/gradienteditor.cpp
 	ui/gradientvectordialog.cpp
 	ui/gradientpreview.cpp
+	ui/griphandle.cpp
 	ui/gtdialogs.cpp
 	ui/gtfiledialog.cpp
 	ui/guidemanager.cpp
@@ -839,8 +841,8 @@ set(SCRIBUS_SOURCES
 	ui/hruler.cpp
 	ui/hyask.cpp
 	ui/imageinfodialog.cpp
-        ui/indigodock.cpp
-        ui/indigodockmanager.cpp
+	ui/indigodock.cpp
+	ui/indigodockmanager.cpp
 	ui/indigopanel.cpp
 	ui/indigotabbar.cpp
 	ui/inlinepalette.cpp
