@@ -1379,7 +1379,7 @@ void ScribusMainWindow::initStatusBar()
 	m_mainWindowStatusLabel = new QLabel( "           ", statusBar());
 	m_mainWindowStatusLabel->setFont(fo);
 	mainWindowProgressBar = new QProgressBar(statusBar());
-	mainWindowProgressBar->setAlignment(Qt::AlignHCenter);
+	mainWindowProgressBar->setAlignment(Qt::AlignCenter);
 	mainWindowProgressBar->setFixedWidth( 100 );
 	mainWindowProgressBar->reset();
 	mainWindowXPosLabel = new QLabel( tr("X:"), statusBar());

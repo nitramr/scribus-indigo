@@ -146,8 +146,11 @@ void ColorFancyItemDelegate::redraw(const QVariant& data) const
 		QPainter painter(&smallPix);
 		painter.setBrush(Qt::NoBrush);
 		QPen b(Qt::black, 1);
+//		QPen w(Qt::white, 1);
 		painter.setPen(b);
-		painter.drawRect(0, 0, 15, 15);
+		painter.drawRect(0, 0, 14, 14);
+//		painter.setPen(w);
+//		painter.drawRect(1, 1, 12, 12);
 		painter.end();
 		
 		paintAlert(smallPix, *pPixmap, 0, 0);
@@ -491,7 +494,7 @@ bool ColorListBox::viewportEvent(QEvent *event)
 {
 	if (event != NULL)
 	{
-	/* commented out because of random crashes in the colorcombobox of the gradient editor
+	/* commented out because of random crashes in the colorcombobox of the gradient editor */
 	if (event->type() == QEvent::ToolTip)
 	{
 		if (cList != NULL)
@@ -523,7 +526,7 @@ bool ColorListBox::viewportEvent(QEvent *event)
 			}
 		}
 	}
-	else */
+	else
 	if (event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);

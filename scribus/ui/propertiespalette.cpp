@@ -40,9 +40,7 @@ for which a new license (GPL+exception) is in place.
 #include "commonstrings.h"
 #include "cpalette.h"
 #include "dasheditor.h"
-//#include "fontcombo.h"
 #include "pageitem_table.h"
-//#include "pageitem_textframe.h"
 #include "propertiespalette_group.h"
 #include "propertiespalette_image.h"
 #include "propertiespalette_line.h"
@@ -51,25 +49,14 @@ for which a new license (GPL+exception) is in place.
 #include "propertiespalette_table.h"
 #include "propertiespalette_utils.h"
 #include "propertiespalette_xyz.h"
-//#include "sccolorengine.h"
-//#include "sccombobox.h"
-//#include "scfonts.h"
-//#include "scraction.h"
 #include "scribus.h"
-//#include "scribuscore.h"
 #include "scribusview.h"
 #include "selection.h"
-//#include "spalette.h"
-//#include "styleselect.h"
-//#include "tabmanager.h"
-//#include "transparencypalette.h"
 #include "undomanager.h"
 #include "units.h"
-//#include "util.h"
 #include "util_math.h"
 #include "iconmanager.h"
 
-//using namespace std;
 
 PropertiesPalette::PropertiesPalette( QWidget* parent, const char* name) : ScDockPalette( parent, name)
 {
@@ -235,7 +222,7 @@ void PropertiesPalette::setDoc(ScribusDoc *d)
 
 	m_unitRatio = m_doc->unitRatio();
 	m_unitIndex = m_doc->unitIndex();
-//qt4 FIXME here
+
 	m_haveDoc = true;
 	m_haveItem = false;
 

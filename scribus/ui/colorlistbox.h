@@ -41,7 +41,7 @@ class ColorPixmapItem : public QListWidgetItem
 public:	
 	ColorPixmapItem( const ScColor& col, ScribusDoc* doc, const QString colName) : QListWidgetItem(NULL, ColorPixmapUserType) { 
 		setText(colName);
-		setData(Qt::UserRole, QVariant::fromValue(ColorPixmapValue(col, doc, colName))); 
+		setData(Qt::UserRole, QVariant::fromValue(ColorPixmapValue(col, doc, colName)));
 	};
 	ColorPixmapItem( const ColorPixmapValue& col) : QListWidgetItem(NULL, ColorPixmapUserType) { 
 		setText(col.m_name);
@@ -49,7 +49,7 @@ public:
 	};
 	ColorPixmapItem( ) : QListWidgetItem(NULL, ColorPixmapUserType) { 
 		setText(CommonStrings::tr_NoneColor);
-		setData(Qt::UserRole, QVariant::fromValue(ColorPixmapValue(ScColor(0,0,0,0), NULL, CommonStrings::tr_NoneColor))); 
+		setData(Qt::UserRole, QVariant::fromValue(ColorPixmapValue(ScColor(0,0,0,0), NULL, CommonStrings::tr_NoneColor)));
 	};
 	QListWidgetItem * clone () const { return new ColorPixmapItem(*this); }
 	QString colorName() const { return data(Qt::UserRole).value<ColorPixmapValue>().m_name; }

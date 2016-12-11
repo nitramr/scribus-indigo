@@ -194,7 +194,8 @@ QTreeWidgetItem* PaintManagerDialog::updatePatternList(QString addedName)
 		else
 			pm = QPixmap::fromImage(sp.getPattern()->scaledToHeight(48, Qt::SmoothTransformation));
 		QPixmap pm2(48, 48);
-		pm2.fill(palette().color(QPalette::Base));
+		//pm2.fill(palette().color(QPalette::Base));
+		pm2.fill(Qt::black);
 		QPainter p;
 		p.begin(&pm2);
 		p.drawPixmap(24 - pm.width() / 2, 24 - pm.height() / 2, pm);
