@@ -1750,15 +1750,23 @@ void Canvas::getLinkedFrames(PageItem* currItem)
 void Canvas::getClipPathForPages(FPointArray* PoLine)
 {
 	PoLine->resize(0);
-	uint docPagesCount=m_doc->Pages->count();
 	bool first = true;
 	ScPage *actPg;
-	for (int a = 0; a < static_cast<int>(docPagesCount); ++a)
+	
+	int firstPage = 0;
+	int lastPage  = m_doc->Pages->count();
+	if (m_doc->Pages == &m_doc->MasterPages)
+	{
+		firstPage = m_doc->currentPage()->pageNr();
+		lastPage  = firstPage + 1;
+	}
+
+	for (int i = firstPage; i < lastPage; ++i)
 	{
 		if (!first)
 			PoLine->setMarker();
 		first = false;
-		actPg = m_doc->Pages->at(a);
+		actPg = m_doc->Pages->at(i);
 		double x = actPg->xOffset();
 		double y = actPg->yOffset();
 		double w = actPg->width();
@@ -1766,10 +1774,10 @@ void Canvas::getClipPathForPages(FPointArray* PoLine)
 		static double rect[] = {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0,
 			1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
 			0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0};
-		for (int a = 0; a < 29; a += 4)
+		for (int j = 0; j < 29; j += 4)
 		{
-			PoLine->addPoint(x + w * rect[a], y + h * rect[a+1]);
-			PoLine->addPoint(x + w * rect[a+2], y + h * rect[a+3]);
+			PoLine->addPoint(x + w * rect[j], y + h * rect[j+1]);
+			PoLine->addPoint(x + w * rect[j+2], y + h * rect[j+3]);
 		}
 	}
 }
@@ -1888,6 +1896,9 @@ void Canvas::DrawPageMargins(ScPainter *p, QRectF clip, bool master)
  */
 void Canvas::DrawPageBaselineGridSub(ScPainter *p, ScPage *page)
 {
+	if (!m_doc->guidesPrefs().baselineGridShown)
+		return;
+
 	p->save();
 	p->setAntialiasing(false);
 	p->translate(page->xOffset(), page->yOffset());
@@ -1896,19 +1907,18 @@ void Canvas::DrawPageBaselineGridSub(ScPainter *p, ScPage *page)
 	double pageWidth = page->width();
 	p->setFillMode(ScPainter::None);
 	p->setStrokeMode(ScPainter::Solid);
-	p->setPen(Qt::black, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	if (m_doc->guidesPrefs().baselineGridShown)
-	{
-		p->setPen(m_doc->guidesPrefs().baselineGridColor, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-		for (double yg = m_doc->guidesPrefs().offsetBaselineGrid; yg < pageHeight; yg += m_doc->guidesPrefs().valueBaselineGrid)
-			p->drawLine(FPoint(0, yg), FPoint(pageWidth, yg));
-	}
+	p->setPen(m_doc->guidesPrefs().baselineGridColor, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+	for (double yg = m_doc->guidesPrefs().offsetBaselineGrid; yg < pageHeight; yg += m_doc->guidesPrefs().valueBaselineGrid)
+		p->drawLine(FPoint(0, yg), FPoint(pageWidth, yg));
 	p->setAntialiasing(true);
 	p->restore();
 }
 
 void Canvas::DrawPageBaselineGrid(ScPainter *p, QRectF clip, bool master)
 {
+	if (!m_doc->guidesPrefs().baselineGridShown)
+		return;
+
 	if (master)
 	{
 		ScPage *page = m_doc->currentPage();
@@ -1940,6 +1950,9 @@ void Canvas::DrawPageBaselineGrid(ScPainter *p, QRectF clip, bool master)
  */
 void Canvas::DrawPageGridSub(ScPainter *p, ScPage *page, QRectF clip)
 {
+	if (!m_doc->guidesPrefs().gridShown)
+		return;
+
 	p->save();
 	FPointArray PoLine;
 	getClipPathForPages(&PoLine);
@@ -1952,79 +1965,78 @@ void Canvas::DrawPageGridSub(ScPainter *p, ScPage *page, QRectF clip)
 	p->setFillMode(ScPainter::None);
 	p->setStrokeMode(ScPainter::Solid);
 	p->setPen(Qt::black, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	if (m_doc->guidesPrefs().gridShown)
+
+	double lowerBx = qMax(clip.x() / m_viewMode.scale + m_doc->minCanvasCoordinate.x() - page->xOffset(), 0.0);
+	double lowerBy = qMax(clip.y() / m_viewMode.scale + m_doc->minCanvasCoordinate.y() - page->yOffset(), 0.0);
+	double highBx = qMin(lowerBx + clip.width() / m_viewMode.scale, pageWidth);
+	double highBy = qMin(lowerBy + clip.height() / m_viewMode.scale, pageHeight);
+	if (m_viewMode.scale > 0.49)
 	{
-		double lowerBx = qMax(clip.x() / m_viewMode.scale + m_doc->minCanvasCoordinate.x() - page->xOffset(), 0.0);
-		double lowerBy = qMax(clip.y() / m_viewMode.scale + m_doc->minCanvasCoordinate.y() - page->yOffset(), 0.0);
-		double highBx = qMin(lowerBx + clip.width() / m_viewMode.scale, pageWidth);
-		double highBy = qMin(lowerBy + clip.height() / m_viewMode.scale, pageHeight);
-		if (m_viewMode.scale > 0.49)
+		if (m_doc->guidesPrefs().gridType == 0)
 		{
-			if (m_doc->guidesPrefs().gridType == 0)
+			double i,start;
+			i = m_doc->guidesPrefs().majorGridSpacing;
+			p->setPen(m_doc->guidesPrefs().majorGridColor, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+			start = floor(lowerBy / i);
+			start *= i;
+			for (double b = start; b <= highBy; b+=i)
 			{
-				double i,start;
-				i = m_doc->guidesPrefs().majorGridSpacing;
-				p->setPen(m_doc->guidesPrefs().majorGridColor, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-				start = floor(lowerBy / i);
-				start *= i;
-				for (double b = start; b <= highBy; b+=i)
+				p->drawLine(FPoint(qMax(lowerBx, 0.0), b), FPoint(qMin(pageWidth, highBx), b));
+			}
+			start=floor(lowerBx/i);
+			start*=i;
+			for (double b = start; b <= highBx; b+=i)
+			{
+				p->drawLine(FPoint(b, qMax(lowerBy, 0.0)), FPoint(b, qMin(pageHeight, highBy)));
+			}
+			i = m_doc->guidesPrefs().minorGridSpacing;
+			p->setPen(m_doc->guidesPrefs().minorGridColor, lineWidth, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
+			start = floor(lowerBy / i);
+			start *= i;
+			for (double b = start; b <= highBy; b+=i)
+			{
+				p->drawLine(FPoint(qMax(lowerBx, 0.0), b), FPoint(qMin(pageWidth, highBx), b));
+			}
+			start=floor(lowerBx/i);
+			start*=i;
+			for (double b = start; b <= highBx; b+=i)
+			{
+				p->drawLine(FPoint(b, qMax(lowerBy, 0.0)), FPoint(b, qMin(pageHeight, highBy)));
+			}
+		}
+		else if (m_doc->guidesPrefs().gridType == 1)
+		{
+			double i, startX, startY;
+			i = m_doc->guidesPrefs().minorGridSpacing;
+			p->setPen(m_doc->guidesPrefs().minorGridColor, 3.0 / m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+			startY = floor(lowerBy / i);
+			startY *= i;
+			startX = floor(lowerBx / i);
+			startX *= i;
+			for (double b = startY; b <= highBy; b += i)
+			{
+				for (double bb = startX; bb <= highBx; bb += i)
 				{
-					p->drawLine(FPoint(qMax(lowerBx, 0.0), b), FPoint(qMin(pageWidth, highBx), b));
-				}
-				start=floor(lowerBx/i);
-				start*=i;
-				for (double b = start; b <= highBx; b+=i)
-				{
-					p->drawLine(FPoint(b, qMax(lowerBy, 0.0)), FPoint(b, qMin(pageHeight, highBy)));
-				}
-				i = m_doc->guidesPrefs().minorGridSpacing;
-				p->setPen(m_doc->guidesPrefs().minorGridColor, lineWidth, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
-				start = floor(lowerBy / i);
-				start *= i;
-				for (double b = start; b <= highBy; b+=i)
-				{
-					p->drawLine(FPoint(qMax(lowerBx, 0.0), b), FPoint(qMin(pageWidth, highBx), b));
-				}
-				start=floor(lowerBx/i);
-				start*=i;
-				for (double b = start; b <= highBx; b+=i)
-				{
-					p->drawLine(FPoint(b, qMax(lowerBy, 0.0)), FPoint(b, qMin(pageHeight, highBy)));
+					p->drawLine(FPoint(bb, b), FPoint(bb, b));
 				}
 			}
-			else if (m_doc->guidesPrefs().gridType == 1)
+			i = m_doc->guidesPrefs().majorGridSpacing;
+			p->setPen(m_doc->guidesPrefs().majorGridColor, lineWidth * 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+			startY = floor(lowerBy / i);
+			startY *= i;
+			startX = floor(lowerBx / i);
+			startX *= i;
+			for (double b = startY; b <= highBy; b += i)
 			{
-				double i, startX, startY;
-				i = m_doc->guidesPrefs().minorGridSpacing;
-				p->setPen(m_doc->guidesPrefs().minorGridColor, 3.0 / m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-				startY = floor(lowerBy / i);
-				startY *= i;
-				startX = floor(lowerBx / i);
-				startX *= i;
-				for (double b = startY; b <= highBy; b += i)
+				for (double bb = startX; bb <= highBx; bb += i)
 				{
-					for (double bb = startX; bb <= highBx; bb += i)
-					{
-						p->drawLine(FPoint(bb, b), FPoint(bb, b));
-					}
-				}
-				i = m_doc->guidesPrefs().majorGridSpacing;
-				p->setPen(m_doc->guidesPrefs().majorGridColor, lineWidth * 2, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-				startY = floor(lowerBy / i);
-				startY *= i;
-				startX = floor(lowerBx / i);
-				startX *= i;
-				for (double b = startY; b <= highBy; b += i)
-				{
-					for (double bb = startX; bb <= highBx; bb += i)
-					{
-						p->drawLine(FPoint(bb - 4, b), FPoint(bb + 4, b));
-						p->drawLine(FPoint(bb, b - 4), FPoint(bb, b + 4));
-					}
+					p->drawLine(FPoint(bb - 4, b), FPoint(bb + 4, b));
+					p->drawLine(FPoint(bb, b - 4), FPoint(bb, b + 4));
 				}
 			}
 		}
 	}
+
 	p->setAntialiasing(true);
 	p->endLayer();
 	p->restore();
@@ -2032,6 +2044,9 @@ void Canvas::DrawPageGridSub(ScPainter *p, ScPage *page, QRectF clip)
 
 void Canvas::DrawPageGrid(ScPainter *p, QRectF clip, bool master)
 {
+	if (!m_doc->guidesPrefs().gridShown)
+		return;
+
 	if (master)
 	{
 		ScPage *page = m_doc->currentPage();
@@ -2063,6 +2078,9 @@ void Canvas::DrawPageGrid(ScPainter *p, QRectF clip, bool master)
  */
 void Canvas::DrawPageGuidesSub(ScPainter *p, ScPage *page)
 {
+	if (!m_doc->guidesPrefs().guidesShown)
+		return;
+
 	p->save();
 	p->setAntialiasing(false);
 	p->translate(page->xOffset(), page->yOffset());
@@ -2070,14 +2088,16 @@ void Canvas::DrawPageGuidesSub(ScPainter *p, ScPage *page)
 	p->setFillMode(ScPainter::None);
 	p->setStrokeMode(ScPainter::Solid);
 	p->setPen(Qt::black, lineWidth, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	if (m_doc->guidesPrefs().guidesShown)
-		page->guides.drawPage(p, m_doc, lineWidth);
+	page->guides.drawPage(p, m_doc, lineWidth);
 	p->setAntialiasing(true);
 	p->restore();
 }
 
 void Canvas::DrawPageGuides(ScPainter *p, QRectF clip, bool master)
 {
+	if (!m_doc->guidesPrefs().guidesShown)
+		return;
+
 	if (master)
 	{
 		ScPage *page = m_doc->currentPage();

@@ -621,7 +621,7 @@ HEADERS += scribus/actionmanager.h \
            scribus/ui/tabmanager.h \
            scribus/ui/tabpdfoptions.h \
            scribus/ui/tabruler.h \
-           scribus/ui/textpalette.h\
+           scribus/ui/textpalette.h \
            scribus/ui/transformdialog.h \
            scribus/ui/transparencypalette.h \
            scribus/ui/unicodesearch.h \
@@ -987,7 +987,7 @@ HEADERS += scribus/actionmanager.h \
            scribus/plugins/tools/2geomtools/pathalongpath/pathalongpath.h \
            scribus/plugins/tools/2geomtools/pathalongpath/pathdialog.h \
 	   scribus/thememanager.h \
-    scribus/ui/griphandle.h
+	   scribus/ui/griphandle.h
 FORMS += scribus/ui/aboutplugins.ui \
          scribus/ui/aligndistribute.ui \
          scribus/ui/annot.ui \
@@ -1701,7 +1701,7 @@ SOURCES += scribus/actionmanager.cpp \
            scribus/ui/tabmanager.cpp \
            scribus/ui/tabpdfoptions.cpp \
            scribus/ui/tabruler.cpp \
-           scribus/ui/textpalette.cpp\
+           scribus/ui/textpalette.cpp \
            scribus/ui/transformdialog.cpp \
            scribus/ui/transparencypalette.cpp \
            scribus/ui/unicodesearch.cpp \
@@ -2095,7 +2095,7 @@ SOURCES += scribus/actionmanager.cpp \
            scribus/plugins/tools/2geomtools/pathalongpath/pathalongpath.cpp \
            scribus/plugins/tools/2geomtools/pathalongpath/pathdialog.cpp \
            scribus/thememanager.cpp \
-    scribus/ui/griphandle.cpp
+	   scribus/ui/griphandle.cpp
 RESOURCES += scribus/plugins/scripter/python/sceditor/dockwidget_icons.qrc
 TRANSLATIONS += resources/translations/scribus.af.ts \
                 resources/translations/scribus.ar.ts \

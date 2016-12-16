@@ -95,7 +95,7 @@ void GradientPreview::paintEvent(QPaintEvent *e)
 	p->drawRect(0, 0, width()-20, 37);
 	p->end();
 	delete p;
-	QPainter pw;	
+	QPainter pw;
 	pw.begin(this);
 	pw.setRenderHint(QPainter::Antialiasing);
 	pw.drawImage(10, 5, pixm);
