@@ -250,6 +250,7 @@ void PropertiesPalette::unsetDoc()
 		disconnect(m_doc->m_Selection, SIGNAL(selectionChanged()), this, SLOT(handleSelectionChanged()));
 		disconnect(m_doc             , SIGNAL(docChanged())      , this, SLOT(handleSelectionChanged()));
 	}
+
 	setEnabled(true);
 	m_haveDoc = false;
 	m_haveItem = false;

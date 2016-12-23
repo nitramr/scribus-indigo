@@ -206,7 +206,18 @@ ColorListBox::ColorListBox(QWidget * parent)
 	if (initialized != 12345)
 		sortRule = 0;
 	initialized = 12345;
-	setItemDelegate(new ColorWideItemDelegate());
+	setPixmapType(ColorListBox::widePixmap);
+	connect(this, SIGNAL(showContextMenue()), this, SLOT(slotRightClick()));
+}
+
+ColorListBox::ColorListBox(ColorListBox::PixmapType type, QWidget * parent)
+	: QListWidget(parent)
+{
+	cList = NULL;
+	if (initialized != 12345)
+		sortRule = 0;
+	initialized = 12345;
+	setPixmapType(type);
 	connect(this, SIGNAL(showContextMenue()), this, SLOT(slotRightClick()));
 }
 
@@ -253,6 +264,46 @@ QString ColorListBox::currentColor() const
 		return CommonStrings::tr_NoneColor;
 }
 
+void ColorListBox::setPixmapType(ColorListBox::PixmapType type)
+{
+	if (type == ColorListBox::fancyPixmap)
+	{
+		QAbstractItemDelegate* oldDelegate = itemDelegate();
+		ColorFancyItemDelegate* colorDelegate = dynamic_cast<ColorFancyItemDelegate*>(oldDelegate);
+		if (!colorDelegate)
+		{
+			setItemDelegate(new ColorFancyItemDelegate());
+			if (oldDelegate)
+				delete oldDelegate;
+			m_type = type;
+		}
+	}
+	else if (type == ColorListBox::widePixmap)
+	{
+		QAbstractItemDelegate* oldDelegate = itemDelegate();
+		ColorWideItemDelegate* colorDelegate = dynamic_cast<ColorWideItemDelegate*>(oldDelegate);
+		if (!colorDelegate)
+		{
+			setItemDelegate(new ColorWideItemDelegate());
+			if (oldDelegate)
+				delete oldDelegate;
+			m_type = type;
+		}
+	}
+	else if (type == ColorListBox::smallPixmap)
+	{
+		QAbstractItemDelegate* oldDelegate = itemDelegate();
+		ColorSmallItemDelegate* colorDelegate = dynamic_cast<ColorSmallItemDelegate*>(oldDelegate);
+		if (!colorDelegate)
+		{
+			setItemDelegate(new ColorSmallItemDelegate());
+			if (oldDelegate)
+				delete oldDelegate;
+			m_type = type;
+		}
+	}
+}
+
 void ColorListBox::slotRightClick()
 {
 	blockSignals(true);
@@ -276,12 +327,7 @@ void ColorListBox::slotRightClick()
 		reset();
 		if (!first.isEmpty())
 			addItem(first);
-		if (m_type == ColorListBox::fancyPixmap)
-			insertFancyPixmapItems( *cList );
-		else if (m_type == ColorListBox::widePixmap)
-			insertWidePixmapItems( *cList );
-		else if (m_type == ColorListBox::smallPixmap)
-			insertSmallPixmapItems( *cList );
+		insertItems( *cList );
 		if (!currentSel.isEmpty())
 		{
 			QList<QListWidgetItem *> items = findItems(currentSel, Qt::MatchExactly);
@@ -292,37 +338,62 @@ void ColorListBox::slotRightClick()
 	blockSignals(false);
 }
 
-void ColorListBox::updateBox(ColorList& list, ColorListBox::PixmapType type)
+void ColorListBox::updateBox(ColorList& list)
 {
 	clear();
 	reset();
-	m_type = type;
-	insertItems(list, type);
+	insertItems(list);
 }
 
-void ColorListBox::insertItems(ColorList& list, ColorListBox::PixmapType type)
+void ColorListBox::insertItems(ColorList& list)
 {
+	ColorList::Iterator it;
+	ScribusDoc* doc = list.document();
+
 	cList = &list;
-	m_type = type;
-	if (type == ColorListBox::fancyPixmap)
-		insertFancyPixmapItems( list );
-	else if (type == ColorListBox::widePixmap)
-		insertWidePixmapItems( list );
-	else if (type == ColorListBox::smallPixmap)
-		insertSmallPixmapItems( list );
-}
 
-void ColorListBox::addItem(ColorPixmapItem* item, ColorListBox::PixmapType type)
-{
-	QListWidget::addItem(item);
-	if (itemDelegate())
-		delete itemDelegate();
-	if (type == ColorListBox::fancyPixmap)
-		setItemDelegate(new ColorFancyItemDelegate());
-	else if (type == ColorListBox::widePixmap)
-		setItemDelegate(new ColorWideItemDelegate());
-	else if (type == ColorListBox::smallPixmap)
-		setItemDelegate(new ColorSmallItemDelegate());
+	if (sortRule > 0)
+	{
+		QMap<QString, QString> sortMap;
+		for (it = list.begin(); it != list.end(); ++it)
+		{
+			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
+				continue;
+			if (sortRule == 1)
+			{
+				QColor c = it.value().getRawRGBColor();
+				QString sortString = QString("%1-%2-%3-%4").arg(c.hue(), 3, 10, QChar('0')).arg(c.saturation(), 3, 10, QChar('0')).arg(c.value(), 3, 10, QChar('0')).arg(it.key());
+				sortMap.insert(sortString, it.key());
+			}
+			else if (sortRule == 2)
+			{
+				QString sortString = QString("%1-%2");
+				if (it.value().isRegistrationColor())
+					sortMap.insert(sortString.arg("A").arg(it.key()), it.key());
+				else if (it.value().isSpotColor())
+					sortMap.insert(sortString.arg("B").arg(it.key()), it.key());
+				else if (it.value().getColorModel() == colorModelCMYK)
+					sortMap.insert(sortString.arg("C").arg(it.key()), it.key());
+				else
+					sortMap.insert(sortString.arg("D").arg(it.key()), it.key());
+			}
+		}
+
+		QMap<QString, QString>::Iterator itc;
+		for (itc = sortMap.begin(); itc != sortMap.end(); ++itc)
+		{
+			addItem( new ColorPixmapItem(list[itc.value()], doc, itc.value()) );
+		}
+	}
+	else
+	{
+		for (it = list.begin(); it != list.end(); ++it)
+		{
+			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
+				continue;
+			addItem( new ColorPixmapItem(it.value(), doc, it.key()) );
+		}
+	}
 }
 
 void ColorListBox::addItem(ColorPixmapItem* item)
@@ -340,161 +411,11 @@ void ColorListBox::addItem(QString text)
 	}
 }
 
-void ColorListBox::insertSmallPixmapItems(ColorList& list)
-{
-	ColorList::Iterator it;
-	ScribusDoc* doc = list.document();
-	if (sortRule > 0)
-	{
-		QMap<QString, QString> sortMap;
-		for (it = list.begin(); it != list.end(); ++it)
-		{
-			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
-				continue;
-			if (sortRule == 1)
-			{
-				QColor c = it.value().getRawRGBColor();
-				QString sortString = QString("%1-%2-%3-%4").arg(c.hue(), 3, 10, QChar('0')).arg(c.saturation(), 3, 10, QChar('0')).arg(c.value(), 3, 10, QChar('0')).arg(it.key());
-				sortMap.insert(sortString, it.key());
-			}
-			else if (sortRule == 2)
-			{
-				QString sortString = QString("%1-%2");
-				if (it.value().isRegistrationColor())
-					sortMap.insert(sortString.arg("A").arg(it.key()), it.key());
-				else if (it.value().isSpotColor())
-					sortMap.insert(sortString.arg("B").arg(it.key()), it.key());
-				else if (it.value().getColorModel() == colorModelCMYK)
-					sortMap.insert(sortString.arg("C").arg(it.key()), it.key());
-				else
-					sortMap.insert(sortString.arg("D").arg(it.key()), it.key());
-			}
-		}
-		QMap<QString, QString>::Iterator itc;
-		for (itc = sortMap.begin(); itc != sortMap.end(); ++itc)
-		{
-			addItem( new ColorPixmapItem(list[itc.value()], doc, itc.value()) );
-		}
-	}
-	else
-	{
-		for (it = list.begin(); it != list.end(); ++it)
-		{
-			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
-				continue;
-			addItem( new ColorPixmapItem(it.value(), doc, it.key()) );
-		}
-	}
-	if (itemDelegate())
-		delete itemDelegate();
-	setItemDelegate(new ColorSmallItemDelegate());
-}
-
-void ColorListBox::insertWidePixmapItems(ColorList& list)
-{
-	ColorList::Iterator it;
-	ScribusDoc* doc = list.document();
-	if (sortRule > 0)
-	{
-		QMap<QString, QString> sortMap;
-		for (it = list.begin(); it != list.end(); ++it)
-		{
-			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
-				continue;
-			if (sortRule == 1)
-			{
-				QColor c = it.value().getRawRGBColor();
-				QString sortString = QString("%1-%2-%3-%4").arg(c.hue(), 3, 10, QChar('0')).arg(c.saturation(), 3, 10, QChar('0')).arg(c.value(), 3, 10, QChar('0')).arg(it.key());
-				sortMap.insert(sortString, it.key());
-			}
-			else if (sortRule == 2)
-			{
-				QString sortString = QString("%1-%2");
-				if (it.value().isRegistrationColor())
-					sortMap.insert(sortString.arg("A").arg(it.key()), it.key());
-				else if (it.value().isSpotColor())
-					sortMap.insert(sortString.arg("B").arg(it.key()), it.key());
-				else if (it.value().getColorModel() == colorModelCMYK)
-					sortMap.insert(sortString.arg("C").arg(it.key()), it.key());
-				else
-					sortMap.insert(sortString.arg("D").arg(it.key()), it.key());
-			}
-		}
-		QMap<QString, QString>::Iterator itc;
-		for (itc = sortMap.begin(); itc != sortMap.end(); ++itc)
-		{
-			addItem( new ColorPixmapItem(list[itc.value()], doc, itc.value()) );
-		}
-	}
-	else
-	{
-		for (it = list.begin(); it != list.end(); ++it)
-		{
-			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
-				continue;
-			addItem( new ColorPixmapItem(it.value(), doc, it.key()) );
-		}
-	}
-	if (itemDelegate())
-		delete itemDelegate();
-	setItemDelegate(new ColorWideItemDelegate());
-}
-
-void ColorListBox::insertFancyPixmapItems(ColorList& list)
-{
-	ColorList::Iterator it;
-	ScribusDoc* doc = list.document();
-	if (sortRule > 0)
-	{
-		QMap<QString, QString> sortMap;
-		for (it = list.begin(); it != list.end(); ++it)
-		{
-			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
-				continue;
-			if (sortRule == 1)
-			{
-				QColor c = it.value().getRawRGBColor();
-				QString sortString = QString("%1-%2-%3-%4").arg(c.hue(), 3, 10, QChar('0')).arg(c.saturation(), 3, 10, QChar('0')).arg(c.value(), 3, 10, QChar('0')).arg(it.key());
-				sortMap.insert(sortString, it.key());
-			}
-			else if (sortRule == 2)
-			{
-				QString sortString = QString("%1-%2");
-				if (it.value().isRegistrationColor())
-					sortMap.insert(sortString.arg("A").arg(it.key()), it.key());
-				else if (it.value().isSpotColor())
-					sortMap.insert(sortString.arg("B").arg(it.key()), it.key());
-				else if (it.value().getColorModel() == colorModelCMYK)
-					sortMap.insert(sortString.arg("C").arg(it.key()), it.key());
-				else
-					sortMap.insert(sortString.arg("D").arg(it.key()), it.key());
-			}
-		}
-		QMap<QString, QString>::Iterator itc;
-		for (itc = sortMap.begin(); itc != sortMap.end(); ++itc)
-		{
-			addItem( new ColorPixmapItem(list[itc.value()], doc, itc.value()) );
-		}
-	}
-	else
-	{
-		for (it = list.begin(); it != list.end(); ++it)
-		{
-			if (it.key() == CommonStrings::None || it.key() == CommonStrings::tr_NoneColor)
-				continue;
-			addItem( new ColorPixmapItem(it.value(), doc, it.key()) );
-		}
-	}
-	if (itemDelegate())
-		delete itemDelegate();
-	setItemDelegate(new ColorFancyItemDelegate());
-}
-
 bool ColorListBox::viewportEvent(QEvent *event)
 {
 	if (event != NULL)
 	{
-	/* commented out because of random crashes in the colorcombobox of the gradient editor */
+	/* commented out because of random crashes in the colorcombobox of the gradient editor
 	if (event->type() == QEvent::ToolTip)
 	{
 		if (cList != NULL)
@@ -526,7 +447,7 @@ bool ColorListBox::viewportEvent(QEvent *event)
 			}
 		}
 	}
-	else
+	else */
 	if (event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);

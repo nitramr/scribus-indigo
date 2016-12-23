@@ -207,7 +207,7 @@ QRegion PageItem_TextFrame::calcAvailableRegion()
 		if (!invertible) return QRegion();
 
 		int LayerLev = m_Doc->layerLevelFromID(LayerID);
-		uint docItemsCount=m_Doc->Items->count();
+		int docItemsCount = m_Doc->Items->count();
 		ScPage* Mp=0;
 		ScPage* Dp=0;
 		PageItem* docItem=0;
@@ -230,9 +230,8 @@ QRegion PageItem_TextFrame::calcAvailableRegion()
 				// #10642 : masterpage items interact only with items placed on same masterpage
 				if (docItem->OnMasterPage != OnMasterPage)
 					continue;
-				int did = m_Doc->MasterItems.indexOf(docItem);
 				LayerLevItem = m_Doc->layerLevelFromID(docItem->LayerID);
-				if (((did > thisid) && (docItem->LayerID == LayerID)) || (LayerLevItem > LayerLev && m_Doc->layerFlow(docItem->LayerID)))
+				if (((a > thisid) && (docItem->LayerID == LayerID)) || (LayerLevItem > LayerLev && m_Doc->layerFlow(docItem->LayerID)))
 				{
 					if (docItem->textFlowAroundObject())
 					{
@@ -264,29 +263,24 @@ QRegion PageItem_TextFrame::calcAvailableRegion()
 			{
 				thisid = Parent->asGroupFrame()->groupItemList.indexOf(this);
 				docItemsCount = Parent->asGroupFrame()->groupItemList.count();
-				for (uint a = 0; a < docItemsCount; ++a)
+				for (int a = thisid + 1; a < docItemsCount; ++a)
 				{
 					docItem = Parent->asGroupFrame()->groupItemList.at(a);
-					int did = Parent->asGroupFrame()->groupItemList.indexOf(docItem);
-					if (did > thisid)
+					if (docItem->textFlowAroundObject())
 					{
-						if (docItem->textFlowAroundObject())
-						{
-							QRegion itemRgn = itemShape(docItem, 0, 0);
-							result = result.subtracted( canvasToLocalMat.map(itemRgn) );
-						}
+						QRegion itemRgn = itemShape(docItem, 0, 0);
+						result = result.subtracted( canvasToLocalMat.map(itemRgn) );
 					}
 				}
 			}
 			else
 			{
 				thisid = m_Doc->Items->indexOf(this);
-				for (uint a = 0; a < docItemsCount; ++a)
+				for (int a = 0; a < docItemsCount; ++a)
 				{
 					docItem = m_Doc->Items->at(a);
-					int did = m_Doc->Items->indexOf(docItem);
 					LayerLevItem = m_Doc->layerLevelFromID(docItem->LayerID);
-					if (((did > thisid) && (docItem->LayerID == LayerID)) || (LayerLevItem > LayerLev && m_Doc->layerFlow(docItem->LayerID)))
+					if (((a > thisid) && (docItem->LayerID == LayerID)) || (LayerLevItem > LayerLev && m_Doc->layerFlow(docItem->LayerID)))
 					{
 						if (docItem->textFlowAroundObject())
 						{
@@ -809,7 +803,7 @@ struct LineControl {
 
 		for (int i = 0; i < glyphsCount; ++i)
 		{
-			GlyphCluster glyphCluster = glyphs[i];
+			const GlyphCluster& glyphCluster = glyphs.at(i);
 			if (!glyphCluster.hasFlag(ScLayout_ExpandingSpace))
 			{
 				glyphNatural += glyphCluster.width();
@@ -928,6 +922,25 @@ struct LineControl {
 				glyphCluster.extraWidth += trackingAmount;
 			}
 
+		}
+
+		if ((style.alignment() == ParagraphStyle::Extended) &&
+			(style.direction() == ParagraphStyle::RTL) &&
+			(!trackingInsertion && (spaceExtension == 0)))
+		{
+			double naturalWidth = line.naturalWidth;
+			if (glyphScale != 1.0)
+			{
+				naturalWidth = 0;
+				for (int i = 0; i < glyphsCount; ++i)
+				{
+					const GlyphCluster& glyphCluster = glyphs.at(i);
+					naturalWidth += glyphCluster.width();
+				}
+			}
+			double offset = line.width - naturalWidth;
+			if (offset > 0)
+				indentLine(style, offset);
 		}
 	}
 
@@ -2528,8 +2541,8 @@ void PageItem_TextFrame::layout()
 				if (SpecialChars::isBreak(itemText.text(a), Cols > 1))
 				{
 					// find end of line
-//                    qDebug() << "breakline isBreak @" << i;
-                    current.breakLine(i);
+//					qDebug() << "breakline isBreak @" << i;
+					current.breakLine(i);
 					regionMinY = qMax(0.0, current.line.y - current.line.ascent);
 					regionMaxY = current.line.y + current.line.descent;
 					EndX = current.endOfLine(m_availableRegion, style.rightMargin(), regionMinY, regionMaxY);
