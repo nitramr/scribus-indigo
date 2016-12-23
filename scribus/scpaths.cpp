@@ -521,7 +521,7 @@ QString ScPaths::applicationDataDir(bool createIfNotExists)
 {
 	QString dataDir;
 #ifdef APPLICATION_DATA_DIR
-	prefsDir =  QDir::homePath() + "/" + APPLICATION_DATA_DIR + "/";
+	dataDir =  QDir::homePath() + "/" + APPLICATION_DATA_DIR + "/";
 #else
 	dataDir =  QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/";
 #endif
@@ -533,6 +533,8 @@ QString ScPaths::applicationDataDir(bool createIfNotExists)
 
 QString ScPaths::preferencesDir(bool createIfNotExists)
 {
+	QString affix = QString("-indigo");
+
 	//If we have been passed a dir on cmd line, use this. Start up errors if it does not exist.
 	if (!ScQApp->userPrefsDir().isEmpty())
 		return ScQApp->userPrefsDir();
@@ -542,9 +544,9 @@ QString ScPaths::preferencesDir(bool createIfNotExists)
 #else
 	//Jean wants to make all prefs for Scribus be in the roaming directory on Windows so return the same as applicationDataDir
 	#ifdef Q_OS_WIN32
-		prefsDir =  QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/";
+		prefsDir =  QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + affix + "/";
 	#else
-		prefsDir =  QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/";
+		prefsDir =  QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + affix + "/";
 	#endif
 #endif
 	QDir prefsDirectory(prefsDir);
