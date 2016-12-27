@@ -1,4 +1,4 @@
-Scribus-Indigo [![Build Status](https://travis-ci.org/nitramr/scribus-indigo.svg?branch=master)](https://travis-ci.org/nitramr/scribus-indigo)  
+Scribus-Indigo [![Build Status](https://travis-ci.org/nitramr/scribus-indigo.svg?branch=master)](https://travis-ci.org/nitramr/scribus-indigo) [![forum-thread](https://img.shields.io/badge/forum--thread-scribus-orange.svg)](http://forums.scribus.net/index.php/topic,1617.0.html)
 ==============
 The Scribus-Indigo branch is an unofficial experimental user interface version of the original open source Scribus desktop publishing software. The project includes:
 * a new application layout
