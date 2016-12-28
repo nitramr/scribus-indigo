@@ -230,7 +230,9 @@ QPixmap IconManager::loadPixmap(const QString nam, bool forceUseColor, bool rtlF
 
 	QString iconFilePath(pathForIcon(nam));
 	QPixmap *pm = new QPixmap();
+
 	pm->load(iconFilePath);
+
 	if (pm->isNull())
 		qWarning("Unable to load icon %s: Got null pixmap", iconFilePath.toLatin1().constData());
 //	else

@@ -7,7 +7,7 @@ TEMPLATE = app
 TARGET = Scribus
 INCLUDEPATH += .
 
-QT       += core widgets gui designer
+QT       += core widgets gui designer svg
 CONFIG   += plugin debug_and_release
 
 greaterThan(QT_MAJOR_VERSION, 4) {
