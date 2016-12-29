@@ -412,6 +412,10 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 	connect( scrActions["windowsCascade"], SIGNAL(triggered()) , mdiArea, SLOT(cascadeSubWindows()) );
 	connect( scrActions["windowsTile"], SIGNAL(triggered()) , mdiArea, SLOT(tileSubWindows()) );
 
+	if (primaryMainWindow)
+		ScCore->setSplashStatus( tr("Load Workspace") );
+	wdg_indigoDockManager->loadWorkspace();
+
 	m_prefsManager->setupMainWindow(this);
 
 	viewToolBar->previewQualitySwitcher->setCurrentIndex(m_prefsManager->appPrefs.itemToolPrefs.imageLowResType);
@@ -470,7 +474,6 @@ int ScribusMainWindow::initScMW(bool primaryMainWindow)
 		}
 	}
 	appModeHelper->setStartupActionsEnabled(false);
-
 
 	return retVal;
 }
@@ -828,8 +831,6 @@ void ScribusMainWindow::initPalettes()
 
 	wdg_indigoDock->setRestoreMode(false);
 
-	wdg_indigoDockManager->loadWorkspace(); // load startup layout
- 
 }
 
 
@@ -6974,6 +6975,8 @@ int ScribusMainWindow::ShowSubs()
 	editToolBar->initVisibility();
 	modeToolBar->initVisibility();
 	pdfToolBar->initVisibility();
+
+	wdg_indigoDockManager->updateAllDockSizes();
 
 	activateWindow();
 	if (!scriptIsRunning())

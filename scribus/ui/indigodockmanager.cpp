@@ -334,6 +334,17 @@ void IndigoDockManager::updateDockSize(){
 }
 
 
+void IndigoDockManager::updateAllDockSizes(){
+	IndigoDock * dock;
+	foreach(dock, lst_Docks){
+
+			dock->updateMinHeight();
+
+	}
+
+}
+
+
 
 void IndigoDockManager::scrollToPanel(){
 

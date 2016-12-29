@@ -51,6 +51,7 @@ public:
 
 	void saveWorkspace();
 	void loadWorkspace();
+	void updateAllDockSizes();
 
 	/* Settings */
 	void setMinimumPanelHeight(int height);
