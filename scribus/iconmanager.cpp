@@ -20,7 +20,9 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QDomDocument>
+#include <QSvgRenderer>
 
+#include "scribusapp.h"
 #include "iconmanager.h"
 #include "prefsmanager.h"
 #include "scpaths.h"
@@ -30,6 +32,9 @@ IconManager* IconManager::m_instance = 0;
 IconManager::IconManager(QObject *parent)
  : QObject(parent)
 {
+	ScribusQApp* sApp;
+	m_devicePixelRatio = sApp->devicePixelRatio();//need a better way
+	delete sApp;
 }
 
 IconManager::~IconManager()
@@ -231,7 +236,18 @@ QPixmap IconManager::loadPixmap(const QString nam, bool forceUseColor, bool rtlF
 	QString iconFilePath(pathForIcon(nam));
 	QPixmap *pm = new QPixmap();
 
-	pm->load(iconFilePath);
+	if(nam.endsWith(".svg")){
+		QSvgRenderer renderer(iconFilePath);
+		QSize svgSize(renderer.defaultSize());
+		QPixmap pmsvg(svgSize.width() * m_devicePixelRatio, svgSize.height() * m_devicePixelRatio);
+		pmsvg.fill(Qt::transparent);
+		QPainter painter(&pmsvg);
+		renderer.render(&painter);
+		*pm = pmsvg;
+
+	}else{
+		pm->load(iconFilePath);
+	}
 
 	if (pm->isNull())
 		qWarning("Unable to load icon %s: Got null pixmap", iconFilePath.toLatin1().constData());

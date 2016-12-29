@@ -81,6 +81,7 @@ class SCRIBUS_API IconManager : public QObject
 		QString m_activeSetVersion;
 		QString m_backupSetBasename;
 		QString m_backupSetVersion;
+		qreal m_devicePixelRatio;
 
 		bool initIcons();
 		void readIconConfigFiles();
