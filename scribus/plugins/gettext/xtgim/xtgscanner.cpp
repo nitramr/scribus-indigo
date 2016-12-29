@@ -1517,7 +1517,7 @@ void XtgScanner::xtgParse()
 	currentParagraphStyle.charStyle().setParent(CommonStrings::DefaultCharacterStyle);
 	currentParagraphStyle.setLineSpacingMode(ParagraphStyle::AutomaticLineSpacing);
 	currentCharStyle = currentParagraphStyle.charStyle();
-	while (lookAhead() != '\0')
+	while (lookAhead() != QChar('\0'))
 	{
 		token = getToken();
 		QHash<QString,void (XtgScanner::*)(void)> *temp = NULL;
