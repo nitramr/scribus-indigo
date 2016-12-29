@@ -30,7 +30,7 @@ before_install:
       sudo apt-get install --force-yes cmake libboost-python-dev libcups2-dev libhunspell-dev
       libhyphen-dev liblcms2-dev libpodofo-dev libtiff-dev libxml2-dev
       python-all-dev zlib1g-dev qt57base qt57declarative
-      qt57tools libgraphicsmagick++1-dev
+      qt57tools libqt5svg5-dev libgraphicsmagick++1-dev
       libopenscenegraph-dev libpoppler-dev libcairo2-dev libwpg-dev libmspub-dev
       libcdr-dev libvisio-dev libharfbuzz-dev libharfbuzz-icu0
       coreutils binutils python-tk;
