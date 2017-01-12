@@ -222,7 +222,6 @@ void PropertiesPalette::setDoc(ScribusDoc *d)
 
 	m_unitRatio = m_doc->unitRatio();
 	m_unitIndex = m_doc->unitIndex();
-
 	m_haveDoc = true;
 	m_haveItem = false;
 

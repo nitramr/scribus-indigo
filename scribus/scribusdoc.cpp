@@ -4269,114 +4269,26 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 {
 	QMap<QString,int> Really;
 	QList<PageItem*> allItems;
-	int counter = 0;
+
 	for (int i = 0; i < 2; ++i)
 	{
 		switch (i)
 		{
 			case 0:
-				counter = MasterItems.count();
+				allItems = MasterItems;
 				break;
 			case 1:
-				counter = DocItems.count();
+				allItems = DocItems;
 				break;
 		}
 		PageItem* it = NULL;
-		for (int d = 0; d < counter; ++d)
+		while (allItems.count() > 0)
 		{
-			switch (i)
+			it = allItems.takeFirst();
+			if (it->isGroup() || it->isTable())
 			{
-				case 0:
-					it = MasterItems.at(d);
-					break;
-				case 1:
-					it = DocItems.at(d);
-					break;
-			}
-			if (it->isGroup())
-				allItems = it->asGroupFrame()->getItemList();
-			else
-				allItems.append(it);
-			for (int ii = 0; ii < allItems.count(); ii++)
-			{
-				it = allItems.at(ii);
-				if (it->isTable())
-				{
-					for (int row = 0; row < it->asTable()->rows(); ++row)
-					{
-						for (int col = 0; col < it->asTable()->columns(); col ++)
-						{
-							TableCell cell = it->asTable()->cellAt(row, col);
-							if (cell.row() == row && cell.column() == col)
-							{
-								PageItem* textFrame = cell.textFrame();
-								QString fontName(textFrame->itemText.defaultStyle().charStyle().font().replacementName());
-								Really.insert(fontName, UsedFonts[fontName]);
-								int start = textFrame->firstInFrame();
-								int stop = textFrame->lastInFrame();
-								for (int e = start; e <= stop; ++e)
-								{
-									QString rep = textFrame->itemText.charStyle(e).font().replacementName();
-									if (Really.contains(rep))
-										continue;
-									Really.insert(rep, UsedFonts[rep]);
-								}
-							}
-						}
-					}
-				}
-				if ((it->itemType() == PageItem::TextFrame) || (it->itemType() == PageItem::PathText))
-				{
-					QString fontName(it->itemText.defaultStyle().charStyle().font().replacementName());
-					Really.insert(fontName, UsedFonts[fontName]);
-					int start = it->firstInFrame();
-					int stop = it->lastInFrame();
-					for (int e = start; e <= stop; ++e)
-					{
-						QString rep = it->itemText.charStyle(e).font().replacementName();
-						if (Really.contains(rep))
-							continue;
-						Really.insert(rep, UsedFonts[rep]);
-					}
-				}
-			}
-			allItems.clear();
-		}
-	}
-	for (QHash<int, PageItem*>::iterator itf = FrameItems.begin(); itf != FrameItems.end(); ++itf)
-	{
-		PageItem *it = itf.value();
-		if (it->isGroup())
-			allItems = it->asGroupFrame()->getItemList();
-		else
-			allItems.append(it);
-		for (int ii = 0; ii < allItems.count(); ii++)
-		{
-			it = allItems.at(ii);
-			if (it->isTable())
-			{
-				for (int row = 0; row < it->asTable()->rows(); ++row)
-				{
-					for (int col = 0; col < it->asTable()->columns(); col ++)
-					{
-						TableCell cell = it->asTable()->cellAt(row, col);
-						if (cell.row() == row && cell.column() == col)
-						{
-							PageItem* textFrame = cell.textFrame();
-							QString fontName(textFrame->itemText.defaultStyle().charStyle().font().replacementName());
-							Really.insert(fontName, UsedFonts[fontName]);
-							int start = textFrame->firstInFrame();
-							int stop = textFrame->lastInFrame();
-							for (int e = start; e <= stop; ++e)
-							{
-								QString rep = textFrame->itemText.charStyle(e).font().replacementName();
-								if (Really.contains(rep))
-									continue;
-								Really.insert(rep, UsedFonts[rep]);
-							}
-						}
-					}
-				}
+				allItems = it->getItemList() + allItems;
+				continue;
 			}
 			if ((it->itemType() == PageItem::TextFrame) || (it->itemType() == PageItem::PathText))
 			{
@@ -4393,8 +4305,33 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 				}
 			}
 		}
-		allItems.clear();
 	}
+
+	allItems = FrameItems.values();
+	while (allItems.count() > 0)
+	{
+		PageItem *it = allItems.takeFirst();
+		if (it->isGroup() || it->isTable())
+		{
+			allItems = it->getItemList() + allItems;
+			continue;
+		}
+		if ((it->itemType() == PageItem::TextFrame) || (it->itemType() == PageItem::PathText))
+		{
+			QString fontName(it->itemText.defaultStyle().charStyle().font().replacementName());
+			Really.insert(fontName, UsedFonts[fontName]);
+			int start = it->firstInFrame();
+			int stop = it->lastInFrame();
+			for (int e = start; e <= stop; ++e)
+			{
+				QString rep = it->itemText.charStyle(e).font().replacementName();
+				if (Really.contains(rep))
+					continue;
+				Really.insert(rep, UsedFonts[rep]);
+			}
+		}
+	}
+
 	QMap<QString,int>::Iterator itfo, itnext;
 	for (itfo = UsedFonts.begin(); itfo != UsedFonts.end(); itfo = itnext)
 	{
@@ -4417,89 +4354,48 @@ void ScribusDoc::getUsedFonts(QMap<QString, QMap<uint, FPointArray> > & Really)
 	QList<PageItem*>  allItems;
 	QList<PageItem*>* itemLists[] = { &MasterItems, &DocItems };
 	PageItem* it = NULL;
-	int counter = 0;
+
 	for (int i = 0; i < 2; ++i)
 	{
-		QList<PageItem*>* itemList = itemLists[i];
-		counter = itemList->count();
-		for (int d = 0; d < counter; ++d)
+		allItems = *(itemLists[i]);
+		while (allItems.count() > 0)
 		{
-			it = itemList->at(d);
-			if (it->isGroup())
-				allItems = it->asGroupFrame()->getItemList();
-			else
-				allItems.append(it);
-			for (int ii = 0; ii < allItems.count(); ii++)
+			it = allItems.takeFirst();
+			if (it->isGroup() || it->isTable())
 			{
-				it = allItems.at(ii);
-				if (it->isTable())
-				{
-					for (int row = 0; row < it->asTable()->rows(); ++row)
-					{
-						for (int col = 0; col < it->asTable()->columns(); col ++)
-						{
-							TableCell cell = it->asTable()->cellAt(row, col);
-							if (cell.row() == row && cell.column() == col)
-							{
-								PageItem* textFrame = cell.textFrame();
-								checkItemForFonts(textFrame, Really, i);
-							}
-						}
-					}
-				}
-				else
-					checkItemForFonts(it, Really, i);
+				allItems = it->getItemList() + allItems;
+				continue;
 			}
-			allItems.clear();
+			checkItemForFonts(it, Really, i);
 		}
 	}
-	for (QHash<int, PageItem*>::iterator itf = FrameItems.begin(); itf != FrameItems.end(); ++itf)
+
+	allItems = FrameItems.values();
+	while (allItems.count() > 0)
 	{
-		PageItem *ite = itf.value();
-		if (ite->isGroup())
-			allItems = ite->asGroupFrame()->getItemList();
-		else
-			allItems.append(ite);
-		for (int ii = 0; ii < allItems.count(); ii++)
+		PageItem *ite = allItems.takeFirst();
+		if (it->isGroup() || it->isTable())
 		{
-			ite = allItems.at(ii);
-			if (ite->isTable())
-			{
-				for (int row = 0; row < ite->asTable()->rows(); ++row)
-				{
-					for (int col = 0; col < ite->asTable()->columns(); col ++)
-					{
-						TableCell cell = ite->asTable()->cellAt(row, col);
-						if (cell.row() == row && cell.column() == col)
-						{
-							PageItem* textFrame = cell.textFrame();
-							checkItemForFonts(textFrame, Really, 3);
-						}
-					}
-				}
-			}
-			else
-				checkItemForFonts(ite, Really, 3);
+			allItems = it->getItemList() + allItems;
+			continue;
 		}
-		allItems.clear();
+		checkItemForFonts(ite, Really, 3);
 	}
+
 	QStringList patterns = getUsedPatterns();
 	for (int c = 0; c < patterns.count(); ++c)
 	{
 		ScPattern pa = docPatterns[patterns[c]];
-		for (int o = 0; o < pa.items.count(); o++)
+		allItems = pa.items;
+		while (allItems.count() > 0)
 		{
-			it = pa.items.at(o);
-			if (it->isGroup())
-				allItems = it->asGroupFrame()->getItemList();
-			else
-				allItems.append(it);
-			for (int ii = 0; ii < allItems.count(); ii++)
+			it = allItems.takeFirst();
+			if (it->isGroup() || it->isTable())
 			{
-				it = allItems.at(ii);
-				checkItemForFonts(it, Really, 3);
+				allItems = it->getItemList() + allItems;
+				continue;
 			}
-			allItems.clear();
+			checkItemForFonts(it, Really, 3);
 		}
 	}
 }
@@ -4547,7 +4443,12 @@ void ScribusDoc::checkItemForFonts(PageItem *it, QMap<QString, QMap<uint, FPoint
 		return;
 
 	if (it->invalid)
+	{
+		bool wasMasterPageMode = m_masterPageMode;
+		setMasterPageMode(it->OnMasterPage.length() > 0);
 		it->layout();
+		setMasterPageMode(wasMasterPageMode);
+	}
 
 	// This works pretty well except for the case of page numbers and al. placed on masterpages
 	// where layout may depend on the page where the masterpage item is placed
@@ -4568,94 +4469,92 @@ void ScribusDoc::checkItemForFonts(PageItem *it, QMap<QString, QMap<uint, FPoint
 				Really.insert(fontName, QMap<uint, FPointArray>());
 		}
 		uint chr = it->itemText.text(e).unicode();
+		if ((chr != SpecialChars::PAGENUMBER ) && (chr != SpecialChars::PAGECOUNT))
+			continue;
+
 		QStringList txtList;
-		if ((chr == 30) || (chr == 23))
+		QString pageNumberText; //Our page number collection string
+		if (chr == SpecialChars::PAGENUMBER)
 		{
-			//Our page number collection string
-			QString pageNumberText;
-			if (chr == 30)
-			{//ch == SpecialChars::PAGENUMBER
-				if (e > 0 && it->itemText.text(e-1) == SpecialChars::PAGENUMBER)
-					pageNumberText = SpecialChars::ZWNBSPACE;
-				else if (lc!=0) //If not on a master page just get the page number for the page and the text
-				{
-					pageNumberText = QString("%1").arg(getSectionPageNumberForPageIndex(it->OwnPage),
-									getSectionPageNumberWidthForPageIndex(it->OwnPage),
-									getSectionPageNumberFillCharForPageIndex(it->OwnPage));
-					txtList.append(pageNumberText);
-				}
-				else
-				{
-					//Else, for a page number in a text frame on a master page we must scan
-					//all pages to see which ones use this page and get their page numbers.
-					//We only add each character of the pages' page number text if its nothing
-					//already in the pageNumberText variable. No need to add glyphs twice.
-					QString newText;
-					uint docPageCount = DocPages.count();
-					for (uint a = 0; a < docPageCount; ++a)
-					{
-						if (DocPages.at(a)->MPageNam == it->OnMasterPage)
-						{
-							newText = QString("%1").arg(getSectionPageNumberForPageIndex(a),
-											getSectionPageNumberWidthForPageIndex(a),
-											getSectionPageNumberFillCharForPageIndex(a));
-							txtList.append(newText);
-						}
-					}
-				}
+			if (e > 0 && it->itemText.text(e-1) == SpecialChars::PAGENUMBER)
+				pageNumberText = SpecialChars::ZWNBSPACE;
+			else if (lc!=0) //If not on a master page just get the page number for the page and the text
+			{
+				pageNumberText = QString("%1").arg(getSectionPageNumberForPageIndex(it->OwnPage),
+								getSectionPageNumberWidthForPageIndex(it->OwnPage),
+								getSectionPageNumberFillCharForPageIndex(it->OwnPage));
+				txtList.append(pageNumberText);
 			}
 			else
-			{//ch == SpecialChars::PAGECOUNT
-				if (lc!=0)
-				{
-					int key = getSectionKeyForPageIndex(it->OwnPage);
-					if (key == -1)
-						pageNumberText = "";
-					else
-						pageNumberText = QString("%1").arg(getStringFromSequence(m_docPrefsData.docSectionMap[key].type, m_docPrefsData.docSectionMap[key].toindex - m_docPrefsData.docSectionMap[key].fromindex + 1));
-					txtList.append(pageNumberText);
-				}
-				else
-				{
-					QString newText;
-					int docPageCount = DocPages.count();
-					for (int a = 0; a < docPageCount; ++a)
-					{
-						if (DocPages.at(a)->MPageNam == it->OnMasterPage)
-						{
-							int key = getSectionKeyForPageIndex(a);
-							if (key == -1)
-								newText = "";
-							else
-								newText = QString("%1").arg(getStringFromSequence(m_docPrefsData.docSectionMap[key].type, m_docPrefsData.docSectionMap[key].toindex - m_docPrefsData.docSectionMap[key].fromindex + 1));
-							txtList.append(newText);
-						}
-					}
-				}
-			}
-
-			//Now scan and add any glyphs used in page numbers
-			for (int a = 0; a < txtList.count(); ++a)
 			{
-				CharStyle style(font, fontSize);
-				StoryText story;
-				story.insertChars(txtList[a]);
-				story.setCharStyle(0, txtList[a].count(), style);
-
-				TextShaper textShaper(story, 0);
-				QList<GlyphCluster> glyphRuns = textShaper.shape(0, story.length()).glyphs();
-
-				foreach (const GlyphCluster &run, glyphRuns)
+				//Else, for a page number in a text frame on a master page we must scan
+				//all pages to see which ones use this page and get their page numbers.
+				//We only add each character of the pages' page number text if its nothing
+				//already in the pageNumberText variable. No need to add glyphs twice.
+				QString newText;
+				uint docPageCount = DocPages.count();
+				for (uint a = 0; a < docPageCount; ++a)
 				{
-					foreach (const GlyphLayout &gl, run.glyphs())
+					if (DocPages.at(a)->MPageNam == it->OnMasterPage)
 					{
-						FPointArray outline(font.glyphOutline(gl.glyph));
-						if (!fontName.isEmpty())
-							Really[fontName].insert(gl.glyph, outline);
+						newText = QString("%1").arg(getSectionPageNumberForPageIndex(a),
+										getSectionPageNumberWidthForPageIndex(a),
+										getSectionPageNumberFillCharForPageIndex(a));
+						txtList.append(newText);
 					}
 				}
 			}
-			continue;
+		}
+		else //ch == SpecialChars::PAGECOUNT
+		{
+			if (lc != 0)
+			{
+				int key = getSectionKeyForPageIndex(it->OwnPage);
+				if (key == -1)
+					pageNumberText = "";
+				else
+					pageNumberText = QString("%1").arg(getStringFromSequence(m_docPrefsData.docSectionMap[key].type, m_docPrefsData.docSectionMap[key].toindex - m_docPrefsData.docSectionMap[key].fromindex + 1));
+				txtList.append(pageNumberText);
+			}
+			else
+			{
+				QString newText;
+				int docPageCount = DocPages.count();
+				for (int a = 0; a < docPageCount; ++a)
+				{
+					if (DocPages.at(a)->MPageNam == it->OnMasterPage)
+					{
+						int key = getSectionKeyForPageIndex(a);
+						if (key == -1)
+							newText = "";
+						else
+							newText = QString("%1").arg(getStringFromSequence(m_docPrefsData.docSectionMap[key].type, m_docPrefsData.docSectionMap[key].toindex - m_docPrefsData.docSectionMap[key].fromindex + 1));
+						txtList.append(newText);
+					}
+				}
+			}
+		}
+
+		//Now scan and add any glyphs used in page numbers
+		for (int a = 0; a < txtList.count(); ++a)
+		{
+			CharStyle style(font, fontSize);
+			StoryText story;
+			story.insertChars(txtList[a]);
+			story.setCharStyle(0, txtList[a].count(), style);
+
+			TextShaper textShaper(story, 0);
+			QList<GlyphCluster> glyphRuns = textShaper.shape(0, story.length()).glyphs();
+
+			foreach (const GlyphCluster &run, glyphRuns)
+			{
+				foreach (const GlyphLayout &gl, run.glyphs())
+				{
+					FPointArray outline(font.glyphOutline(gl.glyph));
+					if (!fontName.isEmpty())
+						Really[fontName].insert(gl.glyph, outline);
+				}
+			}
 		}
 	}
 }
@@ -16592,18 +16491,18 @@ void ScribusDoc::setupNumerations()
 QString ScribusDoc::getNumberStr(QString numName, int level, bool reset, const ParagraphStyle &style)
 {
 	Q_ASSERT(numerations.contains(numName));
-	if (!numerations.contains(numName))
+	NumStruct * numS = numerations.value(numName, (NumStruct*) 0);
+	if (!numS)
 		return QString();
-	NumStruct * numS = numerations.value(numName);
 	numS->m_lastlevel = level;
 	if (level >= numS->m_nums.count())
 		return QString();
-	Numeration num = numS->m_nums[level];
+
+	Numeration& num = numS->m_nums[level];
 	num.numFormat = (NumFormat) style.numFormat();
 	num.start = style.numStart();
 	num.prefix = style.numPrefix();
 	num.suffix = style.numSuffix();
-	numS->m_nums.replace(level, num);
 
 	int currNum = numS->m_counters.at(level);
 	if (reset)
@@ -16614,7 +16513,7 @@ QString ScribusDoc::getNumberStr(QString numName, int level, bool reset, const P
 	QString result;
 	for (int i=0; i <= level; ++i)
 	{
-		Numeration num = numS->m_nums[i];
+		const Numeration& num = numS->m_nums.at(i);
 		result.append(num.prefix);
 		result.append(num.numString(numS->m_counters.at(i)));
 		result.append(num.suffix);
