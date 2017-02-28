@@ -1553,7 +1553,7 @@ StoryEditor::StoryEditor(QWidget* parent) : QMainWindow(parent, Qt::Window), // 
 	m_spellActive=false;
 	prefsManager=PrefsManager::instance();
 #ifdef Q_OS_MAC
-	noIcon = IconManager::instance()->loadIcon("noicon.xpm");
+	noIcon = IconManager::instance()->loadIcon("noicon.png");
 #endif
 	buildGUI();
 	/*

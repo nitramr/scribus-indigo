@@ -5761,7 +5761,9 @@ void PageItem_TextFrame::updateNotesMarks(NotesInFrameMap notesMap)
 	{
 		if (nF->deleteIt || (nF->isAutoNoteFrame() && !notesMap.keys().contains(nF)))
 		{
-			m_Doc->delNoteFrame(nF,true);
+			m_Doc->delNoteFrame(nF, true);
+			m_notesFramesMap.remove(nF);
+			notesMap.remove(nF);
 			docWasChanged = true;
 		}
 		else
@@ -5880,6 +5882,7 @@ void PageItem_TextFrame::setTextFrameHeight()
 	{
 		textLayout.box()->moveTo(textLayout.box()->x(), 0);
 		double newHeight = textLayout.box()->naturalHeight();
+		newHeight += m_textDistanceMargins.bottom();
 
 		UndoTransaction undoTransaction;
 		if (UndoManager::undoEnabled())

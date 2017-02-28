@@ -1139,9 +1139,18 @@ if (GMAGICK_FOUND)
 endif()
 
 if(HAVE_PODOFO)
+	if(OPENSSL_FOUND)
+		message(STATUS "Including OpenSSL files for PoDoFo >= 0.9.5")
+		include_directories(
+			${OPENSSL_INCLUDE_DIR}
+		)
+	else()
+#		message(STATUS "Not including OpenSSL files because this system's PoDoFo does not require them")
+	endif()
 	include_directories(
-	${LIBPODOFO_INCLUDE_DIR}
+		${LIBPODOFO_INCLUDE_DIR}
 	)
+
 endif()
 
 if(HAVE_HYPHEN)
@@ -1240,12 +1249,10 @@ target_link_libraries(${EXE_NAME}
 	${Qt5Widgets_LIBRARIES}
 	${Qt5Gui_LIBRARIES}
 	${Qt5Xml_LIBRARIES}
-	${Qt5WebKit_LIBRARIES}
-	${Qt5WebKitWidgets_LIBRARIES}
 	${Qt5Network_LIBRARIES}
 	${Qt5OpenGL_LIBRARIES}
 	${Qt5PrintSupport_LIBRARIES}
-	${Qt5Quick_LIBRARIES}
+#	${Qt5Quick_LIBRARIES}
 	${Qt5Svg_LIBRARIES}
 	${CUPS_LIBRARIES}
 	${FREETYPE_LIBRARIES}
@@ -1277,6 +1284,10 @@ endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD" OR CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 	target_link_libraries(${EXE_NAME} util execinfo)
 endif()
+
+if(HAIKU)
+	target_link_libraries(${EXE_NAME} execinfo)
+endif(HAIKU)
 
 if(WIN32)
 	target_link_libraries(${EXE_NAME} ${QT_QTMAIN_LIBRARY})
@@ -1344,8 +1355,6 @@ set(PLUGIN_LIBRARIES
 	${Qt5Widgets_LIBRARIES}
 	${Qt5Gui_LIBRARIES}
 	${Qt5Xml_LIBRARIES}
-	${Qt5WebKit_LIBRARIES}
-	${Qt5WebKitWidgets_LIBRARIES}
 	${Qt5Network_LIBRARIES}
 	${Qt5OpenGL_LIBRARIES}
 	${Qt5Svg_LIBRARIES}

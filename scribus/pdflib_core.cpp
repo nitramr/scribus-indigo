@@ -1240,7 +1240,8 @@ PDFLibCore::PDF_Begin_FindUsedFonts(SCFonts &AllFonts, const QMap<QString, QMap<
 				{
 					if (Options.Version < PDFOptions::PDFVersion_14)
 						StdFonts.insert(ind2PDFabr[pgit->annotation().Font()], "");
-					ReallyUsed.insert(pgit->itemText.defaultStyle().charStyle().font().replacementName(), DocFonts[pgit->itemText.defaultStyle().charStyle().font().replacementName()]);
+					QString replacementName = pgit->itemText.defaultStyle().charStyle().font().replacementName();
+					ReallyUsed.insert(replacementName, DocFonts[replacementName]);
 				}
 			}
 			uint start = pgit->isTextFrame() ? (uint) pgit->firstInFrame() : 0;
@@ -1391,7 +1392,6 @@ static QList<Pdf::Resource> asColorSpace(QList<PdfSpotC> spotMapValues)
 	return result;
 }
 
-
 void PDFLibCore::PDF_WriteStandardFonts()
 {
 	int a = 0;
@@ -1410,7 +1410,7 @@ void PDFLibCore::PDF_WriteStandardFonts()
 			PutDoc("24 /breve /caron /circumflex /dotaccent /hungarumlaut /ogonek /ring /tilde\n");
 			PutDoc("39 /quotesingle 96 /grave 128 /bullet /dagger /daggerdbl /ellipsis /emdash /endash /florin /fraction /guilsinglleft /guilsinglright\n");
 			PutDoc("/minus /perthousand /quotedblbase /quotedblleft /quotedblright /quoteleft /quoteright /quotesinglbase /trademark /fi /fl /Lslash /OE /Scaron\n");
-			PutDoc("/Ydieresis /Zcaron /dotlessi /lslash /oe /scaron /zcaron 164 /currency 166 /brokenbar 168 /dieresis /copyright /ordfeminine 172 /logicalnot\n");
+			PutDoc("/Ydieresis /Zcaron /dotlessi /lslash /oe /scaron /zcaron 160 /Euro 164 /currency 166 /brokenbar 168 /dieresis /copyright /ordfeminine 172 /logicalnot\n");
 			PutDoc("/.notdef /registered /macron /degree /plusminus /twosuperior /threesuperior /acute /mu 183 /periodcentered /cedilla /onesuperior /ordmasculine\n");
 			PutDoc("188 /onequarter /onehalf /threequarters 192 /Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla /Egrave /Eacute /Ecircumflex\n");
 			PutDoc("/Edieresis /Igrave /Iacute /Icircumflex /Idieresis /Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply /Oslash\n");
@@ -1663,6 +1663,25 @@ PdfId PDFLibCore::PDF_EmbedFontObject(const QByteArray& font, const QByteArray& 
 	return embeddedFontObject;
 }
 
+QByteArray PDFLibCore::PDF_GenerateSubsetTag(const QByteArray& fontName, QList<uint> usedGlyphs)
+{
+	uint hash, mod;
+	QVector<uint> glyphVec = usedGlyphs.toVector();
+
+	hash = qHashBits(fontName.constData(), fontName.size(), 0);
+	hash = qHashBits(glyphVec.constData(), glyphVec.size() * sizeof(uint), hash);
+
+	QByteArray subsetTag(6, (char) 0);
+	for (int i = 0; i < 6; ++i)
+	{
+		mod = hash % 26;
+		subsetTag[i] = 'A' + mod;
+		hash = (hash - mod) / 26;
+	}
+
+	return subsetTag;
+}
+
 PdfId PDFLibCore::PDF_WriteFontDescriptor(const QByteArray& fontName, ScFace& face, ScFace::FontFormat fformat, PdfId embeddedFontObject)
 {
 	PdfId fontDescriptor = writer.newObject();
@@ -1788,7 +1807,7 @@ PdfFont PDFLibCore::PDF_EncodeCidFont(const QByteArray& fontName, ScFace& face, 
 	writer.startObj(fontObject2);
 	PutDoc("<<\n/Type /Font\n/Subtype /Type0\n");
 	PutDoc("/Name " + Pdf::toName(fontName) + "\n");
-	PutDoc("/BaseFont "+ baseFont +"\n");
+	PutDoc("/BaseFont "+ Pdf::toName(baseFont) +"\n");
 	PutDoc("/Encoding /Identity-H\n");
 	PutDoc("/ToUnicode "+Pdf::toPdf(fontToUnicode2)+" 0 R\n");
 	PutDoc("/DescendantFonts [");
@@ -1797,7 +1816,7 @@ PdfFont PDFLibCore::PDF_EncodeCidFont(const QByteArray& fontName, ScFace& face, 
 		PutDoc("/Subtype /CIDFontType0");
 	else
 		PutDoc("/Subtype /CIDFontType2");
-	PutDoc("/BaseFont " + baseFont);
+	PutDoc("/BaseFont " + Pdf::toName(baseFont));
 	PutDoc("/FontDescriptor " + Pdf::toPdf(fontDes)+ " 0 R");
 	PutDoc("/CIDSystemInfo <</Ordering(Identity)/Registry(Adobe)/Supplement 0>>");
 	PutDoc("/DW 1000");
@@ -1939,7 +1958,7 @@ PdfFont PDFLibCore::PDF_EncodeSimpleFont(const QByteArray& fontName, ScFace& fac
 		PutDoc("<<\n/Type /Font\n/Subtype ");
 		PutDoc(subtype + "\n");
 		PutDoc("/Name "+Pdf::toName(fontName)+"S"+Pdf::toPdf(Fc)+"\n");
-		PutDoc("/BaseFont "+baseFont+"\n");
+		PutDoc("/BaseFont "+ Pdf::toName(baseFont) + "\n");
 		PutDoc("/FirstChar 0\n");
 		PutDoc("/LastChar "+Pdf::toPdf(chCount-1)+"\n");
 		PutDoc("/Widths "+Pdf::toPdf(fontWidths2)+" 0 R\n");
@@ -1950,47 +1969,43 @@ PdfFont PDFLibCore::PDF_EncodeSimpleFont(const QByteArray& fontName, ScFace& fac
 		writer.endObj(fontObject2);
 		pageData.FObjects[fontName + "S"+Pdf::toPdf(Fc)] = fontObject2;
 	} // for(Fc)
+
+	return result;
+}
+
+PdfFont PDFLibCore::PDF_EncodeFormFont(const QByteArray& fontName, ScFace& face, const QByteArray& baseFont, const QByteArray& subtype, PdfId fontDes)
+{
+	PdfFont formFont;
+	formFont.name = Pdf::toName(fontName) + "Form";
+	formFont.usage = Used_in_Forms;
+	
 	PdfId fontWidthsForm = writer.newObject();
 	writer.startObj(fontWidthsForm);
 	PutDoc("[ 0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 ");
 	for (uint ww = 32; ww < 256; ++ww)
 	{
-		uint glyph = face.char2CMap(ww);
-		if (gl.contains(glyph))
+		int unicode = Pdf::fromPDFDocEncoding(ww);
+		uint glyph  = face.char2CMap(unicode);
+		if (glyph > 0)
 			PutDoc(Pdf::toPdf(static_cast<int>(face.glyphWidth(glyph)* 1000))+" ");
 		else
 			PutDoc("0 ");
 	}
 	PutDoc("]");
 	writer.endObj(fontWidthsForm);
+
 	PdfId fontObjectForm = writer.newObject();
-	PdfFont formFont;
-	formFont.name = Pdf::toName(fontName) + "Form";
-	formFont.usage = Used_in_Forms;
 	writer.startObj(fontObjectForm);
 	PutDoc("<<\n/Type /Font\n/Subtype ");
 	PutDoc(subtype + "\n");
-	//				if (fformat == ScFace::SFNT || fformat == ScFace::TTCF)
-	//				{
-	//					PutDoc("/TrueType\n");
-	PutDoc("/Name " + formFont.name+ "\n");
-	pageData.FObjects[fontName + "Form"] = fontObjectForm;
-	UsedFontsF.insert(face.replacementName(), formFont);
-	/*				}
-	 else
-	 {
-	 PutDoc("/Type1\n");
-	 PutDoc("/Name /"+face.psName().replace( QRegExp("[\\s\\/\\{\\[\\]\\}\\<\\>\\(\\)\\%]"), "_" )+"\n");
-	 pageData.FObjects[face.psName().replace( QRegExp("[\\s\\/\\{\\[\\]\\}\\<\\>\\(\\)\\%]"), "_" )] = ObjCounter;
-	 UsedFontsF.insert(it.key(), "/"+face.psName().replace( QRegExp("[\\s\\/\\{\\[\\]\\}\\<\\>\\(\\)\\%]"), "_" ));
-	 } */
-	PutDoc("/BaseFont "+Pdf::toName(sanitizeFontName(face.psName()))+"\n");
+	PutDoc("/Name " + formFont.name + "\n");
+	PutDoc("/BaseFont "+ Pdf::toName(baseFont) +"\n");
 	PutDoc("/Encoding << \n");
 	PutDoc("/Differences [ \n");
 	PutDoc("24 /breve /caron /circumflex /dotaccent /hungarumlaut /ogonek /ring /tilde\n");
 	PutDoc("39 /quotesingle 96 /grave 128 /bullet /dagger /daggerdbl /ellipsis /emdash /endash /florin /fraction /guilsinglleft /guilsinglright\n");
 	PutDoc("/minus /perthousand /quotedblbase /quotedblleft /quotedblright /quoteleft /quoteright /quotesinglbase /trademark /fi /fl /Lslash /OE /Scaron\n");
-	PutDoc("/Ydieresis /Zcaron /dotlessi /lslash /oe /scaron /zcaron 164 /currency 166 /brokenbar 168 /dieresis /copyright /ordfeminine 172 /logicalnot\n");
+	PutDoc("/Ydieresis /Zcaron /dotlessi /lslash /oe /scaron /zcaron 160 /Euro 164 /currency 166 /brokenbar 168 /dieresis /copyright /ordfeminine 172 /logicalnot\n");
 	PutDoc("/.notdef /registered /macron /degree /plusminus /twosuperior /threesuperior /acute /mu 183 /periodcentered /cedilla /onesuperior /ordmasculine\n");
 	PutDoc("188 /onequarter /onehalf /threequarters 192 /Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla /Egrave /Eacute /Ecircumflex\n");
 	PutDoc("/Edieresis /Igrave /Iacute /Icircumflex /Idieresis /Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply /Oslash\n");
@@ -2005,7 +2020,10 @@ PdfFont PDFLibCore::PDF_EncodeSimpleFont(const QByteArray& fontName, ScFace& fac
 	PutDoc(">>");
 	writer.endObj(fontObjectForm);
 
-	return result;
+	pageData.FObjects[fontName + "Form"] = fontObjectForm;
+	UsedFontsF.insert(face.replacementName(), formFont);
+
+	return formFont;
 }
 
 /*
@@ -2043,9 +2061,12 @@ PdfFont PDFLibCore::PDF_WriteTtfSubsetFont(const QByteArray& fontName, ScFace& f
 	glyphs.prepend(0);
 	QByteArray subset = sfnt::subsetFace(font, glyphs);
 	/*dumpFont(face.psName()+"subs.ttf", subset);*/
+	QByteArray baseFont   = sanitizeFontName(face.psName());
+	QByteArray subsetTag  = PDF_GenerateSubsetTag(baseFont, glyphs);
+	QByteArray subsetName = subsetTag + '+' + baseFont;
 	PdfId embeddedFontObj = PDF_EmbedFontObject(subset, QByteArray());
-	PdfId fontDes = PDF_WriteFontDescriptor(fontName, face, face.format(), embeddedFontObj);
-	QByteArray baseFont = Pdf::toName(sanitizeFontName(face.psName()));
+	PdfId fontDes = PDF_WriteFontDescriptor(subsetName, face, face.format(), embeddedFontObj);
+	
 	ScFace::FaceEncoding fullEncoding, subEncoding;
 	QMap<uint,uint> glyphmap;
 	face.glyphNames(fullEncoding);
@@ -2055,7 +2076,7 @@ PdfFont PDFLibCore::PDF_WriteTtfSubsetFont(const QByteArray& fontName, ScFace& f
 		qDebug() << glyphs[i] << " --> " << i << QChar(fullEncoding[glyphs[i]].first);
 	}
 	
-	PdfFont result = PDF_EncodeCidFont(fontName, face, baseFont, fontDes, fullEncoding, glyphmap);
+	PdfFont result = PDF_EncodeCidFont(fontName, face, subsetName, fontDes, fullEncoding, glyphmap);
 	return result;
 }
 
@@ -2084,9 +2105,12 @@ PdfFont PDFLibCore::PDF_WriteCffSubsetFont(const QByteArray& fontName, ScFace& f
 	glyphs.prepend(0);
 	QByteArray subset = cff::subsetFace(font, glyphs);
 	/*dumpFont(face.psName()+"subs.cff", subset);*/
+	QByteArray baseFont   = sanitizeFontName(face.psName());
+	QByteArray subsetTag  = PDF_GenerateSubsetTag(baseFont, glyphs);
+	QByteArray subsetName = subsetTag + '+' + baseFont;
 	PdfId embeddedFontObj = PDF_EmbedFontObject(subset, "/CIDFontType0C");
-	PdfId fontDes = PDF_WriteFontDescriptor(fontName, face, face.format(), embeddedFontObj);
-	QByteArray baseFont = Pdf::toName(sanitizeFontName(face.psName()));
+	PdfId fontDes = PDF_WriteFontDescriptor(subsetName, face, face.format(), embeddedFontObj);
+
 	ScFace::FaceEncoding fullEncoding, subEncoding;
 	QMap<uint,uint> glyphmap;
 	face.glyphNames(fullEncoding);
@@ -2096,7 +2120,7 @@ PdfFont PDFLibCore::PDF_WriteCffSubsetFont(const QByteArray& fontName, ScFace& f
 		qDebug() << glyphs[i] << " --> " << i << QChar(fullEncoding[glyphs[i]].first);
 	}
 	
-	PdfFont result = PDF_EncodeCidFont(fontName, face, baseFont, fontDes, fullEncoding, glyphmap);
+	PdfFont result = PDF_EncodeCidFont(fontName, face, subsetName, fontDes, fullEncoding, glyphmap);
 	return result;
 }
 
@@ -2280,23 +2304,44 @@ void PDFLibCore::PDF_Begin_WriteUsedFonts(SCFonts &AllFonts, const QMap<QString,
 			{
 				PdfId embeddedFontObject = PDF_EmbedFontObject(it.key(), face);
 				
-				PdfId fontDescriptor = PDF_WriteFontDescriptor(fontName, face, fformat, embeddedFontObject);
+				QByteArray baseFont  = sanitizeFontName(face.psName());
+				PdfId fontDescriptor = PDF_WriteFontDescriptor(baseFont, face, fformat, embeddedFontObject);
 				
 				ScFace::FaceEncoding gl;
 				face.glyphNames(gl);
+
+				// #14550 : for TTF fonts, we already avoid using the Postscript glyph name table
+				// as it is notoriously unreliable. We hence retrieve glyph names using unicode cmap
+				// and adobe glyph names uniXXXX convention. Unfortunately we may still not get all
+				// required glyph names and some glyphs may not have a name anyway. So check we have
+				// ps names for all glyphs we need and if not, then use CID encoding
+				bool hasNeededGlyphNames = face.hasNames() && (gl.count() >= usedGlyphs.count());
+				if ((fformat == ScFace::SFNT || fformat == ScFace::TTCF))
+				{
+					QMap<uint, FPointArray>::const_iterator it;
+					for (it = usedGlyphs.begin(); it != usedGlyphs.end(); ++it)
+					{
+						int glyphIndex = it.key();
+						hasNeededGlyphNames &= gl.contains(glyphIndex);
+						if (!hasNeededGlyphNames)
+							break;
+					}
+				}
 				
-				QByteArray baseFont = Pdf::toName(sanitizeFontName(face.psName()));
+				QByteArray subtype = (fformat == ScFace::SFNT || fformat == ScFace::TTCF) ? "/TrueType" : "/Type1";
 				
-				if ((face.isSymbolic() || !face.hasNames() || Options.Version == PDFOptions::PDFVersion_X4 || face.type() == ScFace::OTF) &&
+				if ((face.isSymbolic() || !hasNeededGlyphNames || Options.Version == PDFOptions::PDFVersion_X4 || face.type() == ScFace::OTF) &&
 					(fformat == ScFace::SFNT || fformat == ScFace::TTCF))
 				{
 					pdfFont = PDF_EncodeCidFont(fontName, face, baseFont, fontDescriptor, gl, QMap<uint,uint>());
 				}
 				else
 				{
-					QByteArray subtype = (fformat == ScFace::SFNT || fformat == ScFace::TTCF) ? "/TrueType" : "/Type1";
 					pdfFont = PDF_EncodeSimpleFont(fontName, face, baseFont, subtype, embeddedFontObject != 0, fontDescriptor, gl);
 				}
+
+				if ((Options.Version != PDFOptions::PDFVersion_X4) && (face.type() != ScFace::OTF))
+					PDF_EncodeFormFont(fontName, face, baseFont, subtype, fontDescriptor);
 			}
 			pdfFont.usage = Used_in_Content;
 		}
@@ -9103,11 +9148,11 @@ bool PDFLibCore::PDF_Annotation(PageItem *ite, uint PNr)
 					  break;
 					case 2:
 					  // XFDF
-					  PutDoc("/Flags 64"); // bit 6 on
+					  PutDoc("/Flags 32"); // bit 6 on
 					  break;
 					case 3:
 					  // PDF
-					  PutDoc("/Flags 512"); // bit 9 on
+					  PutDoc("/Flags 256"); // bit 9 on
 					  break;
 					case 0:
 					default:

@@ -5,6 +5,7 @@ a copyright and/or license notice that predates the release of Scribus 1.3.2
 for which a new license (GPL+exception) is in place.
 */
 
+#include <QDebug>
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -321,8 +322,9 @@ void Prefs_KeyboardShortcuts::insertActions()
 	QTreeWidgetItem *currMenuLVI = NULL;
 	QTreeWidgetItem *prevLVI = NULL;
 	QTreeWidgetItem *prevMenuLVI = NULL;
-	for (QVector< QPair<QString, QStringList> >::Iterator itmenu = defMenus->begin(); itmenu != defMenus->end(); ++itmenu )
+	for (int i = 0; i < defMenus->count(); ++i)
 	{
+		const QPair<QString, QStringList> &actionStrings = defMenus->at(i);
 		if (firstMenu)
 		{
 			currMenuLVI = new QTreeWidgetItem(keyTable);
@@ -332,15 +334,24 @@ void Prefs_KeyboardShortcuts::insertActions()
 			currMenuLVI = new QTreeWidgetItem(keyTable, prevMenuLVI);
 		Q_CHECK_PTR(currMenuLVI);
 		lviToMenuMap.append(currMenuLVI);
-		currMenuLVI->setText(0, itmenu->first);
+		currMenuLVI->setText(0, actionStrings.first);
 		currMenuLVI->setExpanded(true);
 		currMenuLVI->setFlags(Qt::ItemIsEnabled);
 		prevMenuLVI=currMenuLVI;
 		first=true;
 		currLVI=0;
 		prevLVI=0;
-		for ( QStringList::Iterator it = itmenu->second.begin(); it != itmenu->second.end(); ++it )
+		for (int j = 0; j < actionStrings.second.count(); ++j)
 		{
+			QString actionName = actionStrings.second.at(j);
+			if (!keyMap.contains(actionName))
+			{
+				qDebug() << "The action " << actionName << " is not defined in shortcut map";
+				continue;
+			}
+			const Keys &actionKeys = keyMap[actionName];
+			if (actionKeys.cleanMenuText.isEmpty())
+				continue;
 			if (first)
 			{
 				currLVI = new QTreeWidgetItem(currMenuLVI);
@@ -349,15 +360,16 @@ void Prefs_KeyboardShortcuts::insertActions()
 			else
 				currLVI = new QTreeWidgetItem(currMenuLVI, prevLVI);
 			Q_CHECK_PTR(currLVI);
-			lviToActionMap.insert(currLVI, *it);
-			currLVI->setText(0, keyMap[*it].cleanMenuText);
-			currLVI->setText(1, keyMap[*it].keySequence.toString(QKeySequence::NativeText));
+			lviToActionMap.insert(currLVI, actionName);
+			currLVI->setText(0, actionKeys.cleanMenuText);
+			currLVI->setText(1, actionKeys.keySequence.toString(QKeySequence::NativeText));
 			prevLVI=currLVI;
 		}
 	}
 	//Non menu actions
-	for (QVector< QPair<QString, QStringList> >::Iterator itmenu = defNonMenuActions->begin(); itmenu != defNonMenuActions->end(); ++itmenu )
+	for (int i = 0; i < defNonMenuActions->count(); ++i)
 	{
+		const QPair<QString, QStringList> &actionStrings = defNonMenuActions->at(i);
 		if (firstMenu)
 		{
 			currMenuLVI = new QTreeWidgetItem(keyTable);
@@ -367,15 +379,24 @@ void Prefs_KeyboardShortcuts::insertActions()
 			currMenuLVI = new QTreeWidgetItem(keyTable, prevMenuLVI);
 		Q_CHECK_PTR(currMenuLVI);
 		lviToMenuMap.append(currMenuLVI);
-		currMenuLVI->setText(0, itmenu->first);
+		currMenuLVI->setText(0, actionStrings.first);
 		currMenuLVI->setExpanded(true);
 		currMenuLVI->setFlags(Qt::ItemIsEnabled);
 		prevMenuLVI=currMenuLVI;
 		first=true;
 		currLVI=0;
 		prevLVI=0;
-		for ( QStringList::Iterator it = itmenu->second.begin(); it != itmenu->second.end(); ++it )
+		for (int j = 0; j < actionStrings.second.count(); ++j)
 		{
+			QString actionName = actionStrings.second.at(j);
+			if (!keyMap.contains(actionName))
+			{
+				qDebug() << "The action " << actionName << " is not defined in shortcut map";
+				continue;
+			}
+			const Keys &actionKeys = keyMap[actionName];
+			if (actionKeys.cleanMenuText.isEmpty())
+				continue;
 			if (first)
 			{
 				currLVI=new QTreeWidgetItem(currMenuLVI);
@@ -384,9 +405,9 @@ void Prefs_KeyboardShortcuts::insertActions()
 			else
 				currLVI=new QTreeWidgetItem(currMenuLVI, prevLVI);
 			Q_CHECK_PTR(currLVI);
-			lviToActionMap.insert(currLVI, *it);
-			currLVI->setText(0, keyMap[*it].cleanMenuText);
-			currLVI->setText(1, keyMap[*it].keySequence.toString(QKeySequence::NativeText));
+			lviToActionMap.insert(currLVI, actionName);
+			currLVI->setText(0, actionKeys.cleanMenuText);
+			currLVI->setText(1, actionKeys.keySequence.toString(QKeySequence::NativeText));
 			prevLVI=currLVI;
 		}
 	}
@@ -416,9 +437,14 @@ void Prefs_KeyboardShortcuts::applySearch( const QString & newss )
 
 void Prefs_KeyboardShortcuts::dispKey(QTreeWidgetItem* qlvi, QTreeWidgetItem*)
 {
+	if (setKeyButton->isChecked())
+	{
+		releaseKeyboard();
+		setKeyButton->setChecked(false);
+	}
 	if (qlvi!=0 && lviToActionMap.contains(qlvi))
 	{
-		selectedLVI=qlvi;
+		selectedLVI = qlvi;
 		QString actionName=lviToActionMap[qlvi];
 		if (actionName.isEmpty())
 			return;
@@ -432,8 +458,12 @@ void Prefs_KeyboardShortcuts::dispKey(QTreeWidgetItem* qlvi, QTreeWidgetItem*)
 	{
 		noKey->setChecked(true);
 		keyDisplay->setText("");
-		selectedLVI=0;
+		selectedLVI = 0;
 	}
+	noKey->setEnabled(selectedLVI != 0);
+	userDef->setEnabled(selectedLVI != 0);
+	setKeyButton->setEnabled(selectedLVI != 0);
+	keyDisplay->setEnabled(selectedLVI != 0);
 }
 
 bool Prefs_KeyboardShortcuts::event( QEvent* ev )
@@ -468,21 +498,25 @@ void Prefs_KeyboardShortcuts::keyPressEvent(QKeyEvent *k)
 				keyCode |= k->key();
 				keyDisplay->setText(getTrKeyText(keyCode));
 				releaseKeyboard();
-				if (checkKey(keyCode))
+				if (selectedLVI)
 				{
-					ScMessageBox::information(this, CommonStrings::trWarning,
-											tr("The %1 key sequence is already in use by \"%2\"")
-												.arg(getTrKeyText(keyCode))
-												.arg(getAction(keyCode)));
-					selectedLVI->setText(1,keyMap[lviToActionMap[selectedLVI]].keySequence.toString(QKeySequence::NativeText));
-					keyDisplay->setText(keyMap[lviToActionMap[selectedLVI]].keySequence.toString(QKeySequence::NativeText));
-				}
-				else
-				{
-					QKeySequence newKeySequence(keyCode);
-					selectedLVI->setText(1, newKeySequence.toString(QKeySequence::NativeText));
-					keyMap[lviToActionMap[selectedLVI]].keySequence=newKeySequence;
-					userDef->setChecked(true);
+					QString actionName = lviToActionMap[selectedLVI];
+					if (checkKey(keyCode))
+					{
+						ScMessageBox::information(this, CommonStrings::trWarning,
+												tr("The %1 key sequence is already in use by \"%2\"")
+													.arg(getTrKeyText(keyCode))
+													.arg(getAction(keyCode)));
+						selectedLVI->setText(1,keyMap[actionName].keySequence.toString(QKeySequence::NativeText));
+						keyDisplay->setText(keyMap[actionName].keySequence.toString(QKeySequence::NativeText));
+					}
+					else
+					{
+						QKeySequence newKeySequence(keyCode);
+						selectedLVI->setText(1, newKeySequence.toString(QKeySequence::NativeText));
+						keyMap[actionName].keySequence=newKeySequence;
+						userDef->setChecked(true);
+					}
 				}
 				setKeyButton->setChecked(false);
 		}

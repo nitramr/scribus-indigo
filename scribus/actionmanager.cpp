@@ -76,7 +76,7 @@ void ActionManager::init(ScribusMainWindow *mw)
 	im = IconManager::instance();
 
 #ifdef Q_OS_MAC
-	noIcon = im->loadIcon("noicon.xpm");
+	noIcon = im->loadIcon("noicon.png");
 #endif
 
 	createActions();
@@ -964,12 +964,12 @@ void ActionManager::initExtrasMenuActions()
 	scrActions->insert(name, new ScrAction("", defaultKey(name), mainWindow));
 	name="extrasUpdateDocument";
 	scrActions->insert(name, new ScrAction("", defaultKey(name), mainWindow));
-	name="extrasTestQTQuick2_1";
-	scrActions->insert(name, new ScrAction("", defaultKey(name), mainWindow));
+	//name="extrasTestQTQuick2_1";
+	//scrActions->insert(name, new ScrAction("", defaultKey(name), mainWindow));
 	connect( (*scrActions)["extrasManageImages"], SIGNAL(triggered()), mainWindow, SLOT(StatusPic()) );
 	connect( (*scrActions)["extrasGenerateTableOfContents"], SIGNAL(triggered()), mainWindow, SLOT(generateTableOfContents()) );
 	connect( (*scrActions)["extrasUpdateDocument"], SIGNAL(triggered()), mainWindow, SLOT(updateDocument()) );
-	connect( (*scrActions)["extrasTestQTQuick2_1"], SIGNAL(triggered()), mainWindow, SLOT(testQTQuick2_1()) );
+	//connect( (*scrActions)["extrasTestQTQuick2_1"], SIGNAL(triggered()), mainWindow, SLOT(testQTQuick2_1()) );
 }
 
 
@@ -1742,7 +1742,7 @@ void ActionManager::languageChange()
 	(*scrActions)["extrasDeHyphenateText"]->setTexts( tr("Dehyphenate Text"));
 	(*scrActions)["extrasGenerateTableOfContents"]->setTexts( tr("&Generate Table Of Contents"));
 	(*scrActions)["extrasUpdateDocument"]->setTexts( tr("&Update Document"));
-	(*scrActions)["extrasTestQTQuick2_1"]->setTexts( tr("Test Qt Quick"));
+	//(*scrActions)["extrasTestQTQuick2_1"]->setTexts( tr("Test Qt Quick"));
 	//Windows Menu
 	(*scrActions)["windowsCascade"]->setText( tr("&Cascade"));
 	(*scrActions)["windowsTile"]->setText( tr("&Tile"));
@@ -1919,7 +1919,7 @@ void ActionManager::createDefaultShortcuts()
 	defKeys.insert("editSelectAllOnLayer", Qt::CTRL+Qt::ALT+Qt::Key_A);
 	defKeys.insert("editDeselectAll", Qt::CTRL+Qt::SHIFT+Qt::Key_A);
 	defKeys.insert("editSearchReplace", Qt::CTRL+Qt::Key_F);
-	defKeys.insert("editStyles", QKeySequence(Qt::Key_F3));
+	defKeys.insert("editStyles", QKeySequence(Qt::Key_F4));
 	defKeys.insert("styleImageEffects", Qt::CTRL+Qt::Key_E);
 
 	//Item Menu
@@ -1946,7 +1946,7 @@ void ActionManager::createDefaultShortcuts()
 
 	//Tool menu
 	defKeys.insert("toolsProperties", Qt::Key_F2);
-	//defKeys.insert("toolsText", Qt::Key_F2);
+	defKeys.insert("toolsText", Qt::Key_F3);
 	defKeys.insert("toolsLayers", Qt::Key_F6);
 
 	//toolbar only items
