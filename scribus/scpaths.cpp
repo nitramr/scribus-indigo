@@ -11,6 +11,7 @@ for which a new license (GPL+exception) is in place.
 #include <QProcess>
 #include <QStandardPaths>
 
+#include "prefsmanager.h"
 #include "scconfig.h"
 #include "scribusapp.h"
 
@@ -521,7 +522,7 @@ QString ScPaths::applicationDataDir(bool createIfNotExists)
 {
 	QString dataDir;
 #ifdef APPLICATION_DATA_DIR
-	dataDir =  QDir::homePath() + "/" + APPLICATION_DATA_DIR + "/";
+	prefsDir =  QDir::homePath() + "/" + APPLICATION_DATA_DIR + "/";
 #else
 	dataDir =  QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/";
 #endif
@@ -605,6 +606,16 @@ QString ScPaths::userPaletteFilesDir(bool createIfNotExists)
 		useFilesDirectory.mkpath(useFilesDirectory.absolutePath());
 		useFilesDirectory.mkpath(useFilesDirectory.absolutePath() + "/locked");
 	}
+	return useFilesDirectory.absolutePath()+"/";
+}
+
+QString ScPaths::userTemplateDir(bool createIfNotExists)
+{
+	if (PrefsManager::instance()->appPrefs.pathPrefs.documentTemplates.isEmpty())
+		return QString();
+	QDir useFilesDirectory(PrefsManager::instance()->appPrefs.pathPrefs.documentTemplates);
+	if(createIfNotExists && !useFilesDirectory.exists())
+		useFilesDirectory.mkpath(useFilesDirectory.absolutePath());
 	return useFilesDirectory.absolutePath()+"/";
 }
 

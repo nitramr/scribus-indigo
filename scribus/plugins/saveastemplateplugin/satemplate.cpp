@@ -11,6 +11,7 @@ for which a new license (GPL+exception) is in place.
 #include "satdialog.h"
 
 #include "scpaths.h"
+#include "ui/scmessagebox.h"
 #include "scribuscore.h"
 #include "scribusdoc.h"
 #include "scribusview.h"
@@ -122,19 +123,22 @@ void MenuSAT::RunSATPlug(ScribusDoc* doc)
 	QString currentFile(doc->DocName);
 	bool hasName = doc->hasName;
 	bool isModified = doc->isModified();
-	QString userTemplatesDir = PrefsManager::instance()->appPrefs.pathPrefs.documentTemplates;
+	QString userTemplatesDir = ScPaths::instance().userTemplateDir(true);
 	PrefsContext* dirs = PrefsManager::instance()->prefsFile->getContext("dirs");
 	QString oldCollect = dirs->get("collect", ".");
-	QString templatesDir = ".";
 	if (userTemplatesDir.isEmpty())
-		templatesDir = ScPaths::applicationDataDir() + "templates";
-	else
 	{
-		if (userTemplatesDir.right(1) == "/")
-			userTemplatesDir.chop(1);
-		templatesDir = userTemplatesDir;
+		ScMessageBox::warning(doc->scMW(), QObject::tr("No User Template Location Defined"), "<qt>" +
+										QObject::tr("You have not defined a location to save document templates to. Please go to Scribus application Preferences and define a location in the Paths section.") + "</qt>",
+										QMessageBox::Ok,	// GUI default
+										QMessageBox::Ok);	// batch default
+		return;
 	}
-	dirs->set("collect", templatesDir);
+
+	if (userTemplatesDir.right(1) == "/")
+		userTemplatesDir.chop(1);
+
+	dirs->set("collect", userTemplatesDir);
 	if (doc->scMW()->fileCollect().isEmpty())
 		return;
 	if (oldCollect != ".")
@@ -144,30 +148,29 @@ void MenuSAT::RunSATPlug(ScribusDoc* doc)
 	QString docName = docPath.right(docPath.length() - docPath.lastIndexOf('/') - 1);
 	docName = docName.left(docName.lastIndexOf(".s"));
 
-	if (currentFile !=  doc->DocName)
+	if (currentFile ==  doc->DocName)
+		return;
+	SATDialog* satdia = new SATDialog(doc->scMW(),docName,
+									  static_cast<int>(doc->pageWidth() + 0.5),
+									  static_cast<int>(doc->pageHeight() + 0.5));
+	if (satdia->exec())
 	{
-		SATDialog* satdia = new SATDialog(doc->scMW(),docName,
-										  static_cast<int>(doc->pageWidth() + 0.5),
-										  static_cast<int>(doc->pageHeight() + 0.5));
-		if (satdia->exec())
-		{
-			sat* s = new sat(doc, satdia, docPath.right(docPath.length() - docPath.lastIndexOf('/') - 1),docDir);
-			s->createImages();
-			s->createTmplXml();
-			delete s;
-		}
-		// Restore the state that was before ScMW->Collect()
-		doc->DocName = currentFile;
-		doc->hasName = hasName;
-		doc->setModified(isModified);
-		QString newCaption=currentFile;
-		if (isModified)
-			newCaption.append('*');
-		doc->scMW()->updateActiveWindowCaption(newCaption);
-		doc->scMW()->removeRecent(docPath);
-		QDir::setCurrent(currentPath);
-		delete satdia;
+		sat* s = new sat(doc, satdia, docPath.right(docPath.length() - docPath.lastIndexOf('/') - 1),docDir);
+		s->createImages();
+		s->createTmplXml();
+		delete s;
 	}
+	// Restore the state that was before ScMW->Collect()
+	doc->DocName = currentFile;
+	doc->hasName = hasName;
+	doc->setModified(isModified);
+	QString newCaption=currentFile;
+	if (isModified)
+		newCaption.append('*');
+	doc->scMW()->updateActiveWindowCaption(newCaption);
+	doc->scMW()->removeRecent(docPath);
+	QDir::setCurrent(currentPath);
+	delete satdia;
 }
 
 // --------------------- CLASS sat ------------------------------------------------//

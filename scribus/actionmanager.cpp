@@ -844,7 +844,7 @@ void ActionManager::initToolsMenuActions()
 	name="toolsInsertSpiral";
 	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("16/draw-spiral.png"), im->loadIcon("22/draw-spiral.png"), "", defaultKey(name), mainWindow, modeDrawSpiral));
 	name="toolsInsertLine";
-	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("Stift16.xpm"), im->loadIcon("Stift.xpm"), "", defaultKey(name), mainWindow, modeDrawLine));
+	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("Stift16.png"), im->loadIcon("Stift.png"), "", defaultKey(name), mainWindow, modeDrawLine));
 	name="toolsInsertBezier";
 	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("16/draw-path.png"), im->loadIcon("22/draw-path.png"), "", defaultKey(name), mainWindow, modeDrawBezierLine));
 	name="toolsInsertFreehandLine";
@@ -860,7 +860,7 @@ void ActionManager::initToolsMenuActions()
 	name="toolsZoomOut";
 	scrActions->insert(name, new ScrAction(im->loadIcon("16/zoom-out.png"), im->loadIcon("22/zoom-out.png"), "", defaultKey(name), mainWindow));
 	name="toolsEditContents";
-	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("Editm16.png"), im->loadIcon("Editm.xpm"), "", defaultKey(name), mainWindow, modeEdit));
+	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("Editm16.png"), im->loadIcon("editm.png"), "", defaultKey(name), mainWindow, modeEdit));
 	name="toolsEditWithStoryEditor";
 	scrActions->insert(name, new ScrAction(ScrAction::DataInt, im->loadIcon("16/story-editor.png"), im->loadIcon("22/story-editor.png"), "", defaultKey(name), mainWindow, modeStoryEditor));
 	name="toolsLinkTextFrame";
