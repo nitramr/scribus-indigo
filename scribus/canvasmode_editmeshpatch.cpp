@@ -105,10 +105,18 @@ void CanvasMode_EditMeshPatch::drawControls(QPainter* p)
 
 void CanvasMode_EditMeshPatch::drawControlsMeshPoint(QPainter* psx, const meshPoint& mp, bool isSelected)
 {
-	QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p8m = QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p14r = QPen(Qt::red, 18.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p14w = QPen(Qt::white, 18.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+	QColor colorPathHandle = PrefsManager().instance()->appPrefs.displayPrefs.pathEditHandleColor;
+
+	QPen p8r = QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8m = QPen(colorPath, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8e = QPen(Qt::white, 6.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p14r = QPen(colorPathHandle, 16.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p14w = QPen(Qt::white, 16.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+
+	psx->setRenderHint(QPainter::Antialiasing);
+
+	// mesh edit: color
 	if (m_view->editStrokeGradient == 8)
 	{
 		if (isSelected)
@@ -118,34 +126,48 @@ void CanvasMode_EditMeshPatch::drawControlsMeshPoint(QPainter* psx, const meshPo
 		psx->drawPoint(QPointF(mp.gridPoint.x(), mp.gridPoint.y()));
 		psx->setPen(QPen(mp.color, 14.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 		psx->drawPoint(QPointF(mp.gridPoint.x(), mp.gridPoint.y()));
-		if (isSelected)
+		if (isSelected){
 			psx->setPen(p8r);
-		else
+			psx->drawPoint(QPointF(mp.controlColor.x(), mp.controlColor.y()));
+		}
+		else{
 			psx->setPen(p8m);
-		psx->drawPoint(QPointF(mp.controlColor.x(), mp.controlColor.y()));
+			psx->drawPoint(QPointF(mp.controlColor.x(), mp.controlColor.y()));
+			psx->setPen(p8e);
+			psx->drawPoint(QPointF(mp.controlColor.x(), mp.controlColor.y()));
+		}
 	}
+	// mesh edit: node
 	else if (m_view->editStrokeGradient == 9)
 	{
-		if (isSelected)
-			psx->setPen(p8r);
-		else
+		if (isSelected){
 			psx->setPen(p8m);
-		psx->drawPoint(QPointF(mp.gridPoint.x(), mp.gridPoint.y()));
+			psx->drawPoint(QPointF(mp.gridPoint.x(), mp.gridPoint.y()));
+	}
+		else{
+			psx->setPen(p8m);
+			psx->drawPoint(QPointF(mp.gridPoint.x(), mp.gridPoint.y()));
+			psx->setPen(p8e);
+			psx->drawPoint(QPointF(mp.gridPoint.x(), mp.gridPoint.y()));
+		}
 	}
 }
 
 void CanvasMode_EditMeshPatch::drawControlsMeshPatch(QPainter* psx, PageItem* currItem)
 {
-	QPen p1b = QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	QPen p1bd = QPen(Qt::blue, 1.0 / m_canvas->m_viewMode.scale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
-	QPen p8b = QPen(Qt::blue, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p8r = QPen(Qt::red, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p8m = QPen(Qt::magenta, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p14r = QPen(Qt::red, 18.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
-	QPen p14w = QPen(Qt::white, 18.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QColor colorPath = PrefsManager().instance()->appPrefs.displayPrefs.pathEditColor;
+	QColor colorPathHandle = PrefsManager().instance()->appPrefs.displayPrefs.pathEditHandleColor;
+
+	QPen p1b = QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+	QPen p1bd = QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::DotLine, Qt::FlatCap, Qt::MiterJoin);
+	QPen p8r = QPen(colorPathHandle, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8m = QPen(colorPath, 8.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+	QPen p8e = QPen(Qt::white, 6.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+
 	psx->setTransform(currItem->getTransform(), true);
 	psx->setPen(p1b);
 	psx->setBrush(Qt::NoBrush);
+	psx->setRenderHint(QPainter::Antialiasing);
 
 	for (int col = 0; col < currItem->meshGradientPatches.count(); col++)
 	{
@@ -179,7 +201,7 @@ void CanvasMode_EditMeshPatch::drawControlsMeshPatch(QPainter* psx, PageItem* cu
 		Bez.cubicTo(mp2.controlBottom.x(), mp2.controlBottom.y(), mp3.controlTop.x(), mp3.controlTop.y(), mp3.gridPoint.x(), mp3.gridPoint.y());
 		Bez.cubicTo(mp3.controlLeft.x(), mp3.controlLeft.y(), mp4.controlRight.x(), mp4.controlRight.y(), mp4.gridPoint.x(), mp4.gridPoint.y());
 		Bez.cubicTo(mp4.controlTop.x(), mp4.controlTop.y(), mp1.controlBottom.x(), mp1.controlBottom.y(), mp1.gridPoint.x(), mp1.gridPoint.y());
-		psx->setPen(QPen(Qt::red, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
+		psx->setPen(QPen(colorPath, 1.0 / m_canvas->m_viewMode.scale, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin));
 		psx->drawPath(Bez);
 		drawControlsMeshPoint(psx, mp1, m_patchPoint == useTL);
 		drawControlsMeshPoint(psx, mp2, m_patchPoint == useTR);
@@ -192,64 +214,81 @@ void CanvasMode_EditMeshPatch::drawControlsMeshPatch(QPainter* psx, PageItem* cu
 				psx->setPen(p1bd);
 				psx->drawLine(QPointF(mp1.gridPoint.x(), mp1.gridPoint.y()), QPointF(mp1.controlBottom.x(), mp1.controlBottom.y()));
 				psx->drawLine(QPointF(mp1.gridPoint.x(), mp1.gridPoint.y()), QPointF(mp1.controlRight.x(), mp1.controlRight.y()));
-				if (m_gradientPoint == useControlB)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp1.controlBottom.x(), mp1.controlBottom.y()));
-				if (m_gradientPoint == useControlR)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+				if (m_gradientPoint != useControlB){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp1.controlBottom.x(), mp1.controlBottom.y()));
+				}
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp1.controlRight.x(), mp1.controlRight.y()));
+				if (m_gradientPoint != useControlR){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp1.controlRight.x(), mp1.controlRight.y()));
+				}
 			}
 			else if (m_patchPoint == useTR)
 			{
 				psx->setPen(p1bd);
 				psx->drawLine(QPointF(mp2.gridPoint.x(), mp2.gridPoint.y()), QPointF(mp2.controlBottom.x(), mp2.controlBottom.y()));
 				psx->drawLine(QPointF(mp2.gridPoint.x(), mp2.gridPoint.y()), QPointF(mp2.controlLeft.x(), mp2.controlLeft.y()));
-				if (m_gradientPoint == useControlL)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp2.controlLeft.x(), mp2.controlLeft.y()));
-				if (m_gradientPoint == useControlB)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+				if (m_gradientPoint != useControlL){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp2.controlLeft.x(), mp2.controlLeft.y()));
+				}
+
+				psx->setPen(p8m);
 				psx->drawPoint(QPointF(mp2.controlBottom.x(), mp2.controlBottom.y()));
+				if (m_gradientPoint != useControlB){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp2.controlBottom.x(), mp2.controlBottom.y()));
+				}
 			}
 			else if (m_patchPoint == useBR)
 			{
 				psx->setPen(p1bd);
 				psx->drawLine(QPointF(mp3.gridPoint.x(), mp3.gridPoint.y()), QPointF(mp3.controlTop.x(), mp3.controlTop.y()));
 				psx->drawLine(QPointF(mp3.gridPoint.x(), mp3.gridPoint.y()), QPointF(mp3.controlLeft.x(), mp3.controlLeft.y()));
-				if (m_gradientPoint == useControlL)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp3.controlLeft.x(), mp3.controlLeft.y()));
-				if (m_gradientPoint == useControlT)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+				if (m_gradientPoint != useControlL){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp3.controlLeft.x(), mp3.controlLeft.y()));
+				}
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp3.controlTop.x(), mp3.controlTop.y()));
+				if (m_gradientPoint != useControlT){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp3.controlTop.x(), mp3.controlTop.y()));
+				}
 			}
 			else if (m_patchPoint == useBL)
 			{
 				psx->setPen(p1bd);
 				psx->drawLine(QPointF(mp4.gridPoint.x(), mp4.gridPoint.y()), QPointF(mp4.controlTop.x(), mp4.controlTop.y()));
 				psx->drawLine(QPointF(mp4.gridPoint.x(), mp4.gridPoint.y()), QPointF(mp4.controlRight.x(), mp4.controlRight.y()));
-				if (m_gradientPoint == useControlR)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp4.controlRight.x(), mp4.controlRight.y()));
-				if (m_gradientPoint == useControlT)
-					psx->setPen(p8r);
-				else
-					psx->setPen(p8m);
+				if (m_gradientPoint != useControlR){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp4.controlRight.x(), mp4.controlRight.y()));
+				}
+
+				psx->setPen(p8r);
 				psx->drawPoint(QPointF(mp4.controlTop.x(), mp4.controlTop.y()));
+				if (m_gradientPoint != useControlT){
+					psx->setPen(p8e);
+					psx->drawPoint(QPointF(mp4.controlTop.x(), mp4.controlTop.y()));
+				}
+
 			}
 		}
 	}
