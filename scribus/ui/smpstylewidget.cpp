@@ -174,13 +174,7 @@ void SMPStyleWidget::setDoc(ScribusDoc *doc)
 void SMPStyleWidget::fillColorCombo(ColorList &colors)
 {
 	backColor_->clear();
-	backColor_->addItem(CommonStrings::tr_NoneColor);
-	ColorList::Iterator itend=colors.end();
-	ScribusDoc* doc = colors.document();
-	for (ColorList::Iterator it = colors.begin(); it != itend; ++it)
-	{
-		backColor_->insertItem(it.value(), doc, it.key());
-	}
+	backColor_->setColors(colors, true);
 	backColor_->view()->setMinimumWidth(backColor_->view()->maximumViewportSize().width()+24);
 }
 
@@ -204,7 +198,7 @@ void SMPStyleWidget::fillNumFormatCombo()
 void SMPStyleWidget::fillNumerationsCombo()
 {
 	QStringList numNames;
-	foreach (QString numName, m_Doc->numerations.keys())
+	foreach (const QString& numName, m_Doc->numerations.keys())
 		numNames.append(numName);
 	numNames.sort();
 	numComboBox->clear();
@@ -295,9 +289,11 @@ void SMPStyleWidget::show(ParagraphStyle *pstyle, QList<ParagraphStyle> &pstyles
 		spaceBelow->setValue(pstyle->gapAfter(), pstyle->isInhGapAfter());
 		spaceBelow->setParentValue(parent->gapAfter());
 
-
 		alignment->setStyle(pstyle->alignment(), direction->getStyle(), pstyle->isInhAlignment());
 		alignment->setParentItem(parent->alignment(), direction->getStyle());
+
+		direction->setStyle(pstyle->direction());
+		direction->setParentItem(parent->direction());
 
 		bool hasParentTabs = pstyle->isInhTabValues();
 		QList<ParagraphStyle::TabRecord> tabs;

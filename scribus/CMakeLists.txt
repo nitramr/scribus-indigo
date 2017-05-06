@@ -101,6 +101,7 @@ set(SCRIBUS_UI_SRC
 	ui/cmsprefsbase.ui
 	ui/cmykfwbase.ui
 	ui/colorpalette.ui
+	ui/colorsandfillsbase.ui
 	ui/downloadspalettebase.ui
 	ui/gradientaddedit.ui
 	ui/gradienteditor.ui
@@ -127,7 +128,6 @@ set(SCRIBUS_UI_SRC
 	ui/pageitemattributes.ui
 	ui/pagepalette_pagesbase.ui
 	ui/pagepalette_masterpagesbase.ui
-	ui/paintmanagerbase.ui
 	ui/picsearch.ui
 	ui/picsearchoptions.ui
 	ui/picstatus.ui
@@ -216,6 +216,7 @@ set(SCRIBUS_MOC_CLASSES
 	actionmanager.h
 	appmodehelper.h
 	canvas.h
+	canvasgesture.h
 	canvasgesture_cellselect.h
 	canvasgesture_columnresize.h
 	canvasgesture_rowresize.h
@@ -232,8 +233,10 @@ set(SCRIBUS_MOC_CLASSES
 	canvasmode_editweldpoint.h
 	canvasmode_eyedropper.h
 	canvasmode_framelinks.h
+	canvasmode_imageimport.h
 	canvasmode_measurements.h
 	canvasmode_normal.h
+	canvasmode_objimport.h
 	chartablemodel.h
 	chartableview.h
 	collect4output.h
@@ -288,6 +291,7 @@ set(SCRIBUS_MOC_CLASSES
 	scimagecachedir.h
 	scimagecachefile.h
 	scimagecachemanager.h
+	scmimedata.h
 	scplugin.h
 	scprintengine.h
 	scraction.h
@@ -336,6 +340,8 @@ set(SCRIBUS_MOC_CLASSES
 	ui/colorchart.h
 	ui/colorcombo.h
 	ui/colorlistbox.h
+	ui/colorlistmodel.h
+	ui/colorsandfills.h
 	ui/contextmenu.h
 	ui/cpalette.h
 	ui/cupsoptions.h
@@ -361,6 +367,7 @@ set(SCRIBUS_MOC_CLASSES
 	ui/gtfiledialog.h
 	ui/guidemanager.h
 	ui/helpbrowser.h
+	ui/helpnavigation.h
 	ui/hruler.h
 	ui/hyask.h
 	ui/imageinfodialog.h
@@ -377,6 +384,8 @@ set(SCRIBUS_MOC_CLASSES
 	ui/javadocs.h
 	ui/latexeditor.h
 	ui/layers.h
+	ui/linecombo.h
+	ui/linkbutton.h
 	ui/loremipsum.h
 	ui/markinsert.h
 	ui/mark2item.h
@@ -385,7 +394,6 @@ set(SCRIBUS_MOC_CLASSES
 	ui/marknote.h
 	ui/marksmanager.h
 	ui/markvariabletext.h
-	ui/margindialog.h
 	ui/marginpresetlayout.h
 	ui/marginwidget.h
 	ui/newmarginwidget.h
@@ -409,8 +417,8 @@ set(SCRIBUS_MOC_CLASSES
 	ui/pagepalette_pages.h
 	ui/pagepalette_masterpages.h
 	ui/pagepalette_widgets.h
+	ui/pagepropertiesdialog.h
 	ui/pageselector.h
-	ui/paintmanager.h
 	ui/patternpropsdialog.h
 	ui/pdfexportdialog.h
 	ui/picsearch.h
@@ -478,6 +486,8 @@ set(SCRIBUS_MOC_CLASSES
 	ui/resourcemanager.h
 	ui/resourcemanagerlicense.h
 	ui/rulermover.h
+	ui/sccolorslider.h
+	ui/sccombobox.h
 	ui/scdockpalette.h
 	ui/scescapecatcher.h
 	ui/scfilewidget.h
@@ -511,6 +521,7 @@ set(SCRIBUS_MOC_CLASSES
 	ui/smlinestyle.h
 	ui/smlinestylewidget.h
 	ui/smpstylewidget.h
+	ui/smradiobutton.h
 	ui/smreplacedia.h
 	ui/smsccombobox.h
 	ui/smscrspinbox.h
@@ -525,6 +536,7 @@ set(SCRIBUS_MOC_CLASSES
 	ui/spalette.h
 	ui/spiralvectordialog.h
 	ui/spiralwidget.h
+	ui/splash.h
 	ui/storyeditor.h
 	ui/stylemanager.h
 	ui/styleselect.h
@@ -813,6 +825,8 @@ set(SCRIBUS_SOURCES
 	ui/colorchart.cpp
 	ui/colorcombo.cpp
 	ui/colorlistbox.cpp
+	ui/colorlistmodel.cpp
+	ui/colorsandfills.cpp
 	ui/contextmenu.cpp
 	ui/cpalette.cpp
 	ui/cupsoptions.cpp
@@ -863,7 +877,6 @@ set(SCRIBUS_SOURCES
 	ui/marknote.cpp
 	ui/marksmanager.cpp
 	ui/markvariabletext.cpp
-	ui/margindialog.cpp
 	ui/marginpresetlayout.cpp
 	ui/marginwidget.cpp
 	ui/newmarginwidget.cpp
@@ -887,8 +900,8 @@ set(SCRIBUS_SOURCES
 	ui/pagepalette_pages.cpp
 	ui/pagepalette_masterpages.cpp
 	ui/pagepalette_widgets.cpp
+	ui/pagepropertiesdialog.cpp
 	ui/pageselector.cpp
-	ui/paintmanager.cpp
 	ui/patternpropsdialog.cpp
 	ui/pdfexportdialog.cpp
 	ui/picsearch.cpp

@@ -20,6 +20,8 @@
 #include <QList>
 #include <QMap>
 #include <QString>
+
+#include "scribusapi.h"
 #include "vgradient.h"
 
 class ColorList;
@@ -38,9 +40,14 @@ class SCFonts;
 *   - makeNamedResourcesUnique(ResourceCollection& other)     ... changes mapping in 'other' to unique names
 *   Merge options:  keep old def, keep new def, rename new resource to unique name
 */
-class ResourceCollection
+class SCRIBUS_API ResourceCollection
 {
 public:
+		ResourceCollection()
+		: availableFonts(NULL),
+		availableColors(NULL),
+		availableGradients(NULL)
+		{}
 	void collectFont(const QString& name)         { if (!name.isEmpty()) m_fonts.insert(name,name); }
 	void collectFontfeatures(const QString& name) { if (!name.isEmpty()) m_fontfeatures.insert(name,name); }
 	void collectPattern(const QString& name)      { if (!name.isEmpty()) m_patterns.insert(name,name); }

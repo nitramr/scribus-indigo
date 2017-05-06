@@ -1166,6 +1166,12 @@ bool Scribus134Format::readColor(ColorList& colors, ScXmlStreamAttributes& attrs
 	color.setSpotColor( attrs.valueAsBool("Spot", false) );
 	color.setRegistrationColor( attrs.valueAsBool("Register", false) );
 	QString name = attrs.valueAsString("NAME");
+	if (name == "All")
+	{
+		color.setSpotColor(true);
+		color.setRegistrationColor(true);
+		color.setColor(255, 255, 255, 255);
+	}
 	colors.insert((name.isEmpty()) ? color.name() : name, color);
 	return true;
 }
@@ -2145,7 +2151,6 @@ bool Scribus134Format::readPattern(ScribusDoc* doc, ScXmlStreamReader& reader, c
 		if (!reader.isStartElement() || reader.name() != "PatternItem") 
 			continue;
 
-		QStringRef tName = reader.name();
 		ScXmlStreamAttributes tAtt = reader.attributes();
 			
 		ItemInfo itemInfo;
@@ -3139,7 +3144,7 @@ bool Scribus134Format::loadPage(const QString & fileName, int pageNumber, bool M
 	QString tmp;
 	QMap<int,PageItem*> TableID;
 	QList<PageItem*> TableItems;
-	QMap<PageItem*, int> groupID;
+	QHash<PageItem*, int> groupID;
 	double pageX = 0, pageY = 0;
 	QMap<int,int> layerTrans;
 	int maxLayer = 0, maxLevel = 0, a = 0;

@@ -502,9 +502,10 @@ void ScribusView::requestMode(int appMode)
 	}
 	if (updateNecessary)
 		updateCanvas();
-	setCursorBasedOnAppMode(appMode);
+	//setCursorBasedOnAppMode(appMode);
 }
 
+/*
 void ScribusView::setCursorBasedOnAppMode(int appMode)
 {
 	IconManager* im=IconManager::instance();
@@ -541,7 +542,7 @@ void ScribusView::setCursorBasedOnAppMode(int appMode)
 		case modeDrawRegularPolygon:
 			if (docSelectionCount!=0)
 				Deselect(true);
-			setCursor(im->loadCursor("drawpolylineframe.png"));
+			setCursor(im->loadCursor("drawpolyline.png"));
 			break;
 		case modeMagnifier:
 			if (docSelectionCount!=0)
@@ -592,7 +593,7 @@ void ScribusView::setCursorBasedOnAppMode(int appMode)
 		break;
 	}
 }
-
+*/
 
 
 /*
@@ -1730,8 +1731,14 @@ bool ScribusView::slotSetCurs(int x, int y)
 
 		if (textFrame->itemText.length() > 0)
 		{
-			int pos = qMax(qMin(textFrame->itemText.cursorPosition() - 1, textFrame->itemText.length()), 0);
-			Doc->currentStyle.charStyle() = textFrame->itemText.charStyle(pos);
+			int pos = qMax(0, qMin(textFrame->itemText.cursorPosition(), textFrame->itemText.length()));
+			if (textFrame->itemText.lengthOfSelection() > 0)
+			{
+				int firstSelected = textFrame->itemText.startOfSelection();
+				int lastSelected  = qMax(textFrame->itemText.endOfSelection() - 1, 0);
+				pos = qMax(firstSelected, qMin(pos, lastSelected));
+			}
+			Doc->currentStyle.charStyle() = textFrame->currentCharStyle();
 			emit ItemCharStyle(Doc->currentStyle.charStyle());
 			emit ItemTextEffects(Doc->currentStyle.charStyle().effects());
 			emit ItemTextAlign(textFrame->itemText.paragraphStyle(pos).alignment());

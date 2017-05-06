@@ -116,7 +116,7 @@ class PdfPainter: public TextLayoutPainter
 {
 	QByteArray m_glyphBuffer;
 	QByteArray m_pathBuffer;
-	PageItem* m_item;
+//	PageItem* m_item;
 	QMap<QString, PdfFont>  m_UsedFontsP;
 	PDFLibCore *m_pdf;
 	uint m_PNr;
@@ -131,7 +131,7 @@ public:
 	PdfPainter(PageItem *ite, PDFLibCore *pdf, uint num, const ScPage* pag) :
 		m_glyphBuffer(),
 		m_pathBuffer(),
-		m_item(ite),
+//		m_item(ite),
 		m_pdf(pdf),
 		m_PNr(num),
 		m_page(pag)
@@ -170,7 +170,7 @@ public:
 				m_pathBuffer += FToStr(qMax(gl.scaleH, 0.1)) + " 0 0 " + FToStr(qMax(gl.scaleV, 0.1)) + " 0 0 cm\n";
 
 				if (!FillColor.isEmpty())
-					m_pathBuffer += pdfFont.name + Pdf::toPdf(gl.glyph) + " Do\n";
+					m_pathBuffer += pdfFont.name + "_gl" + Pdf::toPdf(gl.glyph) + " Do\n";
 				m_pathBuffer += "Q\n";
 			}
 			else
@@ -271,7 +271,7 @@ public:
 				m_pathBuffer += FToStr(qMax(gc.scaleH(), 0.1)) + " 0 0 " + FToStr(qMax(gc.scaleV(), 0.1)) + " 0 0 cm\n";
 
 				if (!FillColor.isEmpty())
-					m_pathBuffer += pdfFont.name + Pdf::toPdf(gl.glyph) + " Do\n";
+					m_pathBuffer += pdfFont.name + "_gl" + Pdf::toPdf(gl.glyph) + " Do\n";
 
 				FPointArray outline = font().glyphOutline(gl.glyph);
 				QTransform mat;
@@ -807,7 +807,6 @@ QByteArray PDFLibCore::EncStream(const QByteArray & in, PdfId ObjNum)
 
 QByteArray PDFLibCore::EncString(const QByteArray & in, PdfId ObjNum)
 {
-	QByteArray tmp;
 	if (in.length() < 1)
 		return "<>";
 	if (!Options.Encrypt)
@@ -980,12 +979,6 @@ bool PDFLibCore::PDF_Begin_Doc(const QString& fn, SCFonts &AllFonts, const QMap<
 	if (!writer.open(fn))
 		return false;
 	
-	QFileInfo fiBase(fn);
-	QString baseDir = fiBase.absolutePath();
-
-//	QString tmp;
-//	QFileInfo fd;
-//	QString fext;
 	inPattern = 0;
 	Bvie = vi;
 	BookMinUse = false;
@@ -1080,8 +1073,7 @@ void PDFLibCore::PDF_Begin_Catalog()
 	{
 		PutDoc("/OpenAction << /S /JavaScript /JS (this."+Pdf::toPdfDocEncoding(Options.openAction)+"\\(\\)) >>\n");
 	}
-	QString tmp;
-	QDateTime dt = QDateTime::currentDateTime().toUTC();
+	QDateTime dt = QDateTime::currentDateTimeUtc();
 	Datum = Pdf::toDateString(dt);
 //    "D:";
 //	tmp.sprintf("%4d", d.year());
@@ -1375,20 +1367,16 @@ static QByteArray sanitizeFontName(QString fn)
 static QList<Pdf::Resource> asColorSpace(QList<PdfICCD> iccCSlist)
 {
 	QList<Pdf::Resource> result;
-	foreach (Pdf::Resource r, iccCSlist)
-	{
+	foreach (const Pdf::Resource& r, iccCSlist)
 		result.append(r);
-	}
 	return result;
 }
 
 static QList<Pdf::Resource> asColorSpace(QList<PdfSpotC> spotMapValues)
 {
 	QList<Pdf::Resource> result;
-	foreach (Pdf::Resource r, spotMapValues)
-	{
+	foreach (const Pdf::Resource& r, spotMapValues)
 		result.append(r);
-	}
 	return result;
 }
 
@@ -1435,6 +1423,13 @@ PdfFont PDFLibCore::PDF_WriteType3Font(const QByteArray& name, ScFace& face, con
 	result.method = Use_Type3;
 	result.encoding = Encode_256;
 
+	// TrueType font rasterizers use non-zero winding file rule,
+	// vs even-odd for current Postscript font rasterizers
+	// Note: OTF CFF2 will also use non-zero winding rule, so
+	// change code below when adding CCF2 support to Scribus
+	// ref: https://www.microsoft.com/typography/OTSpec/cff2.htm
+	bool useNonZeroRule = (face.type() == ScFace::TTF);
+
 	uint SubFonts = 0;
 	int glyphCount = 0;
 	double minx =  std::numeric_limits<double>::max();
@@ -1480,7 +1475,7 @@ PdfFont PDFLibCore::PDF_WriteType3Font(const QByteArray& name, ScFace& face, con
 				np2 = gly.point(poi+2);
 				fon += FToStr(np.x()) + " " + FToStr(np.y()) + " " + FToStr(np1.x()) + " " + FToStr(np1.y()) + " " + FToStr(np2.x()) + " " + FToStr(np2.y()) + " c\n";
 			}
-			fon += "h f*\n";
+			fon += useNonZeroRule? "h f\n" : "h f*\n";
 			np = getMinClipF(&gly);
 			np1 = getMaxClipF(&gly);
 		}
@@ -1577,6 +1572,13 @@ PdfFont PDFLibCore::PDF_WriteGlyphsAsXForms(const QByteArray& fontName, ScFace& 
 	result.method = Use_XForm;
 	result.encoding = Encode_224;
 
+	// TrueType font rasterizers use non-zero winding file rule,
+	// vs even-odd for current Postscript font rasterizers
+	// Note: OTF CFF2 will also use non-zero winding rule, so
+	// change code below when adding CCF2 support to Scribus
+	// ref: https://www.microsoft.com/typography/OTSpec/cff2.htm
+	bool useNonZeroRule = (face.type() == ScFace::TTF);
+
 	QByteArray fon;
 	QMap<uint,FPointArray>::ConstIterator ig;
 	for (ig = RealGlyphs.cbegin(); ig != RealGlyphs.cend(); ++ig)
@@ -1611,7 +1613,7 @@ PdfFont PDFLibCore::PDF_WriteGlyphsAsXForms(const QByteArray& fontName, ScFace& 
 				FToStr(np1.x()) + " " + FToStr(-np1.y()) + " " +
 				FToStr(np2.x()) + " " + FToStr(-np2.y()) + " c\n";
 			}
-			fon += "h f*\n";
+			fon += useNonZeroRule? "h f\n" : "h f*\n";
 			np = getMinClipF(&gly);
 			np1 = getMaxClipF(&gly);
 		}
@@ -1637,7 +1639,7 @@ PdfFont PDFLibCore::PDF_WriteGlyphsAsXForms(const QByteArray& fontName, ScFace& 
 			PutDoc("\n/Filter /FlateDecode");
 		PutDoc(" >>\nstream\n"+EncStream(fon, fontGlyphXForm)+"\nendstream");
 		writer.endObj(fontGlyphXForm);
-		pageData.XObjects[fontName + Pdf::toPdf(ig.key())] = fontGlyphXForm;
+		pageData.XObjects[fontName + "_gl" + Pdf::toPdf(ig.key())] = fontGlyphXForm;
 	}
 	return result;
 }
@@ -2550,7 +2552,7 @@ void PDFLibCore::PDF_Begin_Layers()
 
 bool PDFLibCore::PDF_TemplatePage(const ScPage* pag, bool )
 {
-	QByteArray tmp, tmpOut;
+	QByteArray tmpOut;
 	ActPageP = pag;
 	PageItem* ite;
 	QList<PageItem*> PItems;
@@ -2706,6 +2708,7 @@ bool PDFLibCore::PDF_TemplatePage(const ScPage* pag, bool )
 								}
 								if (!tmpOut.isEmpty())
 								{
+									PutPage("q\n");
 									if (ite->GrType == 14)
 										PutPage(tmpOut);
 									else
@@ -2714,6 +2717,7 @@ bool PDFLibCore::PDF_TemplatePage(const ScPage* pag, bool )
 										PutPage(SetClipPath(ite));
 										PutPage(ite->fillRule ? "h\nf*\n" : "h\nf\n");
 									}
+									PutPage("Q\n");
 								}
 							}
 							else
@@ -2726,13 +2730,13 @@ bool PDFLibCore::PDF_TemplatePage(const ScPage* pag, bool )
 							}
 						}
 						PutPage("q\n");
+						PutPage(SetPathAndClip(ite, true));
 						if (ite->imageFlippedH())
 							PutPage("-1 0 0 1 "+FToStr(ite->width())+" 0 cm\n");
 						if (ite->imageFlippedV())
 							PutPage("1 0 0 -1 0 "+FToStr(-ite->height())+" cm\n");
 						if (ite->imageClip.size() != 0)
 							PutPage(SetImagePathAndClip(ite));
-						PutPage(SetPathAndClip(ite, true));
 						if ((ite->imageIsAvailable) && (!ite->Pfile.isEmpty()))
 						{
 							if (!PDF_Image(ite, ite->Pfile, ite->imageXScale(), ite->imageYScale(), ite->imageXOffset(), -ite->imageYOffset(), false, ite->IProfile, ite->UseEmbedded, ite->IRender, &tmpOut))
@@ -4409,6 +4413,7 @@ bool PDFLibCore::PDF_ProcessItem(QByteArray& output, PageItem* ite, const ScPage
 					}
 					if (!tmpOut.isEmpty())
 					{
+						tmp += "q\n";
 						if (ite->GrType == 14)
 							tmp += tmpOut;
 						else
@@ -4417,6 +4422,7 @@ bool PDFLibCore::PDF_ProcessItem(QByteArray& output, PageItem* ite, const ScPage
 							tmp += SetClipPath(ite);
 							tmp += (ite->fillRule ? "h\nf*\n" : "h\nf\n");
 						}
+						tmp += "Q\n";
 					}
 				}
 				else
@@ -4429,13 +4435,13 @@ bool PDFLibCore::PDF_ProcessItem(QByteArray& output, PageItem* ite, const ScPage
 				}
 			}
 			tmp += "q\n";
+			tmp += SetPathAndClip(ite, true);
 			if (ite->imageFlippedH())
 				tmp += "-1 0 0 1 "+FToStr(ite->width())+" 0 cm\n";
 			if (ite->imageFlippedV())
 				tmp += "1 0 0 -1 0 "+FToStr(-ite->height())+" cm\n";
 			if (ite->imageClip.size() != 0)
 				tmp += SetImagePathAndClip(ite);
-			tmp += SetPathAndClip(ite, true);
 			if ((ite->imageIsAvailable) && (!ite->Pfile.isEmpty()))
 			{
 				if (!PDF_Image(ite, ite->Pfile, ite->imageXScale(), ite->imageYScale(), ite->imageXOffset(), -ite->imageYOffset(), false, ite->IProfile, ite->UseEmbedded, ite->IRender, &tmpOut))
@@ -4535,6 +4541,7 @@ bool PDFLibCore::PDF_ProcessItem(QByteArray& output, PageItem* ite, const ScPage
 					}
 					if (!tmpOut.isEmpty())
 					{
+						tmp += "q\n";
 						if (ite->GrType == 14)
 							tmp += tmpOut;
 						else
@@ -4543,6 +4550,7 @@ bool PDFLibCore::PDF_ProcessItem(QByteArray& output, PageItem* ite, const ScPage
 							tmp += SetClipPath(ite);
 							tmp += (ite->fillRule ? "h\nf*\n" : "h\nf\n");
 						}
+						tmp += "Q\n";
 					}
 				}
 				else
@@ -6154,7 +6162,6 @@ QByteArray PDFLibCore::PDF_TransparenzFill(PageItem *currItem)
 				TransVec.append(a);
 			}
 		}
-		QByteArray TRes("");
 		PdfId patObject = writer.newObject();
 		writer.startObj(patObject);
 		PutDoc("<<\n/Type /Pattern\n");
@@ -8628,7 +8635,7 @@ bool PDFLibCore::PDF_3DAnnotation(PageItem *ite, uint)
 
 void PDFLibCore::PDF_RadioButtons()
 {
-	QMap<PageItem*, QList<PageItem*> > rbMap;
+	QHash<PageItem*, QList<PageItem*> > rbMap;
 	for (int a = 0; a < pageData.radioButtonList.count(); a++)
 	{
 		PageItem* pa = pageData.radioButtonList[a]->Parent;
@@ -8641,7 +8648,7 @@ void PDFLibCore::PDF_RadioButtons()
 			rbMap.insert(pa, aList);
 		}
 	}
-	QMap<PageItem*, QList<PageItem*> >::Iterator it;
+	QHash<PageItem*, QList<PageItem*> >::Iterator it;
 	for (it = rbMap.begin(); it != rbMap.end(); ++it)
 	{
 		QList<PageItem*> bList = it.value();
@@ -10104,7 +10111,6 @@ bool PDFLibCore::PDF_Image(PageItem* c, const QString& fn, double sx, double sy,
 	if (ext.isEmpty())
 		ext = getImageType(fn);
 	ScImage img;
-	QByteArray tmp, tmpy, dummy, cmd1, cmd2;
 	QString BBox;
 	QChar  tc;
 	bool   found = false;
@@ -10113,6 +10119,7 @@ bool PDFLibCore::PDF_Image(PageItem* c, const QString& fn, double sx, double sy,
 	bool   bitmapFromGS = false;
 	bool   isEmbeddedPDF = false;
 	bool   hasGrayProfile = false;
+	bool   avoidPDFXOutputIntentProf = false;
 	QString profInUse = Profil;
 	int    afl = Options.Resolution;
 	double ax, ay, a2, a1;
@@ -10347,10 +10354,7 @@ bool PDFLibCore::PDF_Image(PageItem* c, const QString& fn, double sx, double sy,
 				{
 					ScImage img3;
 					int components = 0;
-					PdfId embeddedProfile = writer.newObject();
-					writer.startObj(embeddedProfile);
 					QByteArray dataP;
-					PdfICCD dataD;
 					if ((Embedded) && (!Options.EmbeddedI))
 						img3.getEmbeddedProfile(fn, &dataP, &components);
 					if ((dataP.isEmpty()) || ((img.imgInfo.colorspace == ColorSpaceGray) && (hasColorEffect) && (components == 1)))
@@ -10392,8 +10396,16 @@ bool PDFLibCore::PDF_Image(PageItem* c, const QString& fn, double sx, double sy,
 							components = 3;
 						}
 					}
-					if (!ICCProfiles.contains(profInUse))
+					// PDF-X/4 requires that CMYK images using the same profile as PDF/X output intent
+					// do not be tagged with an ICC profile so they can go through color conversion
+					// pipeline without alteration
+					if (Options.Version == PDFOptions::PDFVersion_X4)
+						avoidPDFXOutputIntentProf = (profInUse == Options.PrintProf);
+					if (!ICCProfiles.contains(profInUse) && !avoidPDFXOutputIntentProf)
 					{
+						PdfICCD dataD;
+						PdfId embeddedProfile = writer.newObject();
+						writer.startObj(embeddedProfile);
 						PutDoc("<<\n");
 						if ((Options.CompressMethod != PDFOptions::Compression_None) && Options.Compress)
 						{
@@ -10648,7 +10660,7 @@ bool PDFLibCore::PDF_Image(PageItem* c, const QString& fn, double sx, double sy,
 				outType = ColorSpaceMonochrome;
 			else
 				outType = getOutputType(exportToGrayscale, exportToCMYK);
-			if ((outType != ColorSpaceMonochrome) && (doc.HasCMS) && (Options.UseProfiles2))
+			if ((outType != ColorSpaceMonochrome) && (doc.HasCMS) && (Options.UseProfiles2) && (!avoidPDFXOutputIntentProf))
 			{
 				PutDoc("/ColorSpace "+ICCProfiles[profInUse].ICCArray+"\n");
 				PutDoc("/Intent /");
@@ -10801,7 +10813,6 @@ bool PDFLibCore::PDF_End_Doc(const QString& PrintPr, const QString& Name, int Co
 
 void PDFLibCore::PDF_End_Bookmarks()
 {
-	QByteArray tmp;
 	BookMItem* ip;
 	QByteArray Inhal = "";
 	QMap<int,QByteArray> Inha;

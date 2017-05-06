@@ -102,7 +102,6 @@ PropertiesPalette_Text::PropertiesPalette_Text( QWidget* parent) : QWidget(paren
 	fontfeaturesWidget = new PropertyWidget_FontFeatures(textTree);
 	fontfeaturesWidgetItem = textTree->addItem(fontfeaturesWidget, tr("Font Features"));
 
-
 	pathTextWidgets = new PropertyWidget_PathText(textTree);
 	pathTextItem = textTree->addItem(pathTextWidgets, tr("Path Text Properties"));
 
@@ -120,6 +119,9 @@ PropertiesPalette_Text::PropertiesPalette_Text( QWidget* parent) : QWidget(paren
 
 	connect(lineSpacingModeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(handleLineSpacingMode(int)));
 	connect(langCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLang(int)));
+
+	connect(fontfeaturesWidget, SIGNAL(needsRelayout()), this, SLOT(updateTreeLayout()));
+	connect(parEffectWidgets,   SIGNAL(needsRelayout()), this, SLOT(updateTreeLayout()));
 
 	m_haveItem = false;
 	setEnabled(false);
@@ -395,7 +397,7 @@ void PropertiesPalette_Text::changeLang(int id)
 	if (!m_haveDoc || !m_haveItem || !m_ScMW || m_ScMW->scriptIsRunning())
 		return;
 	QStringList languageList;
-	LanguageManager::instance()->fillInstalledStringList(&languageList, true);
+	LanguageManager::instance()->fillInstalledStringList(&languageList);
 	QString abrv = LanguageManager::instance()->getAbbrevFromLang(languageList.value(id),false);
 	Selection tempSelection(this, false);
 	tempSelection.addItem(m_item, true);
@@ -443,7 +445,7 @@ void PropertiesPalette_Text::showLanguage(QString w)
 	if (!m_ScMW || m_ScMW->scriptIsRunning())
 		return;
 	QStringList lang;
-	LanguageManager::instance()->fillInstalledStringList(&lang, true);
+	LanguageManager::instance()->fillInstalledStringList(&lang);
 	QString langName = LanguageManager::instance()->getLangFromAbbrev(w, true);
 
 	bool sigBlocked  = langCombo->blockSignals(true);
@@ -520,6 +522,9 @@ void PropertiesPalette_Text::updateStyle(const ParagraphStyle& newCurrent)
 	showFontSize(charStyle.fontSize());
 	showLanguage(charStyle.language());
 
+	showParStyle(newCurrent.parent());
+	showCharStyle(charStyle.parent());
+
 	bool tmp = m_haveItem;
 	m_haveItem = false;
 
@@ -548,6 +553,11 @@ void PropertiesPalette_Text::updateTextStyles()
 {
 	paraStyleCombo->updateFormatList();
 	charStyleCombo->updateFormatList();
+}
+
+void PropertiesPalette_Text::updateTreeLayout()
+{
+	textTree->doItemsLayout();
 }
 
 void PropertiesPalette_Text::showAlignment(int e)
@@ -709,7 +719,7 @@ void PropertiesPalette_Text::languageChange()
 	lineSpacingModeCombo->setCurrentIndex(oldLineSpacingMode);
 
 	QStringList languageList;
-	LanguageManager::instance()->fillInstalledStringList(&languageList, true);
+	LanguageManager::instance()->fillInstalledStringList(&languageList);
 	int oldLang = langCombo->currentIndex();
 	langCombo->clear();
 	langCombo->addItems(languageList);

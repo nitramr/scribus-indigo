@@ -56,7 +56,6 @@ for which a new license (GPL+exception) is in place.
 ScAnnot::ScAnnot(QWidget* parent, PageItem *it, int Seite, int b, int h, ColorList Farben, ScribusView* vie)
 		: QDialog( parent )
 {
-	ScribusDoc* doc = Farben.document();
 	m_annotation = it->annotation();
 
 	setupUi(this);
@@ -103,15 +102,11 @@ ScAnnot::ScAnnot(QWidget* parent, PageItem *it, int Seite, int b, int h, ColorLi
 
 	ColorList::Iterator cit;
 	BorderC->setPixmapType(ColorCombo::fancyPixmaps);
-	BorderC->addItem(CommonStrings::tr_NoneColor);
+	BorderC->setColors(Farben, true);
 	if (annotation.borderColor() == CommonStrings::None)
-		BorderC->setCurrentIndex(BorderC->count()-1);
-	for (cit = Farben.begin(); cit != Farben.end(); ++cit)
-	{
-		BorderC->insertItem(cit.value(), doc, cit.key());
-		if (cit.key() == annotation.borderColor())
-			BorderC->setCurrentIndex(BorderC->count()-1);
-	}
+		BorderC->setCurrentIndex(0);
+	else
+		BorderC->setCurrentText(annotation.borderColor());
 
 	// PFJ - 28/02/04 - Altered to the QString/size_t/for style
 	QString borders[] = {CommonStrings::tr_NoneColor, tr("Thin"), tr("Normal"), tr("Wide")};
@@ -781,7 +776,7 @@ void ScAnnot::DecodeCalc()
 	if (pfol.count() > 1)
 	{
 		tm2 = pfol[0].simplified();
-		tm += tm2.mid(1, tm2.length()-2);
+		tm += tm2.midRef(1, tm2.length()-2);
 		for (int cfx = 1; cfx < pfol.count(); ++cfx)
 		{
 			tm2 = pfol[cfx].simplified();

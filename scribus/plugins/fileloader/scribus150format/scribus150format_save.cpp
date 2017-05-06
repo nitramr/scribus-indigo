@@ -178,7 +178,8 @@ bool Scribus150Format::saveFile(const QString & fileName, const FileFormat & /* 
 
 	// Create a random temporary file name
 	srand(time(NULL)); // initialize random sequence each time
-	long     randt = 0, randn = 1 + (int) (((double) rand() / ((double) RAND_MAX + 1)) * 10000);
+	long randt = 0;
+	long randn = 1 + (int) (((double) rand() / ((double) RAND_MAX + 1)) * 10000);
 	QString  tmpFileName  = QString("%1.%2").arg(fileName).arg(randn);
 	while (QFile::exists(tmpFileName) && (randt < 100))
 	{
@@ -425,7 +426,7 @@ bool Scribus150Format::saveFile(const QString & fileName, const FileFormat & /* 
 	writePageSets(docu);
 	writeSections(docu);
 	writePatterns(docu, fileDir);
-	writeContent (docu, fileDir);
+	writeContent(docu, fileDir);
 
 	docu.writeEndElement();
 	docu.writeEndDocument();
@@ -890,7 +891,7 @@ void Scribus150Format::putTableStyle(ScXmlStreamWriter &docu, const TableStyle &
 	{
 		TableBorder tbLeft = style.leftBorder();
 		docu.writeStartElement("TableBorderLeft");
-		foreach (TableBorderLine tbl, tbLeft.borderLines())
+		foreach (const TableBorderLine& tbl, tbLeft.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -905,7 +906,7 @@ void Scribus150Format::putTableStyle(ScXmlStreamWriter &docu, const TableStyle &
 	{
 		TableBorder tbRight = style.rightBorder();
 		docu.writeStartElement("TableBorderRight");
-		foreach (TableBorderLine tbl, tbRight.borderLines())
+		foreach (const TableBorderLine& tbl, tbRight.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -920,7 +921,7 @@ void Scribus150Format::putTableStyle(ScXmlStreamWriter &docu, const TableStyle &
 	{
 		TableBorder tbTop = style.topBorder();
 		docu.writeStartElement("TableBorderTop");
-		foreach (TableBorderLine tbl, tbTop.borderLines())
+		foreach (const TableBorderLine& tbl, tbTop.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -935,7 +936,7 @@ void Scribus150Format::putTableStyle(ScXmlStreamWriter &docu, const TableStyle &
 	{
 		TableBorder tbBottom = style.bottomBorder();
 		docu.writeStartElement("TableBorderBottom");
-		foreach (TableBorderLine tbl, tbBottom.borderLines())
+		foreach (const TableBorderLine& tbl, tbBottom.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -972,7 +973,7 @@ void Scribus150Format::putCellStyle(ScXmlStreamWriter &docu, const CellStyle &st
 	{
 		TableBorder tbLeft = style.leftBorder();
 		docu.writeStartElement("TableBorderLeft");
-		foreach (TableBorderLine tbl, tbLeft.borderLines())
+		foreach (const TableBorderLine& tbl, tbLeft.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -987,7 +988,7 @@ void Scribus150Format::putCellStyle(ScXmlStreamWriter &docu, const CellStyle &st
 	{
 		TableBorder tbRight = style.rightBorder();
 		docu.writeStartElement("TableBorderRight");
-		foreach (TableBorderLine tbl, tbRight.borderLines())
+		foreach (const TableBorderLine& tbl, tbRight.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -1002,7 +1003,7 @@ void Scribus150Format::putCellStyle(ScXmlStreamWriter &docu, const CellStyle &st
 	{
 		TableBorder tbTop = style.topBorder();
 		docu.writeStartElement("TableBorderTop");
-		foreach (TableBorderLine tbl, tbTop.borderLines())
+		foreach (const TableBorderLine& tbl, tbTop.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -1017,7 +1018,7 @@ void Scribus150Format::putCellStyle(ScXmlStreamWriter &docu, const CellStyle &st
 	{
 		TableBorder tbBottom = style.bottomBorder();
 		docu.writeStartElement("TableBorderBottom");
-		foreach (TableBorderLine tbl, tbBottom.borderLines())
+		foreach (const TableBorderLine& tbl, tbBottom.borderLines())
 		{
 			docu.writeStartElement("TableBorderLine");
 			docu.writeAttribute("Width", tbl.width());
@@ -1084,10 +1085,10 @@ void Scribus150Format::writePrintOptions(ScXmlStreamWriter & docu)
 	docu.writeAttribute("filename", m_Doc->Print_Options.filename);
 	docu.writeAttribute("separationName", m_Doc->Print_Options.separationName);
 	docu.writeAttribute("printerCommand", m_Doc->Print_Options.printerCommand);
-	for (int p = 0; p < m_Doc->Print_Options.allSeparations.count(); ++p)
+	for (int i = 0; i < m_Doc->Print_Options.allSeparations.count(); ++i)
 	{
 		docu.writeEmptyElement("Separation");
-		docu.writeAttribute("Name", m_Doc->Print_Options.allSeparations[p]);
+		docu.writeAttribute("Name", m_Doc->Print_Options.allSeparations[i]);
 	}
 	docu.writeEndElement();
 }
@@ -1515,7 +1516,6 @@ void Scribus150Format::WritePages(ScribusDoc *doc, ScXmlStreamWriter& docu, QPro
 	uint ObCount = maxC;
 	ScPage *page;
 	uint pages;
-	QString tmp;
 	if (master)
 		pages = doc->MasterPages.count();
 	else
@@ -2261,7 +2261,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 			{
 				TableBorder tbLeft = tableItem->leftBorder();
 				docu.writeStartElement("TableBorderLeft");
-				foreach (TableBorderLine tbl, tbLeft.borderLines())
+				foreach (const TableBorderLine& tbl, tbLeft.borderLines())
 				{
 					docu.writeStartElement("TableBorderLine");
 					docu.writeAttribute("Width", tbl.width());
@@ -2276,7 +2276,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 			{
 				TableBorder tbRight = tableItem->rightBorder();
 				docu.writeStartElement("TableBorderRight");
-				foreach (TableBorderLine tbl, tbRight.borderLines())
+				foreach (const TableBorderLine& tbl, tbRight.borderLines())
 				{
 					docu.writeStartElement("TableBorderLine");
 					docu.writeAttribute("Width", tbl.width());
@@ -2291,7 +2291,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 			{
 				TableBorder tbTop = tableItem->topBorder();
 				docu.writeStartElement("TableBorderTop");
-				foreach (TableBorderLine tbl, tbTop.borderLines())
+				foreach (const TableBorderLine& tbl, tbTop.borderLines())
 				{
 					docu.writeStartElement("TableBorderLine");
 					docu.writeAttribute("Width", tbl.width());
@@ -2306,7 +2306,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 			{
 				TableBorder tbBottom = tableItem->bottomBorder();
 				docu.writeStartElement("TableBorderBottom");
-				foreach (TableBorderLine tbl, tbBottom.borderLines())
+				foreach (const TableBorderLine& tbl, tbBottom.borderLines())
 				{
 					docu.writeStartElement("TableBorderLine");
 					docu.writeAttribute("Width", tbl.width());
@@ -2360,7 +2360,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 						TableBorder tbLeft = cell.leftBorder();
 						docu.writeStartElement("TableBorderLeft");
 						docu.writeAttribute("Width", tbLeft.width());
-						foreach (TableBorderLine tbl, tbLeft.borderLines())
+						foreach (const TableBorderLine& tbl, tbLeft.borderLines())
 						{
 							docu.writeStartElement("TableBorderLine");
 							docu.writeAttribute("Width", tbl.width());
@@ -2376,7 +2376,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 						TableBorder tbRight = cell.rightBorder();
 						docu.writeStartElement("TableBorderRight");
 						docu.writeAttribute("Width", tbRight.width());
-						foreach (TableBorderLine tbl, tbRight.borderLines())
+						foreach (const TableBorderLine& tbl, tbRight.borderLines())
 						{
 							docu.writeStartElement("TableBorderLine");
 							docu.writeAttribute("Width", tbl.width());
@@ -2392,7 +2392,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 						TableBorder tbTop = cell.topBorder();
 						docu.writeStartElement("TableBorderTop");
 						docu.writeAttribute("Width", tbTop.width());
-						foreach (TableBorderLine tbl, tbTop.borderLines())
+						foreach (const TableBorderLine& tbl, tbTop.borderLines())
 						{
 							docu.writeStartElement("TableBorderLine");
 							docu.writeAttribute("Width", tbl.width());
@@ -2408,7 +2408,7 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 						TableBorder tbBottom = cell.bottomBorder();
 						docu.writeStartElement("TableBorderBottom");
 						docu.writeAttribute("Width", tbBottom.width());
-						foreach (TableBorderLine tbl, tbBottom.borderLines())
+						foreach (const TableBorderLine& tbl, tbBottom.borderLines())
 						{
 							docu.writeStartElement("TableBorderLine");
 							docu.writeAttribute("Width", tbl.width());
@@ -2452,8 +2452,6 @@ void Scribus150Format::WriteObjects(ScribusDoc *doc, ScXmlStreamWriter& docu, co
 
 void Scribus150Format::SetItemProps(ScXmlStreamWriter& docu, PageItem* item, const QString& baseDir)
 {
-//	double xf, yf;
-	QString tmp, tmpy;
 	docu.writeAttribute("OwnPage", item->OwnPage);
 	docu.writeAttribute("ItemID", qHash(item) & 0x7FFFFFFF);
 	docu.writeAttribute("PTYPE",item->realItemType());
@@ -2711,6 +2709,7 @@ void Scribus150Format::SetItemProps(ScXmlStreamWriter& docu, PageItem* item, con
 		docu.writeAttribute("SOFTSHADOWOBJTRANS",item->softShadowHasObjectTransparency());
 	}
 
+	QString tmp;
 	if (item->isTable())
 	{
 		//PTYPE == PageItem::Table or 16 (pageitem.h)

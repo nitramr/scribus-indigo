@@ -62,13 +62,57 @@ for which a new license (GPL+exception) is in place.
 
 extern SCRIBUS_API ScribusQApp * ScQApp;
 
-AIPlug::AIPlug(ScribusDoc* doc, int flags)
+AIPlug::AIPlug(ScribusDoc* doc, int flags) :
+	progressDialog(NULL),
+	meshMode(false),
+	meshXSize(0),
+	meshYSize(0),
+	currentMeshXPos(0),
+	currentMeshYPos(0),
+	meshNodeCounter(0),
+	meshColorMode(0),
+	meshNode1PointX(0.0),
+	meshNode1PointY(0.0),
+	meshNode1Control1X(0.0),
+	meshNode1Control1Y(0.0),
+	meshNode1Control2X(0.0),
+	meshNode1Control2Y(0.0),
+	meshNode2PointX(0.0),
+	meshNode2PointY(0.0),
+	meshNode2Control1X(0.0),
+	meshNode2Control1Y(0.0),
+	meshNode2Control2X(0.0),
+	meshNode2Control2Y(0.0),
+	meshNode3PointX(0.0),
+	meshNode3PointY(0.0),
+	meshNode3Control1X(0.0),
+	meshNode3Control1Y(0.0),
+	meshNode3Control2X(0.0),
+	meshNode3Control2Y(0.0),
+	meshNode4PointX(0.0),
+	meshNode4PointY(0.0),
+	meshNode4Control1X(0.0),
+	meshNode4Control1Y(0.0),
+	meshNode4Control2X(0.0),
+	meshNode4Control2Y(0.0),
+	textMode(0),
+	textSize(0.0),
+	maxWidth(0.0),
+	tempW(0.0),
+	maxHeight(0.0),
+	textKern(0.0),
+	textScaleH(0.0),
+	textScaleV(0.0),
+	startCurrentTextRange(0.0),
+	endCurrentTextRange(0.0),
+	symbolMode(false),
+	dataMode(false),
+	fObjectMode(false)
 {
 	tmpSel=new Selection(this, false);
 	m_Doc=doc;
 	importerFlags = flags;
 	interactive = (flags & LoadSavePlugin::lfInteractive);
-	progressDialog = NULL;
 }
 
 QImage AIPlug::readThumbnail(QString fNameIn)
@@ -89,7 +133,7 @@ QImage AIPlug::readThumbnail(QString fNameIn)
 		fT.close();
 		if (tempBuf.startsWith("%PDF"))
 		{
-			QString tmp, cmd1, cmd2;
+			QString tmp;
 			QString pdfFile = QDir::toNativeSeparators(fName);
 			QString tmpFile = QDir::toNativeSeparators(ScPaths::tempFileDir() + "sc.png");
 			int ret = -1;
@@ -578,7 +622,11 @@ bool AIPlug::extractFromPDF(QString infile, QString outfile)
 	bool ret = false;
 #ifdef HAVE_PODOFO
 	QFile outf(outfile);
-	outf.open(QIODevice::WriteOnly);
+	if (!outf.open(QIODevice::WriteOnly))
+	{
+		qDebug()<<"Failed to open QFile outf in AIPlug::extractFromPDF";
+		return false;
+	}
 	try
 	{
 		PoDoFo::PdfError::EnableDebug( false );
@@ -677,7 +725,11 @@ bool AIPlug::decompressAIData(QString &fName)
 	source = fopen(fName.toLocal8Bit().constData(), "rb");
 	if (!source)
 		return false;
-	fseek(source, 20, SEEK_SET);
+	if(!fseek(source, 20, SEEK_SET))
+	{
+		fclose(source);
+		return false;
+	}
 	dest = fopen(f2.toLocal8Bit().constData(), "wb");
 	if (!dest)
 	{
@@ -762,7 +814,7 @@ bool AIPlug::decompressAIData(QString &fName)
 
 bool AIPlug::parseHeader(QString fName, double &x, double &y, double &b, double &h)
 {
-	QString tmp, BBox, tmp2, FarNam;
+	QString tmp, BBox, FarNam;
 	ScColor cc;
 	double c, m, yc, k;
 	bool found = false;
@@ -1132,7 +1184,6 @@ QString AIPlug::parseCustomColor(QString data, double &shade)
 	Code >> m;
 	Code >> y;
 	Code >> k;
-	QString tmpS = data;
 	int an = data.indexOf("(");
 	int en = data.lastIndexOf(")");
 	QString FarNam = data.mid(an+1, en-an-1);
@@ -1188,7 +1239,6 @@ QString AIPlug::parseCustomColorX(QString data, double &shade, QString type)
 		tmp.setColor(Cc, Mc, Yc, Kc);
 		meshColorMode = 0;
 	}
-	QString tmpS = data;
 	int an = data.indexOf("(");
 	int en = data.lastIndexOf(")");
 	QString FarNam = data.mid(an+1, en-an-1);
@@ -1411,7 +1461,7 @@ void AIPlug::processData(QString data)
 	{
 		if (data.contains("~>"))
 		{
-			dataString += data.mid(1);
+			dataString += data.midRef(1);
 			dataMode = false;
 			QByteArray fData;
 			decodeA85(fData, dataString);
@@ -1471,7 +1521,7 @@ void AIPlug::processData(QString data)
 		}
 		else
 		{
-			dataString += data.mid(1);
+			dataString += data.midRef(1);
 		}
 		return;
 	}
@@ -1663,7 +1713,7 @@ void AIPlug::processData(QString data)
 						ite->setLocked(itemLocked);
 					
 				}
-				else
+				else if (m_Doc->Items->count() > 0)
 				{
 					ite = m_Doc->Items->last();
 					ite->PoLine.setMarker();
@@ -1792,7 +1842,7 @@ void AIPlug::processData(QString data)
 				JoinStyle = Qt::MiterJoin;
 			else if (tmpInt == 1)
 				JoinStyle = Qt::RoundJoin;
-			else if (tmpInt == 1)
+			else if (tmpInt == 2)
 				JoinStyle = Qt::BevelJoin;
 		}
 		else if (command == "J")
@@ -1803,7 +1853,7 @@ void AIPlug::processData(QString data)
 				CapStyle = Qt::FlatCap;
 			else if (tmpInt == 1)
 				CapStyle = Qt::RoundCap;
-			else if (tmpInt == 1)
+			else if (tmpInt == 2)
 				CapStyle = Qt::SquareCap;
 		}
 		/* undocumented Command Xy
@@ -2647,7 +2697,6 @@ void AIPlug::processGradientData(QString data)
 		command = da2.last();
 		if (command == "Bd")
 		{
-			QString tmpS = Cdata;
 			int an = Cdata.indexOf("(");
 			int en = Cdata.lastIndexOf(")");
 			currentGradientName = Cdata.mid(an+1, en-an-1);
@@ -2870,8 +2919,7 @@ void AIPlug::processPattern(QDataStream &ts)
 
 void AIPlug::processSymbol(QDataStream &ts, bool sym)
 {
-	QString tmp = "";
-	QString tmpData = "";
+	QString tmp;
 	while (!ts.atEnd())
 	{
 		tmp = removeAIPrefix(readLinefromDataStream(ts));
@@ -2989,7 +3037,6 @@ void AIPlug::processRaster(QDataStream &ts)
 //		cmyk = true;
 	if (tmp.startsWith("%%BeginData"))
 	{
-		QString dummyS;
 		ScTextStream gVals2(&tmp, QIODevice::ReadOnly);
 		tmp = readLinefromDataStream(ts);
 	}
@@ -3024,7 +3071,7 @@ void AIPlug::processRaster(QDataStream &ts)
 			for (int a = 1; a < tmp.length(); a += 2)
 			{
 				bool ok;
-				ushort data = tmp.mid(a, 2).toUShort(&ok, 16);
+				ushort data = tmp.midRef(a, 2).toUShort(&ok, 16);
 				psdata[dataPointer++] = data;
 			}
 		}
@@ -3226,7 +3273,6 @@ void AIPlug::processComment(QDataStream &ts, QString comment)
 	}
 	else if (tmp.startsWith("BeginTextDocument"))
 	{
-		QString dataStringT = "";
 		tmp = removeAIPrefix(readLinefromDataStream(ts));
 		while (!ts.atEnd())
 		{

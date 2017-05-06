@@ -96,7 +96,8 @@ void IconManager::readIconConfigFiles()
 			QFile dataFile(file.absoluteFilePath());
 			if (!dataFile.exists())
 				continue;
-			dataFile.open(QIODevice::ReadOnly);
+			if (!dataFile.open(QIODevice::ReadOnly))
+				continue;
 			QTextStream ts(&dataFile);
 			ts.setCodec(QTextCodec::codecForName("UTF-8"));
 			QString errorMsg;
@@ -108,7 +109,7 @@ void IconManager::readIconConfigFiles()
 			if ( !xmlData.setContent( data, &errorMsg, &eline, &ecol ))
 			{
 				qDebug()<<data<<errorMsg<<eline<<ecol;
-				if (data.toLower().contains("404 not found"))
+				if (data.contains("404 not found", Qt::CaseInsensitive))
 					qDebug()<<"File not found on server";
 				else
 					qDebug()<<"Could not open file"<<dataFile.fileName();
@@ -313,24 +314,25 @@ QString IconManager::baseNameForTranslation(QString transName)
 
 QString IconManager::pathForIcon(const QString nam)
 {
-	QString iconset(PrefsManager::instance()->appPrefs.uiPrefs.iconSet);
+	//QString iconset(PrefsManager::instance()->appPrefs.uiPrefs.iconSet);
 	QString iconSubdir(m_iconSets[m_activeSetBasename].path+"/");
 	QString primaryIconSubdir(m_iconSets[m_backupSetBasename].path+"/");
 
-	QString iconFilePath(QString("%1%2%3").arg(ScPaths::instance().iconDir()).arg(iconSubdir).arg(nam));
+	QString iconFilePath(QString("%1%2%3").arg(ScPaths::instance().iconDir(), iconSubdir, nam));
 	if (QFile::exists(iconFilePath))
 		return iconFilePath;
 
 	qWarning("pathForIcon: Unable to load icon %s: File not found", iconFilePath.toLatin1().constData());
-	iconFilePath=QString("%1%2%3").arg(ScPaths::instance().iconDir()).arg(primaryIconSubdir).arg(nam);
+	iconFilePath=QString("%1%2%3").arg(ScPaths::instance().iconDir(), primaryIconSubdir, nam);
 
 	if (QFile::exists(iconFilePath))
 	{
 		//qDebug()<<iconFilePath;
 		return iconFilePath;
 	}
-
+#ifdef WANT_DEBUG
 	qWarning("pathForIcon: Unable to load icon %s: File not found", iconFilePath.toLatin1().constData());
+#endif
 	return "";
 }
 

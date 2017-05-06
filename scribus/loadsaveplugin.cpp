@@ -82,21 +82,21 @@ const QStringList LoadSavePlugin::getExtensionsForColors(const int id)
 	// highest priority entry for each ID, and we can start with the first entry
 	// in the list.
 	//First, check if we even have any plugins to load with
-	if (it!=itEnd)
+	if (it != itEnd)
 	{
-		if (((*it).load) && ((*it).colorReading))
-			filterList.append((*it).fileExtensions);
-		unsigned int lastID = (*it).formatId;
+		if ((it->load) && (it->colorReading))
+			filterList.append(it->fileExtensions);
+		unsigned int lastID = it->formatId;
 		++it;
-		for ( ; it != itEnd ; ++it )
+		for ( ; it != itEnd ; ++it)
 		{
 			// Find the next load/save (as appropriate) plugin for the next format type
-			if ((((*it).load) && ((*it).colorReading)) && ((*it).formatId > lastID))
+			if (((it->load) && (it->colorReading)) && (it->formatId > lastID))
 			{
 				// And add it to the filter list, since we know it's 
 				// the highest priority because of the sort order.
-				filterList.append((*it).fileExtensions);
-				lastID = (*it).formatId;
+				filterList.append(it->fileExtensions);
+				lastID = it->formatId;
 			}
 		}
 	}
@@ -118,21 +118,21 @@ const QStringList LoadSavePlugin::getExtensionsForImport(const int id)
 	// highest priority entry for each ID, and we can start with the first entry
 	// in the list.
 	//First, check if we even have any plugins to load with
-	if (it!=itEnd)
+	if (it != itEnd)
 	{
-		if ((*it).load)
-			filterList.append((*it).fileExtensions);
-		unsigned int lastID = (*it).formatId;
+		if (it->load)
+			filterList.append(it->fileExtensions);
+		unsigned int lastID = it->formatId;
 		++it;
-		for ( ; it != itEnd ; ++it )
+		for ( ; it != itEnd ; ++it)
 		{
 			// Find the next load/save (as appropriate) plugin for the next format type
-			if (((*it).load) && ((*it).formatId > lastID))
+			if ((it->load) && (it->formatId > lastID))
 			{
 				// And add it to the filter list, since we know it's 
 				// the highest priority because of the sort order.
-				filterList.append((*it).fileExtensions);
-				lastID = (*it).formatId;
+				filterList.append(it->fileExtensions);
+				lastID = it->formatId;
 			}
 		}
 	}
@@ -154,21 +154,21 @@ const QStringList LoadSavePlugin::getExtensionsForPreview(const int id)
 	// highest priority entry for each ID, and we can start with the first entry
 	// in the list.
 	//First, check if we even have any plugins to load with
-	if (it!=itEnd)
+	if (it != itEnd)
 	{
-		if (((*it).load) && ((*it).thumb))
-			filterList.append((*it).fileExtensions);
-		unsigned int lastID = (*it).formatId;
+		if ((it->load) && (it->thumb))
+			filterList.append(it->fileExtensions);
+		unsigned int lastID = it->formatId;
 		++it;
-		for ( ; it != itEnd ; ++it )
+		for ( ; it != itEnd ; ++it)
 		{
 			// Find the next load/save (as appropriate) plugin for the next format type
-			if ((((*it).load) && ((*it).thumb)) && ((*it).formatId > lastID))
+			if (((it->load) && (it->thumb)) && (it->formatId > lastID))
 			{
 				// And add it to the filter list, since we know it's 
 				// the highest priority because of the sort order.
-				filterList.append((*it).fileExtensions);
-				lastID = (*it).formatId;
+				filterList.append(it->fileExtensions);
+				lastID = it->formatId;
 			}
 		}
 	}
@@ -190,26 +190,26 @@ const QStringList LoadSavePlugin::getDialogFilter(bool forLoad)
 	// highest priority entry for each ID, and we can start with the first entry
 	// in the list.
 	//First, check if we even have any plugins to load with
-	if (it==itEnd)
+	if (it == itEnd)
 	{
 		qDebug("%s", tr("No File Loader Plugins Found").toLocal8Bit().data());
 		return filterList;
 	}
 	unsigned int lastID = 0;
 	QStringList scribusList;
-	while (it!=itEnd)
+	while (it != itEnd)
 	{
 		// Find the next load/save (as appropriate) plugin for the next format type
-		if ( (forLoad ? (*it).load : (*it).save) && ((*it).formatId > lastID) )
+		if ((forLoad ? it->load : it->save) && (it->formatId > lastID))
 		{
 			// And add it to the filter list, since we know it's
 			// the highest priority because of the sort order.
 			// #11294, sort them and keep Scribus ones at the top
-			if((*it).nativeScribus)
-				scribusList.append((*it).filter);
+			if(it->nativeScribus)
+				scribusList.append(it->filter);
 			else
-				filterList.append((*it).filter);
-			lastID = (*it).formatId;
+				filterList.append(it->filter);
+			lastID = it->formatId;
 		}
 		++it;
 	}
@@ -304,7 +304,7 @@ void LoadSavePlugin::registerFormat(FileFormat & fmt)
 			id = FORMATID_FIRSTUSER - 1;
 			while (it != itEnd)
 			{
-				id = qMax((*it).formatId, id);
+				id = qMax(it->formatId, id);
 				++it;
 			}
 			id++;
@@ -321,8 +321,8 @@ void LoadSavePlugin::registerFormat(FileFormat & fmt)
 		QList<FileFormat>::iterator itEnd(formats.end());
 		while (it != itEnd)
 		{
-			if ( ( ((*it).formatId == fmt.formatId) && ((*it).priority <= fmt.priority) ) ||
-				((*it).formatId > fmt.formatId)) 
+			if ( ( (it->formatId == fmt.formatId) && (it->priority <= fmt.priority) ) ||
+				(it->formatId > fmt.formatId)) 
 					break;
 			++it;
 		}
@@ -338,9 +338,9 @@ void LoadSavePlugin::printFormatList()
 	qDebug("Current format list:");
 	QList<FileFormat>::const_iterator it(formats.constBegin());
 	QList<FileFormat>::const_iterator itEnd(formats.constEnd());
-	for ( ; it != itEnd ; ++it )
+	for ( ; it != itEnd ; ++it)
 	{
-		qDebug("    Format: Id: %3u, Prio: %3hu, Name: %s",  (*it).formatId, (*it).priority, (*it).trName.toLocal8Bit().data() );
+		qDebug("    Format: Id: %3u, Prio: %3hu, Name: %s",  it->formatId, it->priority, it->trName.toLocal8Bit().data() );
 	}
 	qDebug("Done");
 }
@@ -357,7 +357,7 @@ void LoadSavePlugin::unregisterAll()
 	QList<FileFormat>::iterator it(formats.begin());
 	while (it != formats.end())
 	{
-		if ((*it).plug == this)
+		if (it->plug == this)
 			it = formats.erase(it);
 		else
 			++it;
@@ -368,9 +368,9 @@ QList<FileFormat>::iterator
 LoadSavePlugin::findFormat(unsigned int id, LoadSavePlugin* plug, QList<FileFormat>::iterator it)
 {
 	QList<FileFormat>::iterator itEnd(formats.end());
-	for ( ; it != itEnd ; ++it )
+	for ( ; it != itEnd ; ++it)
 	{
-		if (((*it).formatId == id) && ((plug == 0) || (plug == (*it).plug)))
+		if ((it->formatId == id) && ((plug == 0) || (plug == it->plug)))
 			return it;
 	}
 	return itEnd;
@@ -380,9 +380,9 @@ QList<FileFormat>::iterator
 LoadSavePlugin::findFormat(const QString& extension, LoadSavePlugin* plug, QList<FileFormat>::iterator it)
 {
 	QList<FileFormat>::iterator itEnd(formats.end());
-	for ( ; it != itEnd ; ++it )
+	for ( ; it != itEnd ; ++it)
 	{
-		if (((*it).fileExtensions.contains(extension.toLower())) && ((plug == 0) || (plug == (*it).plug)) )
+		if ((it->fileExtensions.contains(extension.toLower())) && ((plug == 0) || (plug == it->plug)) )
 			return it;
 	}
 	return itEnd;
@@ -475,21 +475,25 @@ QString FileFormat::saveElements(double xp, double yp, double wp, double hp, Sel
 }
 
 FileFormat::FileFormat() :
+	formatId(0),
 	load(false),
 	save(false),
 	thumb(false),
 	colorReading(false),
 	nativeScribus(false),
+	priority(0),
 	plug(0)
 {
 }
 
 FileFormat::FileFormat(LoadSavePlugin* plug) :
+	formatId(0),
 	load(false),
 	save(false),
 	thumb(false),
 	colorReading(false),
 	nativeScribus(false),
+	priority(0),
 	plug(plug)
 {
 }
@@ -525,24 +529,18 @@ void FileFormat::getReplacedFontData(bool & getNewReplacement, QMap<QString,QStr
 
 bool FileFormat::loadPage(const QString & fileName, int pageNumber, bool Mpage, QString renamedPageName) const
 {
-	if (plug && load)
+	if (!plug || !load)
+		return false;
+	plug->clearLastError();
+	bool success = plug->loadPage(fileName, pageNumber, Mpage, renamedPageName);
+	if (!success && plug->hasLastError())
 	{
-		plug->clearLastError();
-		bool success = plug->loadPage(fileName, pageNumber, Mpage, renamedPageName);
-		if (!success && plug->hasLastError())
-		{
-			if (ScCore->usingGUI())
-			{
-				ScMessageBox::warning(ScCore->primaryMainWindow(), CommonStrings::trWarning, plug->lastError());
-			}
-			else
-			{
-				qDebug() << plug->lastError();
-			}
-		}
-		return success;
+		if (ScCore->usingGUI())
+			ScMessageBox::warning(ScCore->primaryMainWindow(), CommonStrings::trWarning, plug->lastError());
+		else
+			qDebug() << plug->lastError();
 	}
-	return false;
+	return success;
 }
 
 bool FileFormat::readStyles(const QString& fileName, ScribusDoc* doc, StyleSet<ParagraphStyle> &docParagraphStyles) const

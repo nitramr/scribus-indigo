@@ -159,10 +159,11 @@ void LatexEditor::writeExternalEditorFile()
 	fileWatcher->disconnect(); //Avoid triggering false updates
 
 	//First create a temp file name
-	if (extEditorFile.isEmpty()) {
-		QTemporaryFile *editortempfile = new QTemporaryFile(
-			QDir::tempPath() + "/scribus_temp_editor_XXXXXX");
-		if (!editortempfile->open()) {
+	if (extEditorFile.isEmpty())
+	{
+		QTemporaryFile *editortempfile = new QTemporaryFile(QDir::tempPath() + "/scribus_temp_editor_XXXXXX");
+		if (!editortempfile->open())
+		{
 			ScMessageBox::critical(0, tr("Error"), "<qt>" + 
 				tr("Could not create a temporary file to run the external editor!")
 				+ "</qt>");
@@ -174,12 +175,15 @@ void LatexEditor::writeExternalEditorFile()
 		fileWatcher->addFile(extEditorFile);
 	}
 	QFile f(extEditorFile);
-	f.open(QIODevice::WriteOnly);
+	if(!f.open(QIODevice::WriteOnly))
+	{
+		qDebug()<<"Unable to open editor file in LatexEditor::writeExternalEditorFile()";
+		return;
+	}
 	f.write(frame->formula().toUtf8());
 	f.close();
 	fileWatcher->forceScan();
-	connect(fileWatcher, SIGNAL(fileChanged(QString)),
-		this, SLOT(extEditorFileChanged(QString)));
+	connect(fileWatcher, SIGNAL(fileChanged(QString)), this, SLOT(extEditorFileChanged(QString)));
 	fileWatcher->start();
 }
 
@@ -187,10 +191,15 @@ void LatexEditor::loadExternalEditorFile()
 {
 	QString new_formula;
 	QFile f(extEditorFile);
-	f.open(QIODevice::ReadOnly);
+	if(!f.open(QIODevice::ReadOnly))
+	{
+		qDebug()<<"Unable to open editor file in LatexEditor::loadExternalEditorFile()";
+		return;
+	}
 	new_formula = QString::fromUtf8(f.readAll());
 	f.close();
-	if (!new_formula.isEmpty()) {
+	if (!new_formula.isEmpty())
+	{
 		frame->setFormula(new_formula);
 		sourceTextEdit->setPlainText(new_formula);
 	}
@@ -201,7 +210,8 @@ void LatexEditor::extEditorFinished(int exitCode, QProcess::ExitStatus exitStatu
 {
 	externalEditorPushButton->setEnabled(true);
 	externalEditorPushButton->setText( tr("Run External Editor...") );
-	if (exitCode && extEditor) {
+	if (exitCode && extEditor)
+	{
 		qCritical() << "RENDER FRAME: Editor failed. Output was: " << 
 			qPrintable(QString(extEditor->readAllStandardOutput()));
 		ScMessageBox::critical(0, tr("Error"), "<qt>" +
@@ -408,7 +418,8 @@ void LatexEditor::updateConfigFile()
 
 void LatexEditor::loadSettings()
 {
-	while (tabWidget->count()>1) {
+	while (tabWidget->count()>1)
+	{
 		QWidget *widget = tabWidget->widget(1);
 		tabWidget->removeTab(1);
 		delete widget;
@@ -416,17 +427,27 @@ void LatexEditor::loadSettings()
 	widgetMap.clear();
 	
 	QFile f(LatexConfigParser::absoluteFilename(frame->configFile()));
-	f.open(QIODevice::ReadOnly);
+	if (!f.open(QIODevice::ReadOnly))
+	{
+		qDebug()<<"Unable to open config file in LatexEditor::loadSettings()";
+		return;
+	}
 	I18nXmlStreamReader xml(&f);
-	while (!xml.atEnd()) {
+	while (!xml.atEnd())
+	{
 		xml.readNext();
 		if (xml.isWhitespace() || xml.isComment()) continue;
-		if (xml.isStartElement() && xml.name() == "tab") {
-			if (xml.attributes().value("type") == "settings") {
+		if (xml.isStartElement() && xml.name() == "tab")
+		{
+			if (xml.attributes().value("type") == "settings")
+			{
 				createNewSettingsTab(&xml);
-			} else if (xml.attributes().value("type") == "items") {
+			} else if (xml.attributes().value("type") == "items")
+			{
 				createNewItemsTab(&xml);
-			} else {
+			}
+			else
+			{
 				qWarning() << "XML-ERROR: " << xml.lineNumber() << ":" 
 						<< xml.columnNumber() << ":" << "Unknow tab type"
 						<< xml.attributes().value("type").toString();
@@ -447,7 +468,6 @@ void LatexEditor::createNewSettingsTab(I18nXmlStreamReader *xml)
 	newTab->setFrameShape(QFrame::NoFrame);
 	QGridLayout *layout = new QGridLayout(newTab);
 	layout->setColumnStretch(1, 10);
-	QString type = xml->attributes().value("type").toString();
 	
 	QString title = "No Title";
 		
@@ -827,10 +847,12 @@ void IconBuffer::loadFile(QString filename)
 	if (loadedFiles.contains(filename)) return;
 	loadedFiles << filename;
 	file = new QFile(filename);
-	file->open(QIODevice::ReadOnly);
+	if (!file->open(QIODevice::ReadOnly))
+		return;
 	basePos = 0;
-	while (!file->atEnd()) {
-		QString name = readHeader();
+	while (!file->atEnd())
+	{
+		QString name(readHeader());
 		if (name.isEmpty()) break;
 		if (!len) continue;
 		icons.insert(filename + ":" + name, readData());

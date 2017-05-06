@@ -17,8 +17,8 @@ for which a new license (GPL+exception) is in place.
 
 #include "commonstrings.h"
 #include "iconmanager.h"
-#include "margindialog.h"
 #include "marginwidget.h"
+#include "pagepropertiesdialog.h"
 #include "pagesize.h"
 #include "pagestructs.h"
 #include "scpage.h"
@@ -26,7 +26,7 @@ for which a new license (GPL+exception) is in place.
 #include "scrspinbox.h"
 #include "units.h"
 
-MarginDialog::MarginDialog( QWidget* parent, ScribusDoc* doc ) : QDialog( parent)
+PagePropertiesDialog::PagePropertiesDialog( QWidget* parent, ScribusDoc* doc ) : QDialog( parent)
 {
 	setModal(true);
 	setWindowTitle( tr( "Manage Page Properties" ) );
@@ -45,16 +45,16 @@ MarginDialog::MarginDialog( QWidget* parent, ScribusDoc* doc ) : QDialog( parent
 	TextLabel1 = new QLabel( tr( "&Size:" ), dsGroupBox7 );
 	dsGroupBox7Layout->addWidget( TextLabel1, 0, 0, 1, 2 );
 
-	PageSize *ps=new PageSize(doc->currentPage()->m_pageSize);
-	prefsPageSizeName=ps->name();
+	PageSize ps(doc->currentPage()->m_pageSize);
+	prefsPageSizeName=ps.name();
 	sizeQComboBox = new QComboBox(dsGroupBox7);
-	QStringList insertList(ps->activeSizeTRList());
-	if (insertList.indexOf(prefsPageSizeName)==-1)
+	QStringList insertList(ps.activeSizeTRList());
+	if (insertList.indexOf(prefsPageSizeName)==-1 && prefsPageSizeName!=CommonStrings::customPageSize)
 		insertList<<prefsPageSizeName;
 	insertList.sort();
 	insertList<<CommonStrings::trCustomPageSize;
 	sizeQComboBox->addItems(insertList);
-	int sizeIndex = insertList.indexOf(ps->nameTR());
+	int sizeIndex = insertList.indexOf(ps.nameTR());
 	if (sizeIndex != -1)
 		sizeQComboBox->setCurrentIndex(sizeIndex);
 	else
@@ -161,17 +161,9 @@ MarginDialog::MarginDialog( QWidget* parent, ScribusDoc* doc ) : QDialog( parent
 	setMaximumSize(sizeHint());
 	pageWidth = widthSpinBox->value() / unitRatio;
 	pageHeight = heightSpinBox->value() / unitRatio;
-	if (sizeQComboBox->currentText() == CommonStrings::trCustomPageSize)
-	{
-		heightSpinBox->setEnabled( true );
-		widthSpinBox->setEnabled( true );
-	}
-	else
-	{
-		heightSpinBox->setEnabled( false );
-		widthSpinBox->setEnabled( false );
-	}
-	delete ps;
+	bool isCustom = (sizeQComboBox->currentText() == CommonStrings::trCustomPageSize);
+	heightSpinBox->setEnabled(isCustom);
+	widthSpinBox->setEnabled(isCustom);
 	// signals and slots connections
 	connect( okButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
 	connect( cancelButton, SIGNAL( clicked() ), this, SLOT( reject() ) );
@@ -193,7 +185,7 @@ MarginDialog::MarginDialog( QWidget* parent, ScribusDoc* doc ) : QDialog( parent
 	resize(minimumSizeHint());
 }
 
-void MarginDialog::setPageWidth(double)
+void PagePropertiesDialog::setPageWidth(double)
 {
 	pageWidth = widthSpinBox->value() / unitRatio;
 	marginWidget->setPageWidth(pageWidth);
@@ -207,7 +199,7 @@ void MarginDialog::setPageWidth(double)
 	}
 }
 
-void MarginDialog::setPageHeight(double)
+void PagePropertiesDialog::setPageHeight(double)
 {
 	pageHeight = heightSpinBox->value() / unitRatio;
 	marginWidget->setPageHeight(pageHeight);
@@ -221,14 +213,14 @@ void MarginDialog::setPageHeight(double)
 	}
 }
 
-void MarginDialog::setPageSize()
+void PagePropertiesDialog::setPageSize()
 {
 	if (sizeQComboBox->currentText() != CommonStrings::trCustomPageSize)
 		oldOri++;
 	setOrientation(orientationQComboBox->currentIndex());
 }
 
-void MarginDialog::setSize(const QString & gr)
+void PagePropertiesDialog::setSize(const QString & gr)
 {
 	pageWidth = widthSpinBox->value() / unitRatio;
 	pageHeight = heightSpinBox->value() / unitRatio;
@@ -259,7 +251,7 @@ void MarginDialog::setSize(const QString & gr)
 	delete ps2;
 }
 
-void MarginDialog::setOrientation(int ori)
+void PagePropertiesDialog::setOrientation(int ori)
 {
 	setSize(sizeQComboBox->currentText());
 	disconnect(widthSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setPageWidth(double)));
@@ -272,11 +264,11 @@ void MarginDialog::setOrientation(int ori)
 	}
 	else
 	{
-		if ((ori != 0) && (ori != oldOri))
+		if ((ori != portraitPage) && (ori != oldOri))
 		{
 			double w = widthSpinBox->value(), h = heightSpinBox->value();
-			widthSpinBox->setValue((ori == portraitPage) ? qMin(w, h) : qMax(w, h));
-			heightSpinBox->setValue((ori == portraitPage) ? qMax(w, h) : qMin(w, h));
+			widthSpinBox->setValue(qMax(w, h));
+			heightSpinBox->setValue(qMin(w, h));
 		}
 	}
 	oldOri = ori;
@@ -286,7 +278,7 @@ void MarginDialog::setOrientation(int ori)
 	connect(heightSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setPageHeight(double)));
 }
 
-int MarginDialog::pageOrder()
+int PagePropertiesDialog::pageOrder()
 {
 	int lp=0;
 	if (Links!=0)
@@ -300,59 +292,59 @@ int MarginDialog::pageOrder()
 	return lp;
 }
 
-double MarginDialog::getPageWidth()
+double PagePropertiesDialog::getPageWidth()
 {
 	return pageWidth;
 }
 
-double MarginDialog::getPageHeight()
+double PagePropertiesDialog::getPageHeight()
 {
 	return pageHeight;
 }
 
-int MarginDialog::getPageOrientation()
+int PagePropertiesDialog::getPageOrientation()
 {
 	return orientationQComboBox->currentIndex();
 }
 
-QString MarginDialog::getpPrefsPageSizeName()
+QString PagePropertiesDialog::getPrefsPageSizeName()
 {
 	return prefsPageSizeName;
 }
 
-bool MarginDialog::getMoveObjects()
+bool PagePropertiesDialog::getMoveObjects()
 {
 	return moveObjects->isChecked();
 }
 
-double MarginDialog::top()
+double PagePropertiesDialog::top()
 {
 	return marginWidget->top();
 }
 
-double MarginDialog::bottom()
+double PagePropertiesDialog::bottom()
 {
 	return marginWidget->bottom();
 }
 
-double MarginDialog::left()
+double PagePropertiesDialog::left()
 {
 	return marginWidget->left();
 }
 
-double MarginDialog::right()
+double PagePropertiesDialog::right()
 {
 	return marginWidget->right();
 }
 
-QString MarginDialog::masterPage()
+QString PagePropertiesDialog::masterPage()
 {
 	if (masterPageComboBox != NULL)
 		return masterPageComboBox->currentText();
 	return "";
 }
 
-int MarginDialog::getMarginPreset()
+int PagePropertiesDialog::getMarginPreset()
 {
 	return marginWidget->getMarginPreset();
 }

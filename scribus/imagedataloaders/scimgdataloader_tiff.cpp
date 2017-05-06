@@ -284,7 +284,7 @@ bool ScImgDataLoader_TIFF::getImageData(TIFF* tif, RawImage *image, uint widtht,
 					if (image->height()-yt < rows)
 						tileH = image->height()-yt;
 					tileW = columns;
-					register uint32 yi;
+					uint32 yi;
 					int chans = image->channels();
 					for (xt = 0; xt < (uint) image->width(); xt += columns)
 					{
@@ -1180,7 +1180,7 @@ bool ScImgDataLoader_TIFF::loadLayerInfo(QDataStream & s, QList<PSDLayer> &layer
 	short channelType;
 	uchar blendKey[4];
 	uchar opacity, clipping, flags, filler;
-	QString layerName, blend;
+	QString blend;
 
 	layerInfo.clear();
 

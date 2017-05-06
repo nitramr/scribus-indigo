@@ -330,7 +330,7 @@ void SEditor::keyPressEvent(QKeyEvent *k)
 		return;
 	}
 	
-	QString uc = k->text();
+//	QString uc = k->text();
 	if ((k->modifiers() == Qt::ControlModifier) ||
 		(k->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) ||
 		(k->modifiers() == (Qt::ControlModifier | Qt::KeypadModifier)) ||
@@ -701,7 +701,6 @@ void SEditor::loadText(QString tx, PageItem *currItem)
 {
 	setTextColor(Qt::black);
 	setUpdatesEnabled(false);
-	QString Text = "";
 	StyledText.clear();
 	StyledText.setDefaultStyle(currItem->itemText.defaultStyle());
 	StyledText.insertChars(0, tx);
@@ -724,7 +723,7 @@ void SEditor::insertUpdate(int position, int len)
 {
 	if (StyledText.length() == 0 || len == 0)
 		return;
-	QString chars, text = "";
+	QString text;
 	++blockContentsChangeHook;
 	setUpdatesEnabled(false);
 	this->blockSignals(true);
@@ -1155,15 +1154,8 @@ void SToolBColorF::languageChange()
 
 void SToolBColorF::setCurrentDocument(ScribusDoc *doc)
 {
-	if (doc!=NULL)
-		TxFill->updateBox(doc->PageColors, true);
-	else
-	{
-		TxFill->clear();
-		TxFill->addItem(CommonStrings::tr_NoneColor);
-	}
-//	if (doc!=NULL)
-//		TxFill->insertItems(doc->PageColors, ColorCombo::smallPixmaps);
+	ColorList list = doc ? doc->PageColors : ColorList();
+	TxFill->setColors(list, true);
 	resize(minimumSizeHint());
 }
 
@@ -1227,10 +1219,8 @@ void SToolBColorS::languageChange()
 
 void SToolBColorS::setCurrentDocument(ScribusDoc *doc)
 {
-	TxStroke->clear();
-	TxStroke->addItem(CommonStrings::tr_NoneColor);
-	if (doc!=NULL)
-		TxStroke->insertItems(doc->PageColors);
+	ColorList list = doc ? doc->PageColors : ColorList();
+	TxStroke->setColors(list, true);
 	resize(minimumSizeHint());
 }
 
@@ -3019,9 +3009,9 @@ void StoryEditor::SearchText()
 {
 	m_blockUpdate = true;
 	EditorBar->setRepaint(false);
-	SearchReplace* dia = new SearchReplace(this, m_doc, m_item, false);
-	dia->exec();
-	int pos = dia->firstMatchCursorPosition();
+	SearchReplace dia(this, m_doc, m_item, false);
+	dia.exec();
+	int pos = dia.firstMatchCursorPosition();
 	if (pos >= 0)
 	{
 		QTextCursor tCursor = Editor->textCursor();
@@ -3029,7 +3019,6 @@ void StoryEditor::SearchText()
 		Editor->setTextCursor(tCursor);
 		Editor->SelStack.push(qMakePair(pos, -1));
 	}
-	delete dia;
 	qApp->processEvents();
 	m_blockUpdate = false;
 	EditorBar->setRepaint(true);
@@ -3140,7 +3129,7 @@ void StoryEditor::changeStyleSB(int pa, const QString& name)
 		updateProps(0, 0);
 	}
 
-	Editor->repaint();
+	Editor-> repaint();
 	modifiedText();
 	Editor->setFocus();
 }

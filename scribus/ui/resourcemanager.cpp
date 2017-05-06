@@ -124,7 +124,7 @@ void ResourceManager::readAvailableFonts()
 	if ( !doc.setContent( data, &errorMsg, &eline, &ecol ))
 	{
 //		qDebug()<<errorMsg<<eline<<ecol;
-		if (data.toLower().contains("404 not found"))
+		if (data.contains("404 not found", Qt::CaseInsensitive))
 			qDebug()<<"File not found on server";
 		else
 			qDebug()<<"Could not open file"<<dataFile.fileName();
@@ -183,7 +183,7 @@ void ResourceManager::readAvailableHelp()
 	dataFile.close();
 	if ( !doc.setContent( data, &errorMsg, &eline, &ecol ))
 	{
-		if (data.toLower().contains("404 not found"))
+		if (data.contains("404 not found", Qt::CaseInsensitive))
 			qDebug()<<"File not found on server";
 		else
 			qDebug()<<"Could not open file"<<dataFile.fileName();
@@ -242,7 +242,7 @@ void ResourceManager::readAvailablePalettes()
 	dataFile.close();
 	if ( !doc.setContent( data, &errorMsg, &eline, &ecol ))
 	{
-		if (data.toLower().contains("404 not found"))
+		if (data.contains("404 not found", Qt::CaseInsensitive))
 			qDebug()<<"File not found on server";
 		else
 			qDebug()<<"Could not open file"<<dataFile.fileName();
@@ -559,7 +559,7 @@ void ResourceManager::updateAvailableHyph()
 	dataFile.close();
 	if ( !doc.setContent( data, &errorMsg, &eline, &ecol ))
 	{
-		if (data.toLower().contains("404 not found"))
+		if (data.contains("404 not found", Qt::CaseInsensitive))
 			qDebug()<<"File not found on server";
 		else
 			qDebug()<<"Could not open file"<<dataFile.fileName();
@@ -660,7 +660,7 @@ void ResourceManager::updateAvailableSpell()
 	dataFile.close();
 	if ( !doc.setContent( data, &errorMsg, &eline, &ecol ))
 	{
-		if (data.toLower().contains("404 not found"))
+		if (data.contains("404 not found", Qt::CaseInsensitive))
 			qDebug()<<"File not found on server";
 		else
 			qDebug()<<"Could not open file"<<dataFile.fileName();
@@ -1023,7 +1023,7 @@ void ResourceManager::downloadFilesFinished()
 							QDir dir(ScPaths::userFontDir(false));
 							if (!dir.exists(fi.baseName()))
 								dir.mkdir(fi.baseName());
-							foreach (QString f2e, zipFileContents)
+							foreach (const QString& f2e, zipFileContents)
 							{
 								fun->extract(f2e, toDir, ScZipHandler::SkipPaths);
 							}
@@ -1046,9 +1046,7 @@ void ResourceManager::downloadFilesFinished()
 					if (d.filetype=="zip")
 					{
 						QString fn(ScPaths::userDictDir(static_cast<ScPaths::DictType>(fileType), true)+d.files);
-						QFile dledFile(fn);
-						QFileInfo fi(dledFile);
-						if (!dledFile.exists())
+						if (!QFileInfo::exists(fn))
 							qDebug()<<"File doesn\'t exist"<<fn;
 						else
 						{
@@ -1063,12 +1061,10 @@ void ResourceManager::downloadFilesFinished()
 								QDir dir(toDir);
 								if (dir.exists())
 								{
-									foreach (QString f2e, zipContents)
+									foreach (const QString& f2e, zipContents)
 									{
 										if (extractFiles.contains(f2e))
-										{
 											fun->extract(f2e, toDir, ScZipHandler::SkipPaths);
-										}
 									}
 								}
 							}
@@ -1111,7 +1107,7 @@ void ResourceManager::downloadFilesFinished()
 								QDir dir(ScPaths::userHelpFilesDir(false));
 								if (!dir.exists(d.lang))
 									dir.mkdir(d.lang);
-								foreach (QString f2e, zipFileContents)
+								foreach (const QString& f2e, zipFileContents)
 								{
 									//qDebug()<<"Unzipping"<<f2e<<"to"<<toDir;
 									fun->extract(f2e, toDir, ScZipHandler::ExtractPaths);
@@ -1224,7 +1220,7 @@ void ResourceManager::startDownload()
 					if (d.filetype=="zip")
 					{
 						QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-						foreach (QString s, plainURLs)
+						foreach (const QString& s, plainURLs)
 						{
 //							qDebug()<<"Requesting:"<<d.url+"/"+s;
 							ScQApp->dlManager()->addURL(d.url+"/"+s, true, ScPaths::downloadDir(), destinationFolder, d.files);
@@ -1236,7 +1232,7 @@ void ResourceManager::startDownload()
 					if (d.filetype=="plain")
 					{
 						QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-						foreach (QString s, plainURLs)
+						foreach (const QString& s, plainURLs)
 						{
 							ScQApp->dlManager()->addURL(d.url+"/"+s, true, ScPaths::downloadDir(), destinationFolder);
 							++dlCount;
@@ -1258,7 +1254,7 @@ void ResourceManager::startDownload()
 					{
 //						qDebug()<<"zip type:"<<d.url<<d.files;
 						QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-						foreach (QString s, plainURLs)
+						foreach (const QString& s, plainURLs)
 						{
 							ScQApp->dlManager()->addURL(d.url+"/"+s, true, ScPaths::downloadDir(), destinationFolder);
 							++dlCount;
@@ -1270,7 +1266,7 @@ void ResourceManager::startDownload()
 					{
 //						qDebug()<<"plain type:"<<d.url<<d.files;
 						QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-						foreach (QString s, plainURLs)
+						foreach (const QString& s, plainURLs)
 						{
 							ScQApp->dlManager()->addURL(d.url+"/"+s, true, ScPaths::downloadDir(), destinationFolder);
 							++dlCount;
@@ -1291,7 +1287,7 @@ void ResourceManager::startDownload()
 					{
 //						qDebug()<<"zip type:"<<d.url<<d.files;
 						QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-						foreach (QString s, plainURLs)
+						foreach (const QString& s, plainURLs)
 						{
 							ScQApp->dlManager()->addURL(d.url+"/"+s, true, ScPaths::downloadDir(), destinationFolder);
 							ScQApp->dlManager()->addURL(d.url+"/"+s+".sha256", true, ScPaths::downloadDir(), destinationFolder);
@@ -1313,7 +1309,7 @@ void ResourceManager::startDownload()
 					{
 //						qDebug()<<"zip type:"<<d.url<<d.files;
 						QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-						foreach (QString s, plainURLs)
+						foreach (const QString& s, plainURLs)
 						{
 							ScQApp->dlManager()->addURL(d.url+"/"+s, true, ScPaths::downloadDir(), destinationFolder);
 							ScQApp->dlManager()->addURL(d.url+"/"+s+".sha256", true, ScPaths::downloadDir(), destinationFolder);
@@ -1367,10 +1363,9 @@ void ResourceManager::showLicense()
 		{
 			QString destinationFolder=findDestinationFolder();
 			QFile dataFile(destinationFolder + licenceFileName);
-			if (dataFile.exists())
+			if (dataFile.exists() && dataFile.open(QIODevice::ReadOnly))
 			{
 				QTextStream ts(&dataFile);
-				dataFile.open(QIODevice::ReadOnly);
 				data = ts.readAll();
 				dataFile.close();
 				doDownload=false;
@@ -1389,7 +1384,7 @@ void ResourceManager::showLicense()
 				case RM_SPELL:
 				case RM_PALETTES:
 */
-			foreach(DownloadItem d, availableList)
+			foreach(const DownloadItem& d, availableList)
 			{
 				if (filesToDownload.contains(d.desc))
 				{

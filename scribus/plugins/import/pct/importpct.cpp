@@ -422,7 +422,6 @@ void PctPlug::parseHeader(QString fName, double &x, double &y, double &b, double
 
 bool PctPlug::convert(QString fn)
 {
-	QString tmp;
 	CurrColorFill = "White";
 	CurrFillShade = 100.0;
 	CurrColorStroke = "Black";
@@ -1545,17 +1544,12 @@ void PctPlug::createTextPath(QByteArray textString)
 		if (!codec)
 			return;
 	}
-	QString string = codec->toUnicode(textString);
+	QString string(codec->toUnicode(textString));
 	QFont textFont;
 	if (!fontMap.contains(currentFontID))
 		textFont = QFont();
 	else
-	{
-		QString fontName = fontMap[currentFontID];
-		textFont = QFont(fontName, currentTextSize);
-		QFontInfo inf(textFont);
-//		qDebug() << "Using Font" << inf.family() << "for" << fontName;
-	}
+		textFont = QFont(fontMap[currentFontID], currentTextSize);
 	textFont.setPixelSize(currentTextSize);
 	if (currentFontStyle & 1)
 		textFont.setBold(true);
@@ -1673,8 +1667,8 @@ void PctPlug::handleLineFrom(QDataStream &ts)
 void PctPlug::handlePixmap(QDataStream &ts, quint16 opCode)
 {
 	handleLineModeEnd();
-	quint16 bytesPerLine, packType, pixel_type, bits_per_pixel, component_count, component_size;
-	quint32 packSize, horizontal_resolution, vertical_resolution, color_table, plane_bytes;
+	quint16 bytesPerLine = 0, packType = 0, pixel_type = 0, bits_per_pixel = 0, component_count = 0, component_size = 0;
+	quint32 packSize = 0, horizontal_resolution = 0, vertical_resolution = 0, color_table = 0, plane_bytes = 0;
 	if ((opCode == 0x009A) || (opCode == 0x009B))
 		ts.skipRawData(4);
 	ts >> bytesPerLine;

@@ -23,9 +23,10 @@ for which a new license (GPL+exception) is in place.
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
 ***************************************************************************/
-#ifndef PAINTMANAGER_H
-#define PAINTMANAGER_H
-#include "ui_paintmanagerbase.h"
+#ifndef COLORSANDFILLS_H
+#define COLORSANDFILLS_H
+
+#include "ui_colorsandfillsbase.h"
 #include "colorsetmanager.h"
 #include "sccolor.h"
 #include "scribusapi.h"
@@ -34,13 +35,13 @@ for which a new license (GPL+exception) is in place.
 #include "vgradient.h"
 #include "scpattern.h"
 
-class SCRIBUS_API PaintManagerDialog : public QDialog, Ui::PaintManagerBase
+class SCRIBUS_API ColorsAndFillsDialog : public QDialog, Ui::ColorsAndFillsBase
 {
 	Q_OBJECT
 
 	public:
-		PaintManagerDialog(QWidget* parent, QHash<QString, VGradient> *docGradients, ColorList doco, QString docColSet, QHash<QString, ScPattern> *docPatterns, ScribusDoc *doc, ScribusMainWindow* scMW);
-		~PaintManagerDialog() {}
+		ColorsAndFillsDialog(QWidget* parent, QHash<QString, VGradient> *docGradients, ColorList doco, QString docColSet, QHash<QString, ScPattern> *docPatterns, ScribusDoc *doc, ScribusMainWindow* scMW);
+		~ColorsAndFillsDialog() {}
 		/*! \brief Returns the name of the current/selected color set.
 		\retval QString selected name. */
 		QString getColorSetName();
@@ -71,6 +72,7 @@ class SCRIBUS_API PaintManagerDialog : public QDialog, Ui::PaintManagerBase
 		QMap<QString,QString> replaceMapPatterns;
 		QMap<QString,QString> origNamesPatterns;
 		QStringList origPatterns;
+
 	private slots:
 		void leaveDialog();
 		void slotRightClick(QPoint p);
@@ -85,11 +87,13 @@ class SCRIBUS_API PaintManagerDialog : public QDialog, Ui::PaintManagerBase
 		void importColorItems();
 		void loadDefaults(QTreeWidgetItem* item);
 		void saveDefaults();
+
 	protected:
 		QTreeWidgetItem* updatePatternList(QString addedName = "");
 		QTreeWidgetItem* updateGradientList(QString addedName = "");
 		QTreeWidgetItem* updateColorList(QString addedName = "");
 		ColorList getGradientColors();
+		QString getColorTooltip(const ScColor& color);
 		bool isMandatoryColor(QString colorName);
 		void loadPatternDir();
 		void loadVectors(QString data);

@@ -69,7 +69,7 @@ void SMCStyleWidget::changeEvent(QEvent *e)
 void SMCStyleWidget::languageChange()
 {
 	QStringList languageList;
-	LanguageManager::instance()->fillInstalledStringList(&languageList, false);
+	LanguageManager::instance()->fillInstalledStringList(&languageList);
 	fillLangComboFromList(languageList);
 
 	if (fillColor_->count() > 0)
@@ -93,27 +93,7 @@ void SMCStyleWidget::languageChange()
 		backColor_->blockSignals(sigBlocked);
 	}
 
-/***********************************/
-/*      Begin Tooltips             */
-/***********************************/
-// These are for the character style page
-// as in character styles and in paragraph style's character style
-
-	parentCombo->setToolTip(     tr("Parent Style"));
-	fontFace_->setToolTip(       tr("Font Family"));
-	fontSize_->setToolTip(       tr("Font Size"));
-	tracking_->setToolTip(       tr("Tracking"));
-	widthSpaceSpin->setToolTip(  tr("Default width for space"));
-	baselineOffset_->setToolTip( tr("Baseline Offset"));
-	fontHScale_->setToolTip(     tr("Horizontal Scaling"));
-	fontVScale_->setToolTip(     tr("Vertical Scaling"));
-	language_->setToolTip(       tr("Language"));
-	fillColor_->setToolTip(      tr("Fill Color"));
-	fillShade_->setToolTip(      tr("Fill Shade"));
-	strokeColor_->setToolTip(    tr("Stroke Color"));
-	strokeShade_->setToolTip(    tr("Stroke Shade"));
-	backColor_->setToolTip(      tr("Background Color"));
-	backShade_->setToolTip(      tr("Background Shade"));
+	retranslateUi(this);
 
 	fontSizeLabel_->setToolTip(fontSize_->toolTip());
 	trackingLabel_->setToolTip(tracking_->toolTip());
@@ -128,16 +108,6 @@ void SMCStyleWidget::languageChange()
 	backIcon->setToolTip(backColor_->toolTip());
 	backShadeLabel->setToolTip(backShade_->toolTip());
 
-/***********************************/
-/*        End Tooltips             */
-/***********************************/
-
-	basicGroup->setTitle( tr("Basic Formatting"));
-	advGroup->setTitle( tr("Advanced Formatting"));
-	smColorGroup->setTitle( tr("Colors"));
-
-	parentLabel->setText( tr("Based On:"));
-	languageLabel_->setText( tr("Language:"));
 // 	fontVScale_->setSuffix( tr(" %"));
 // 	fontHScale_->setSuffix( tr(" %"));
 // 	baselineOffset_->setSuffix( tr(" %"));
@@ -182,17 +152,9 @@ void SMCStyleWidget::fillColorCombo(ColorList &colors)
 	strokeColor_->clear();
 	backColor_->clear();
 
-	fillColor_->addItem(CommonStrings::tr_NoneColor);
-	strokeColor_->addItem(CommonStrings::tr_NoneColor);
-	backColor_->addItem(CommonStrings::tr_NoneColor);
-	ColorList::Iterator itend=colors.end();
-	ScribusDoc* doc = colors.document();
-	for (ColorList::Iterator it = colors.begin(); it != itend; ++it)
-	{
-		fillColor_->insertItem(it.value(), doc, it.key());
-		strokeColor_->insertItem(it.value(), doc, it.key());
-		backColor_->insertItem(it.value(), doc, it.key());
-	}
+	fillColor_->setColors(colors, true);
+	strokeColor_->setColors(colors, true);
+	backColor_->setColors(colors, true);
 	fillColor_->view()->setMinimumWidth(fillColor_->view()->maximumViewportSize().width()+24);
 	strokeColor_->view()->setMinimumWidth(strokeColor_->view()->maximumViewportSize().width()+24);
 	backColor_->view()->setMinimumWidth(backColor_->view()->maximumViewportSize().width()+24);
@@ -222,7 +184,7 @@ void SMCStyleWidget::setDoc(ScribusDoc *doc)
 		return;
 
 	QStringList languageList;
-	LanguageManager::instance()->fillInstalledStringList(&languageList, false);
+	LanguageManager::instance()->fillInstalledStringList(&languageList);
 	fillLangComboFromList(languageList);
 	fillColorCombo(m_Doc->PageColors);
 	fontFace_->RebuildList(m_Doc);

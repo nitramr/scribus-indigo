@@ -198,7 +198,7 @@ void PicStatus::sortByName()
 			sorted.insertMulti(fi.fileName(), item);
 		}
 		int counter = 0;
-		foreach (QString i, sorted.uniqueKeys())
+		foreach (const QString& i, sorted.uniqueKeys())
 		{
 			foreach (PicItem* val, sorted.values(i))
 			{
@@ -493,12 +493,11 @@ void PicStatus::doImageExtProp()
 {
 	if (currItem != NULL)
 	{
-		ExtImageProps* dia = new ExtImageProps(this, &currItem->pixm.imgInfo, currItem, m_Doc->view());
-		dia->exec();
+		ExtImageProps dia(this, &currItem->pixm.imgInfo, currItem, m_Doc->view());
+		dia.exec();
 		loadPict(currItem->Pfile);
 		refreshItem(currItem);
 		imageViewArea->currentItem()->setIcon(createImgIcon(currItem));
-		delete dia;
 	}
 }
 

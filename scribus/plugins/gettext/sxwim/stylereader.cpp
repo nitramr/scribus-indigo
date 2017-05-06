@@ -85,7 +85,6 @@ StyleReader::StyleReader(QString documentName, gtWriter *w,
  	          (name == "text:list-level-style-number") ||
  	          (name == "text:list-level-style-image")) && (inList))
  	{
- 		QString level = "";
  		for (int i = 0; i < attrs.count(); ++i)
  		{
  			if (attrs.localName(i) == "text:level")
@@ -310,7 +309,7 @@ StyleReader::StyleReader(QString documentName, gtWriter *w,
  
  void StyleReader::styleStyle(const QXmlAttributes& attrs)
  {
- 	QString name = "";
+	QString name;
  	QString listName = NULL;
 	bool setDefaultStyle = false;
  	bool isParaStyle = false;

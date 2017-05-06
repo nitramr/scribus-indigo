@@ -94,7 +94,7 @@ void Prefs_Spelling::downloadSpellDicts()
 			{
 				//qDebug()<<d.url<<d.files;
 				QStringList plainURLs(d.files.split(";", QString::SkipEmptyParts));
-				foreach (QString s, plainURLs)
+				foreach (const QString& s, plainURLs)
 				{
 					ScQApp->dlManager()->addURL(d.url+"/"+s, true, downloadLocation, userDictDir);
 					++i;
@@ -250,7 +250,7 @@ void Prefs_Spelling::setAvailDictsXMLFile(QString availDictsXMLDataFile)
 	dataFile.close();
 	if ( !doc.setContent( data, &errorMsg, &eline, &ecol ))
 	{
-		if (data.toLower().contains("404 not found"))
+		if (data.contains("404 not found", Qt::CaseInsensitive))
 			qDebug()<<"File not found on server";
 		else
 			qDebug()<<"Could not open file"<<availDictsXMLDataFile;

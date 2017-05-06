@@ -15,6 +15,7 @@ for which a new license (GPL+exception) is in place.
 #include "notesstyles.h"
 #include "pageitem_latexframe.h"
 #include "pageitem_noteframe.h"
+#include "pagesize.h"
 #include "prefsmanager.h"
 #include "qtiocompressor.h"
 #include "scclocale.h"
@@ -251,10 +252,7 @@ bool Scribus150Format::loadElements(const QString & data, QString fileDir, int t
 		}
 		// 10/25/2004 pv - None is "reserved" color. cannot be defined in any file...
 		if (tagName == "COLOR" && attrs.valueAsString("NAME") != CommonStrings::None)
-		{
-			success = readColor(m_Doc->PageColors, attrs);
-			if (!success) break;
-		}
+			readColor(m_Doc->PageColors, attrs);
 		if (tagName == "Gradient")
 		{
 			VGradient gra;
@@ -773,10 +771,7 @@ bool Scribus150Format::loadPalette(const QString & fileName)
 		}
 		// 10/25/2004 pv - None is "reserved" color. cannot be defined in any file...
 		if (tagName == "COLOR" && attrs.valueAsString("NAME") != CommonStrings::None)
-		{
-			success = readColor(m_Doc->PageColors, attrs);
-			if (!success) break;
-		}
+			readColor(m_Doc->PageColors, attrs);
 		if (tagName == "Gradient")
 		{
 			VGradient gra;
@@ -1356,10 +1351,7 @@ bool Scribus150Format::loadFile(const QString & fileName, const FileFormat & /* 
 		}
 		// 10/25/2004 pv - None is "reserved" color. cannot be defined in any file...
 		if (tagName == "COLOR" && attrs.valueAsString("NAME") != CommonStrings::None)
-		{
-			success = readColor(m_Doc->PageColors, attrs);
-			if (!success) break;
-		}
+			readColor(m_Doc->PageColors, attrs);
 		if (tagName == "Gradient")
 		{
 			VGradient gra;
@@ -1369,9 +1361,7 @@ bool Scribus150Format::loadFile(const QString & fileName, const FileFormat & /* 
 				break;
 			gra.setRepeatMethod((VGradient::VGradientRepeatMethod)(attrs.valueAsInt("Ext", VGradient::pad)));
 			if (!grName.isEmpty())
-			{
 				m_Doc->docGradients.insert(grName, gra);
-			}
 		}
 		if (tagName == "STYLE")
 		{
@@ -2376,7 +2366,7 @@ bool Scribus150Format::readCheckProfile(ScribusDoc* doc, ScXmlStreamAttributes& 
 	return true;
 }
 
-bool Scribus150Format::readColor(ColorList& colors, ScXmlStreamAttributes& attrs)
+void Scribus150Format::readColor(ColorList& colors, ScXmlStreamAttributes& attrs)
 {
 	ScColor color;
 	if (attrs.hasAttribute("CMYK"))
@@ -2392,13 +2382,18 @@ bool Scribus150Format::readColor(ColorList& colors, ScXmlStreamAttributes& attrs
 	}
 	color.setSpotColor( attrs.valueAsBool("Spot", false) );
 	color.setRegistrationColor( attrs.valueAsBool("Register", false) );
-	QString name = attrs.valueAsString("NAME", color.name());
+	QString name(attrs.valueAsString("NAME", color.name()));
+	if (name == "All")
+	{
+		color.setSpotColor(true);
+		color.setRegistrationColor(true);
+		color.setColor(255, 255, 255, 255);
+	}
 	// #10323 : break loading of doc which contain colors with different names
 	// and same definition
 	// colors.tryAddColor(name, color);
 	if (name.length() > 0 && !colors.contains(name))
 		colors.insert(name, color);
-	return true;
 }
 
 bool Scribus150Format::readGradient(ScribusDoc *doc, VGradient &gra, ScXmlStreamReader& reader)
@@ -2922,7 +2917,7 @@ void Scribus150Format::readCellStyle(ScribusDoc *doc, ScXmlStreamReader& reader,
 	// The default style attribute must be correctly set before trying to assign a parent
 	if (attrs.hasAttribute("DefaultStyle"))
 		newStyle.setDefaultStyle(attrs.valueAsInt("DefaultStyle"));
-	else if (newStyle.name() == CommonStrings::DefaultTableStyle || newStyle.name() == CommonStrings::trDefaultTableStyle)
+	else if (newStyle.name() == CommonStrings::DefaultCellStyle || newStyle.name() == CommonStrings::trDefaultCellStyle)
 		newStyle.setDefaultStyle(true);
 	else
 		newStyle.setDefaultStyle(false);
@@ -3613,24 +3608,38 @@ bool Scribus150Format::readPage(ScribusDoc* doc, ScXmlStreamReader& reader)
 	else
 		newPage->setWidth(attrs.valueAsDouble("PAGEWITH"));
 	newPage->setHeight(attrs.valueAsDouble("PAGEHEIGHT"));
+
+	//14704: Double check the page size should not be Custom in case the size doesn't match a standard size
+	if (attrs.hasAttribute("Size"))
+	{
+		QString pageSize(attrs.valueAsString("Size"));
+		PageSize ps(pageSize);
+		if (!compareDouble(ps.width(), newPage->width()) || !compareDouble(ps.height(), newPage->height()))
+			newPage->m_pageSize = CommonStrings::customPageSize;
+		else
+			newPage->m_pageSize = pageSize;
+	}
+
+
+
 	newPage->setInitialHeight(newPage->height());
 	newPage->setInitialWidth(newPage->width());
 	newPage->initialMargins.setTop(qMax(0.0, attrs.valueAsDouble("BORDERTOP")));
 	newPage->initialMargins.setBottom(qMax(0.0, attrs.valueAsDouble("BORDERBOTTOM")));
 	newPage->initialMargins.setLeft(qMax(0.0, attrs.valueAsDouble("BORDERLEFT")));
 	newPage->initialMargins.setRight(qMax(0.0, attrs.valueAsDouble("BORDERRIGHT")));
-	newPage->marginPreset   = attrs.valueAsInt("PRESET", 0);
+	newPage->marginPreset = attrs.valueAsInt("PRESET", 0);
 	newPage->Margins.setTop(newPage->initialMargins.top());
 	newPage->Margins.setBottom(newPage->initialMargins.bottom());
 	m_Doc->setMasterPageMode(false);
 	//m_Doc->Pages=&m_Doc->DocPages;
 	// guides reading
-	newPage->guides.setHorizontalAutoGap( attrs.valueAsDouble("AGhorizontalAutoGap", 0.0));
-	newPage->guides.setVerticalAutoGap  ( attrs.valueAsDouble("AGverticalAutoGap", 0.0));
-	newPage->guides.setHorizontalAutoCount( attrs.valueAsInt("AGhorizontalAutoCount", 0) );
-	newPage->guides.setVerticalAutoCount  ( attrs.valueAsInt("AGverticalAutoCount", 0) );
-	newPage->guides.setHorizontalAutoRefer( attrs.valueAsInt("AGhorizontalAutoRefer", 0) );
-	newPage->guides.setVerticalAutoRefer  ( attrs.valueAsInt("AGverticalAutoRefer", 0) );
+	newPage->guides.setHorizontalAutoGap(attrs.valueAsDouble("AGhorizontalAutoGap", 0.0));
+	newPage->guides.setVerticalAutoGap(attrs.valueAsDouble("AGverticalAutoGap", 0.0));
+	newPage->guides.setHorizontalAutoCount(attrs.valueAsInt("AGhorizontalAutoCount", 0) );
+	newPage->guides.setVerticalAutoCount(attrs.valueAsInt("AGverticalAutoCount", 0) );
+	newPage->guides.setHorizontalAutoRefer(attrs.valueAsInt("AGhorizontalAutoRefer", 0) );
+	newPage->guides.setVerticalAutoRefer(attrs.valueAsInt("AGverticalAutoRefer", 0) );
 	GuideManagerIO::readVerticalGuides(attrs.valueAsString("VerticalGuides"),
 			newPage,
 			GuideManagerCore::Standard,
@@ -4214,7 +4223,6 @@ bool Scribus150Format::readPattern(ScribusDoc* doc, ScXmlStreamReader& reader, c
 		if (!reader.isStartElement() || reader.name() != "PatternItem") 
 			continue;
 
-		QStringRef tName = reader.name();
 		ScXmlStreamAttributes tAtt = reader.attributes();
 			
 		ItemInfo itemInfo;
@@ -5198,10 +5206,8 @@ PageItem* Scribus150Format::pasteItem(ScribusDoc *doc, ScXmlStreamAttributes& at
 		{
 			QStringList slRowHeights=rowHeights.split(" ");
 			int i=0;
-			foreach(QString pos, slRowHeights)
-			{
+			foreach(const QString& pos, slRowHeights)
 				tableitem->resizeRow(i++, pos.toDouble());
-			}
 		}
 //		QString colPositions(attrs.valueAsString("ColumnPositions"));
 //		QStringList slColPositions=colPositions.split(" ");
@@ -5209,11 +5215,9 @@ PageItem* Scribus150Format::pasteItem(ScribusDoc *doc, ScXmlStreamAttributes& at
 		if(!colWidths.isEmpty())
 		{
 			QStringList slColWidths=colWidths.split(" ");
-			int j=0;
-			foreach(QString pos, slColWidths)
-			{
-				tableitem->resizeColumn(j++, pos.toDouble());
-			}
+			int i=0;
+			foreach(const QString& pos, slColWidths)
+				tableitem->resizeColumn(i++, pos.toDouble());
 		}
 		QString cellAreas(attrs.valueAsString("CellAreas"));
 		if(!cellAreas.isEmpty())
@@ -5753,11 +5757,17 @@ bool Scribus150Format::readItemTableCell(PageItem_Table* item, ScXmlStreamReader
 		QString fColor = tAtt.valueAsString("FillColor");
 		if ((fColor != CommonStrings::None) && (!fColor.isEmpty()))
 			item->cellAt(row, col).setFillColor(fColor);
-		item->cellAt(row, col).setFillShade(tAtt.valueAsInt("FillShade", 100));
-		item->cellAt(row, col).setLeftPadding(tAtt.valueAsDouble("LeftPadding", 0.0));
-		item->cellAt(row, col).setRightPadding(tAtt.valueAsDouble("RightPadding", 0.0));
-		item->cellAt(row, col).setTopPadding(tAtt.valueAsDouble("TopPadding", 0.0));
-		item->cellAt(row, col).setBottomPadding(tAtt.valueAsDouble("BottomPadding", 0.0));
+		double fShade = tAtt.valueAsDouble("FillShade", -1.0);
+		if (fShade >= 0 && fShade <= 100)
+			item->cellAt(row, col).setFillShade(fShade);
+		if (tAtt.hasAttribute("LeftPadding"))
+			item->cellAt(row, col).setLeftPadding(tAtt.valueAsDouble("LeftPadding", 0.0));
+		if (tAtt.hasAttribute("RightPadding"))
+			item->cellAt(row, col).setRightPadding(tAtt.valueAsDouble("RightPadding", 0.0));
+		if (tAtt.hasAttribute("TopPadding"))
+			item->cellAt(row, col).setTopPadding(tAtt.valueAsDouble("TopPadding", 0.0));
+		if (tAtt.hasAttribute("BottomPadding"))
+			item->cellAt(row, col).setBottomPadding(tAtt.valueAsDouble("BottomPadding", 0.0));
 
 		PageItem* newItem = item->cellAt(row, col).textFrame();
 		newItem->Cols   = tAtt.valueAsInt("TextColumns", 1);
@@ -6002,9 +6012,19 @@ bool Scribus150Format::loadPage(const QString & fileName, int pageNumber, bool M
 		}
 
 		if (tagName == "COLOR" && attrs.valueAsString("NAME") != CommonStrings::None)
+			readColor(m_Doc->PageColors, attrs);
+		if (tagName == "Gradient" && attrs.valueAsString("Name") != CommonStrings::None)
 		{
-			success = readColor(m_Doc->PageColors, attrs);
-			if (!success) break;
+			VGradient gra;
+			QString grName = attrs.valueAsString("Name");
+			success = readGradient(m_Doc, gra, reader);
+			if (!success)
+				break;
+			gra.setRepeatMethod((VGradient::VGradientRepeatMethod)(attrs.valueAsInt("Ext", VGradient::pad)));
+			if (!grName.isEmpty())
+			{
+				m_Doc->docGradients.insert(grName, gra);
+			}
 		}
 		if (tagName == "JAVA")
 		{
@@ -6710,9 +6730,7 @@ bool Scribus150Format::readColors(const QString& fileName, ColorList & colors)
 		{
 			attrs = reader.scAttributes();
 			if (attrs.valueAsString("NAME") != CommonStrings::None)
-			{
 				readColor(colors, attrs);
-			}
 		}
 	}
 	return success;

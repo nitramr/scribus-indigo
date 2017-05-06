@@ -56,13 +56,12 @@ void UrlLauncher::launchUrlExt(const QUrl& link, QWidget *parent)
 		if (p==0)
 			p=ScCore->primaryMainWindow();
 		QString extBrowser(PrefsManager::instance()->extBrowserExecutable());
-		QFileInfo fi(extBrowser);
 		if (extBrowser.isEmpty())
 		{
 			if (!QDesktopServices::openUrl(link))
 			{
 				extBrowser = QFileDialog::getOpenFileName(p, tr("Locate your web browser"), QString::null, QString::null);
-				if (!QFileInfo(extBrowser).exists())
+				if (!QFileInfo::exists(extBrowser))
 					extBrowser="";
 				PrefsManager::instance()->setExtBrowserExecutable(extBrowser);
 			}

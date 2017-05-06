@@ -27,6 +27,8 @@ for which a new license (GPL+exception) is in place.
 #include <QWidget>
 #include <QComboBox>
 #include <QFontDatabase>
+#include <QPixmapCache>
+
 #include "scribusapi.h"
 
 class QEvent;
@@ -34,8 +36,10 @@ class QFont;
 class QGridLayout;
 class QPixmap;
 class QLabel;
-class ScribusDoc;
 class PrefsManager;
+class ScFace;
+class ScribusDoc;
+
 
 /**
   *@author Franz Schmid
@@ -43,9 +47,10 @@ class PrefsManager;
 
 class SCRIBUS_API FontCombo : public QComboBox
 {
+	Q_OBJECT
 public:
 	FontCombo(QWidget* pa);
-	~FontCombo() {};
+	~FontCombo() {}
 	
 	
 
@@ -65,7 +70,7 @@ class SCRIBUS_API FontComboH : public QWidget
 
 public:
 	FontComboH(QWidget* parent, bool labels=false);
-	~FontComboH() {};
+	~FontComboH() {}
 	
 	virtual void changeEvent(QEvent *e);
 	
@@ -100,11 +105,11 @@ protected:
 };
 
 // based on Qfontcombobox class from Qt project
-class fontFamilyDelegate : public QAbstractItemDelegate
+class FontFamilyDelegate : public QAbstractItemDelegate
 {
 	Q_OBJECT
 public:
-	explicit fontFamilyDelegate(QObject *parent);
+	explicit FontFamilyDelegate(QObject *parent);
 
 	// painting
 	void paint(QPainter *painter,
@@ -115,7 +120,9 @@ public:
 				   const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 	QFontDatabase::WritingSystem writingSystem;
+
 protected:
-	 QFont m_font;
+	QFont m_font;
+	static QPixmapCache pixmapCache;
 };
 #endif

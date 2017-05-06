@@ -1879,11 +1879,23 @@ void ScribusDoc::restore(UndoState* state, bool isUndo)
 			Q_ASSERT(nF != NULL);
 			nF->asNoteFrame()->restoreDeleteNoteText(ss, isUndo);
 		}
+		else if (ss->contains("DELETE_FRAMEPARA"))
+		{
+			PageItem * nF = getItemFromName(ss->get("noteframeName"));
+			Q_ASSERT(nF != NULL);
+			nF->asNoteFrame()->restoreDeleteNoteParagraph(ss, isUndo);
+		}
 		else if (ss->contains("INSERT_FRAMETEXT"))
 		{
 			PageItem * nF = getItemFromName(ss->get("noteframeName"));
 			Q_ASSERT(nF != NULL);
 			nF->asNoteFrame()->restoreInsertNoteText(ss,isUndo);
+		}
+		else if (ss->contains("INSERT_FRAMEPARA"))
+		{
+			PageItem * nF = getItemFromName(ss->get("noteframeName"));
+			Q_ASSERT(nF != NULL);
+			nF->asNoteFrame()->restoreInsertNoteParagraph(ss,isUndo);
 		}
 		else if (ss->contains("NSTYLE"))
 		{
@@ -2702,7 +2714,6 @@ void ScribusDoc::deleteMasterPage(const int pageNumber)
 	assert( Pages->count() > 1 && Pages->count() > pageNumber );
 	setCurrentPage(Pages->at(0));
 	ScPage* page = Pages->takeAt(pageNumber);
-	QString oldPageName(page->pageName());
 	delete page;
 	// #10658 : renumber masterpages and masterpage objects
 	// in order to avoid crash after masterpage deletion
@@ -3660,7 +3671,7 @@ bool ScribusDoc::renumberLayer(const int layerID, const int newLayerID)
 //Make the doc delete the items, not the view. TODO: Currently does nada, zilch, zero
 bool ScribusDoc::deleteTaggedItems()
 {
-	QString tooltip = Um::ItemsInvolved + "\n";
+//	QString tooltip = Um::ItemsInvolved + "\n";
 	//Master Items
 	for (int i = 0; i < MasterItems.count(); ++i)
 	{
@@ -4591,7 +4602,6 @@ void ScribusDoc::checkItemForFonts(PageItem *it, QMap<QString, QMap<uint, FPoint
 void ScribusDoc::getUsedProfiles(ProfilesL& usedProfiles)
 {
 	PageItem* it = NULL;
-	QString profileName;
 	QStringList profileNames;
 	int counter = 0;
 	usedProfiles.clear();
@@ -5765,7 +5775,6 @@ bool ScribusDoc::loadPict(QString fn, PageItem *pageItem, bool reload, bool show
 	{
 		if (m_hasGUI)
 		{
-			QFileInfo fi(pageItem->Pfile);
 			ScCore->fileWatcher->addFile(pageItem->Pfile);
 		}
 	}
@@ -6578,7 +6587,8 @@ void ScribusDoc::setSymbolEditMode(bool mode, QString symbolName)
 			m_Selection->addItem(Items->at(as));
 			Items->at(as)->setLayer(layerID);
 		}
-		moveGroup(addedPage->xOffset(), addedPage->yOffset());
+		QRectF selRect = m_Selection->getVisualGroupRect();
+		moveGroup(addedPage->xOffset() - selRect.x(), addedPage->yOffset() - selRect.y());
 		if (Items->at(0)->isGroup())
 			Items->at(0)->asGroupFrame()->adjustXYPosition();
 		m_Selection->clear();
@@ -6660,9 +6670,10 @@ void ScribusDoc::setSymbolEditMode(bool mode, QString symbolName)
 			currItem->gXpos = currItem->xPos() - minx;
 			currItem->gYpos = currItem->yPos() - miny;
 			currItem->setXYPos(currItem->gXpos, currItem->gYpos, true);
-			docPatterns[m_currentEditedSymbol].pattern = currItem->DrawObj_toImage(qMin(qMax(maxx - minx, maxy - miny), 500.0));
-			docPatterns[m_currentEditedSymbol].width = maxx - minx;
-			docPatterns[m_currentEditedSymbol].height = maxy - miny;
+			ScPattern& currentEditedSymbol = docPatterns[m_currentEditedSymbol];
+			currentEditedSymbol.pattern = currItem->DrawObj_toImage(qMin(qMax(maxx - minx, maxy - miny), 500.0));
+			currentEditedSymbol.width  = maxx - minx;
+			currentEditedSymbol.height = maxy - miny;
 		}
 		if (m_ScMW->patternsDependingOnThis.count() > 1)
 		{
@@ -15929,9 +15940,9 @@ void ScribusDoc::itemSelection_SetCompressionQuality(int cqIndex, Selection * cu
 	}
 }
 
-QMap<PageItem*, QString> ScribusDoc::getDocItemNames(PageItem::ItemType itemType)
+QHash<PageItem*, QString> ScribusDoc::getDocItemNames(PageItem::ItemType itemType)
 {
-	QMap<PageItem*, QString> namesMap;
+	QHash<PageItem*, QString> namesMap;
 	QList<PageItem*> allItems;
 	int docItemsCount = DocItems.count();
 	for (int i = 0; i < docItemsCount; ++i)
@@ -16572,7 +16583,7 @@ void ScribusDoc::setNumerationCounter(QString numName, int level, int number)
 
 bool ScribusDoc::updateLocalNums(StoryText& itemText)
 {
-	QList<Numeration> m_nums;
+	QVector<Numeration> m_nums;
 	QList<int> m_counters;
 	bool needUpdate = false;
 	for (int pos = 0; pos < itemText.length(); ++pos)

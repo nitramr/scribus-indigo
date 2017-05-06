@@ -114,19 +114,19 @@ About::About( QWidget* parent, AboutMode diaMode ) : QDialog( parent )
 	buildID = new QLabel( tab );
 	buildID->setAlignment(Qt::AlignCenter);
 	buildID->setTextInteractionFlags(Qt::TextSelectableByMouse);
-	QString BUILD_DAY = "24";
-	QString BUILD_MONTH = CommonStrings::march;
+	QString BUILD_DAY = "6";
+	QString BUILD_MONTH = CommonStrings::may;
 	QString BUILD_YEAR = "2017";
 	QString BUILD_TIME = "";
 	QString BUILD_TZ = "";
     QString BUILD_NAME = "Scribus Indigo Dock";
 
-	QString built = tr("%1 %2 %3").arg(BUILD_DAY).arg(BUILD_MONTH).arg(BUILD_YEAR);
+	QString built = tr("%1 %2 %3").arg(BUILD_DAY, BUILD_MONTH, BUILD_YEAR);
 	QString version = VERSION;
 	if (BUILD_NAME != "")
 		version += " \"" + BUILD_NAME + "\"";
 	if (BUILD_NAME == "BleedingEdge")
-		built = tr("%3-%2-%1 %4 %5").arg(BUILD_DAY).arg(BUILD_MONTH).arg(BUILD_YEAR).arg(BUILD_TIME).arg(BUILD_TZ);
+		built = tr("%3-%2-%1 %4 %5").arg(BUILD_DAY, BUILD_MONTH, BUILD_YEAR, BUILD_TIME, BUILD_TZ);
 
 #if defined(HAVE_SVNVERSION) && defined(SVNVERSION)
 	QString revText;
@@ -303,8 +303,8 @@ QString About::trAuthorTitle(QString title)
 		result = tr("Tango Project Icons:");
 	else if ( title == "Scribus 1.5.1+ Icon Set:" )
 		result = tr("Scribus 1.5.1+ Icon Set:");
-	else if ( title == "Refactoring text layout code and the new boxes model, Oman House of Open Source Technology team:" )
-		result = tr("Refactoring text layout code and the new boxes model, Oman House of Open Source Technology team:");
+	else if ( title == "Refactoring text layout code, the new boxes model & CTL text layout, Oman House of Open Source Technology team:" )
+		result = tr("Refactoring text layout code, the new boxes model & CTL text layout, Oman House of Open Source Technology team:");
 	else
 	{
 		std::cout << "please add the untranslated title \"" << qPrintable(title) << "\" to About::trAuthorTitle()" << std::endl;

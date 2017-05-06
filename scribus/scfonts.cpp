@@ -437,9 +437,9 @@ static QString getFamilyName(const FT_Face face)
 	if (!names.isEmpty())
 	{
 		std::sort(names.begin(), names.end(), nameComp);
-		foreach (const FT_SfntName name, names)
+		foreach (const FT_SfntName& name, names)
 		{
-			QString string = decodeNameRecord(name);
+			QString string(decodeNameRecord(name));
 			if (!string.isEmpty())
 			{
 				familyName = string;
@@ -981,9 +981,19 @@ void SCFonts::AddFontconfigFonts()
 	// We currently just need FC_FILE, but other info like font family and style
 	// is available - see "man fontconfig".
 	FcObjectSet* os = FcObjectSetBuild (FC_FILE, (char *) 0);
+	if (!os)
+	{
+		qFatal("SCFonts::AddFontconfigFonts() FcObjectSet* os failed to build object set");
+		return;
+	}
 	// Now ask fontconfig to retrieve info as specified in 'os' about fonts
 	// matching pattern 'pat'.
 	FcFontSet* fs = FcFontList(config, pat, os);
+	if (!fs)
+	{
+		qFatal("SCFonts::AddFontconfigFonts() FcFontSet* fs failed to create font list");
+		return;
+	}
 	FcConfigDestroy(config);
 	FcObjectSetDestroy(os);
 	FcPatternDestroy(pat);
@@ -992,8 +1002,7 @@ void SCFonts::AddFontconfigFonts()
 	FT_Library library = NULL;
 	FT_Init_FreeType( &library );
 	// Now iterate over the font files and load them
-	int i;
-	for (i = 0; i < fs->nfont; i++) 
+	for (int i = 0; i < fs->nfont; i++)
 	{
 		FcChar8 *file = NULL;
 		if (FcPatternGetString (fs->fonts[i], FC_FILE, 0, &file) == FcResultMatch)
@@ -1007,8 +1016,7 @@ void SCFonts::AddFontconfigFonts()
 				sDebug(QObject::tr("Failed to load a font - freetype2 couldn't find the font file"));
 	}
 	FT_Done_FreeType(library);
-	if (fs)
-		FcFontSetDestroy(fs);
+	FcFontSetDestroy(fs);
 }
 
 #elif defined(Q_OS_LINUX)
@@ -1131,6 +1139,12 @@ void SCFonts::ReadCacheList(QString pf)
 	}
 }
 
+void SCFonts::WriteCacheList()
+{
+	QString prefsLocation = PrefsManager::instance()->preferencesLocation();
+	WriteCacheList(prefsLocation);
+}
+
 void SCFonts::WriteCacheList(QString pf)
 {
 	QDomDocument docu("fontcacherc");
@@ -1143,22 +1157,21 @@ void SCFonts::WriteCacheList(QString pf)
 		if (it.value().isChecked)
 		{
 			QDomElement fosu = docu.createElement("Font");
-			fosu.setAttribute("File",it.key());
-			fosu.setAttribute("Status",static_cast<int>(it.value().isOK));
-			fosu.setAttribute("Modified",it.value().lastMod.toString(Qt::ISODate));
+			fosu.setAttribute("File", it.key());
+			fosu.setAttribute("Status", static_cast<int>(it.value().isOK));
+			fosu.setAttribute("Modified", it.value().lastMod.toString(Qt::ISODate));
 			elem.appendChild(fosu);
 		}
 	}
 	ScCore->setSplashStatus( QObject::tr("Writing updated Font Cache") );
 	QFile f(pf + "/checkfonts150.xml");
-	if(f.open(QIODevice::WriteOnly))
+	if (f.open(QIODevice::WriteOnly))
 	{
 		QTextStream s(&f);
 		s.setCodec("UTF-8");
-		s<<docu.toString();
+		s << docu.toString();
 		f.close();
 	}
-	checkedFonts.clear();
 }
 
 void SCFonts::GetFonts(QString pf, bool showFontInfo)

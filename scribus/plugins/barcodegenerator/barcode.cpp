@@ -30,8 +30,8 @@ void Barcode::languageChange()
 		m_actionInfo.menuAfterName = "toolsInsertRenderFrame";
 		m_actionInfo.toolbar = "Tools";
 	}
-    m_actionInfo.icon1 = IconManager::instance()->loadIcon("16/insert-barcode.png");
-    m_actionInfo.icon2 = IconManager::instance()->loadIcon("22/insert-barcode.png");
+   	m_actionInfo.icon1 = IconManager::instance()->loadIcon("16/insert-barcode.png");
+    	m_actionInfo.icon2 = IconManager::instance()->loadIcon("22/insert-barcode.png");
 	m_actionInfo.enabledOnStartup = false;
 //	m_actionInfo.forAppMode.append(modeNormal);
 	m_actionInfo.needsNumObjects = -1;
@@ -52,15 +52,18 @@ const ScActionPlugin::AboutData* Barcode::getAboutData() const
 	about->description = "Barcode Writer in Pure Postscript generates all barcode formats entirely within PostScript hence this plugin requires Ghostscript to be installed on your system. http://bwipp.terryburton.co.uk";
 
 	// Extract the version information from BWIPP
-        QFile f( ScPaths::instance().shareDir() + QString("/plugins/barcode.ps") );
-        f.open(QIODevice::ReadOnly);
-        QTextStream ts(&f);
-        QString bwipp = ts.read(150);
-        f.close();
-        QRegExp rx("\\n% Barcode Writer in Pure PostScript - Version ([\\d-]+)\\n");
-	rx.indexIn(bwipp);
-	about->version = "Backend: "+rx.cap(1);
-
+	QFile f( ScPaths::instance().shareDir() + QString("/plugins/barcode.ps") );
+	if(f.open(QIODevice::ReadOnly))
+	{
+		QTextStream ts(&f);
+		QString bwipp = ts.read(150);
+		f.close();
+		QRegExp rx("\\n% Barcode Writer in Pure PostScript - Version ([\\d-]+)\\n");
+		rx.indexIn(bwipp);
+		about->version = "Backend: "+rx.cap(1);
+	}
+	else
+		about->version = "Unable to open backend file";
 	// about->releaseDate
 	about->copyright = QString::fromUtf8("Backend: Copyright (c) 2004-2015 Terry Burton - tez@terryburton.co.uk\nFrontend: Copyright (c) 2005 Petr Van\xc4\x9bk - petr@scribus.info");
 	about->license = "Backend: MIT/X-Consortium, Frontend: GPL";

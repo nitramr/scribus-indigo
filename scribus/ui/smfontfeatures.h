@@ -39,6 +39,9 @@ public:
 	SMFontFeatures(QWidget *parent);
 	~SMFontFeatures(){}
 
+	virtual void changeEvent(QEvent *e);
+	void languageChange();
+
 	void setFontFeatures(QString s, QStringList fontFeaturesList);
 	void setFontFeatures(QString val, QStringList fontFeatures, bool isParentVal);
 	QString fontFeatures();
@@ -56,6 +59,14 @@ protected:
 
 private:
 	void hideAllFontFeatures();
+	void setupCapitalCombo(QStringList fontFeatures);
+	void setupPositionCombo(QStringList fontFeatures);
+	void setupNumeralStyleCombo(QStringList fontFeatures);
+	void setupNumeralWidthCombo(QStringList fontFeatures);
+	void setupNumeralFractionCombo(QStringList fontFeatures);
+
+	QStringList comboboxFeatures(QComboBox* combo);
+
 	bool m_hasParent;
 	bool m_useParentValue;
 	QString m_pValue;

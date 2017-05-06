@@ -132,7 +132,7 @@ class SCRIBUS_API PageItem : public QObject, public UndoObject, public SaxIO, pu
 	Q_PROPERTY(double textToFrameDistBottom READ textToFrameDistBottom WRITE setTextToFrameDistBottom DESIGNABLE false)
 	Q_PROPERTY(double ColGap READ columnGap WRITE setColumnGap DESIGNABLE false)
 	Q_PROPERTY(int Cols READ columns WRITE setColumns DESIGNABLE false)
-	Q_ENUMS(FirstLineOffsetPolicy)
+	Q_ENUM(FirstLineOffsetPolicy)
 	Q_PROPERTY(FirstLineOffsetPolicy firstLineOffset READ firstLineOffset WRITE setFirstLineOffset DESIGNABLE false)
 	// FIXME: QMetaProperty can't translate these to/from enumerator names, probably because the
 	// properties aren't moc'd in the Qt sources. They work fine in their
@@ -144,15 +144,7 @@ class SCRIBUS_API PageItem : public QObject, public UndoObject, public SaxIO, pu
 // 	Q_ENUMS(PenJoinStyle)
 // 	Q_PROPERTY(PenJoinStyle lineJoin READ lineJoin WRITE setLineJoin DESIGNABLE false)
 
-	// This property may not hang around for too long, but should be useful
-	// when testing out the pageitem refactoring work.  Setting it is unlikely
-	// to currently have the desired effect.
-	/**
-	 * @brief Item type.
-	 * @warning Do not set this property except for testing and debug purposes.
-	 */
-	Q_ENUMS(ItemType)
-	Q_PROPERTY(ItemType itemType READ itemType WRITE convertTo DESIGNABLE false)
+
 
 public:	// Start enumerator definitions
 
@@ -225,6 +217,16 @@ public:	// Start enumerator definitions
 		Other		= 3
 	};
 		//End enumerator definitions
+
+	// This property may not hang around for too long, but should be useful
+	// when testing out the pageitem refactoring work.  Setting it is unlikely
+	// to currently have the desired effect.
+	/**
+	 * @brief Item type.
+	 * @warning Do not set this property except for testing and debug purposes.
+	 */
+	Q_ENUM(ItemType)
+	Q_PROPERTY(ItemType itemType READ itemType WRITE convertTo DESIGNABLE false)
 
 public: // Start public functions
 
@@ -417,9 +419,9 @@ public: // Start public functions
 	void SetQColor(QColor *tmp, QString farbe, double shad);
 	void DrawPolyL(QPainter *p, QPolygon pts);
 	const FPointArray shape() const { return PoLine; }
-	void setShape(FPointArray val) { PoLine = val; }
+	void setShape(const FPointArray& val) { PoLine = val; }
 	const FPointArray contour() const { return ContourLine; }
-	void setContour(FPointArray val) { ContourLine = val; }
+	void setContour(const FPointArray& val) { ContourLine = val; }
 	bool flipPathText() const { return textPathFlipped; }
 	void setFlipPathText(bool val) { textPathFlipped = val; }
 	int pathTextType() const { return textPathType; }
@@ -432,7 +434,7 @@ public: // Start public functions
 	bool useEmbeddedImageProfile() const { return UseEmbedded; }
 	void setUseEmbeddedImageProfile(bool val) { UseEmbedded = val; }
 	QString embeddedImageProfile() const { return EmProfile; }
-	void setEmbeddedImageProfile(QString val) { EmProfile = val; }
+	void setEmbeddedImageProfile(const QString& val) { EmProfile = val; }
 	bool drawFrame() { return ((m_ItemType == TextFrame && !m_sampleItem) || (m_ItemType == ImageFrame) || (m_ItemType == PathText)); }
 	QString externalFile() const { return Pfile; }
 	void setExternalFile(QString val);
@@ -441,13 +443,13 @@ public: // Start public functions
 
 	//FIXME: maybe these should go into annotation?
 	QString fileIconPressed() const { return Pfile2; }
-	void setFileIconPressed(QString val);
+	void setFileIconPressed(const QString& val);
 	QString fileIconRollover() const { return Pfile3; }
-	void setFileIconRollover(QString val);
+	void setFileIconRollover(const QString& val);
 	int  cmsRenderingIntent() const { return IRender; }
 	void setCmsRenderingIntent(eRenderIntent val) { IRender = val; }
 	QString cmsProfile() const { return IProfile; }
-	void setCmsProfile(QString val) { IProfile = val; }
+	void setCmsProfile(const QString& val) { IProfile = val; }
 	void setOverrideCompressionMethod(bool val) { OverrideCompressionMethod = val; }
 	void setCompressionMethodIndex(int val) { CompressionMethodIndex = val; }
 	void setOverrideCompressionQuality(bool val) { OverrideCompressionQuality = val; }
@@ -722,10 +724,10 @@ public: // Start public functions
 	void setFitImageToFrame(bool val) { ScaleType = !val; }
 	bool isImageInline() const { return isInlineImage; }
 	void setImageInline(bool val) { isInlineImage = val; }
-	void setInlineExt(QString val) { inlineExt = val; }
-	void setInlineData(QString data);
+	void setInlineExt(const QString& val) { inlineExt = val; }
+	void setInlineData(const QString& data);
 	void makeImageInline();
-	void makeImageExternal(QString path);
+	void makeImageExternal(const QString& path);
 
 	//Text Data - Move to PageItem_TextFrame at some point? --- no, to FrameStyle, av
 	double textToFrameDistLeft() const { return m_textDistanceMargins.left(); }
@@ -1514,6 +1516,7 @@ protected: // Start protected functions
 	void restoreCustomLineStyle(SimpleState *state, bool isUndo);
 	void restoreDefaultParagraphStyle(SimpleState *state, bool isUndo);
 	void restoreDeleteFrameText(SimpleState *state, bool isUndo);
+	void restoreDeleteFrameParagraph(SimpleState *state, bool isUndo);
 	void restoreDropLinks(UndoState *state, bool isUndo);
 	void restoreEndArrowScale(SimpleState *state, bool isUndo);
 	void restoreFill(SimpleState *state, bool isUndo);
@@ -1577,6 +1580,7 @@ protected: // Start protected functions
 	void restoreImageScaleChange(SimpleState *state, bool isUndo);
 	void restoreImageScaleMode(SimpleState *state, bool isUndo);
 	void restoreInsertFrameText(SimpleState *state, bool isUndo);
+	void restoreInsertFrameParagraph(SimpleState *state, bool isUndo);
 	void restoreLayer(SimpleState *state, bool isUndo);
 	void restoreLeftTextFrameDist(SimpleState *state, bool isUndo);
 	void restoreLineColor(SimpleState *state, bool isUndo);

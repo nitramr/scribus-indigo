@@ -16,7 +16,9 @@ for which a new license (GPL+exception) is in place.
   */
 class HelpNavigation : public QWidget, public Ui::HelpBrowserNavigation
 {
-	public:
+	Q_OBJECT
+
+public:
 	HelpNavigation(QWidget * parent);
 	~HelpNavigation();
 };

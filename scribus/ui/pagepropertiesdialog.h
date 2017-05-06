@@ -4,8 +4,8 @@ to the COPYING file provided with the program. Following this notice may exist
 a copyright and/or license notice that predates the release of Scribus 1.3.2
 for which a new license (GPL+exception) is in place.
 */
-#ifndef MARGINDIALOG_H
-#define MARGINDIALOG_H
+#ifndef PAGEPROPERTIESDIALOG_H
+#define PAGEPROPERTIESDIALOG_H
 
 #include "scribusapi.h"
 #include <QDialog>
@@ -25,7 +25,7 @@ class ScribusDoc;
 
 /*! \brief A dialog to setup the existing document margins.
 In modal mode called from void ScribusMainWindow::changePageProperties() */
-class SCRIBUS_API MarginDialog : public QDialog
+class SCRIBUS_API PagePropertiesDialog : public QDialog
 {
 	Q_OBJECT
 
@@ -33,8 +33,8 @@ public:
 	/*! \brief GUI setup
 	\param parent Scribus main window in this case
 	\param doc current document */
-	MarginDialog( QWidget* parent,  ScribusDoc* doc);
-	~MarginDialog() {};
+	PagePropertiesDialog( QWidget* parent,  ScribusDoc* doc);
+	~PagePropertiesDialog() {}
 
 	/*! \brief Returns recomputed "Links" index/value for facing pages.
 	\retval int 0 for max item, 1 for min. item++ for middle. Why? */
@@ -53,7 +53,7 @@ public:
 	bool getMoveObjects();
 	/*! \brief Returns prefsPageSizeName value
 	\retval QString prefsPageSizeName property */
-	QString getpPrefsPageSizeName();
+	QString getPrefsPageSizeName();
 	/*! \brief Top Margin
 	\retval double margin size */
 	double top();

@@ -189,7 +189,6 @@ for which a new license (GPL+exception) is in place.
 #include "ui/javadocs.h"
 #include "ui/layers.h"
 #include "ui/loremipsum.h"
-#include "ui/margindialog.h"
 #include "ui/marginwidget.h"
 #include "ui/mark2item.h"
 #include "ui/mark2mark.h"
@@ -212,8 +211,9 @@ for which a new license (GPL+exception) is in place.
 #include "ui/pageitemattributes.h"
 #include "ui/pagelayout.h"
 #include "ui/pagepalette.h"
+#include "ui/pagepropertiesdialog.h"
 #include "ui/pageselector.h"
-#include "ui/paintmanager.h"
+#include "ui/colorsandfills.h"
 #include "ui/pdfexportdialog.h"
 #include "ui/pdftoolbar.h"
 #include "ui/picstatus.h"
@@ -942,7 +942,7 @@ void ScribusMainWindow::initMenuBar()
 	scrMenuMgr->addMenuItemString("editEditWithImageEditor", "Edit");
 	scrMenuMgr->addMenuItemString("editEditRenderSource", "Edit");
 	scrMenuMgr->addMenuItemString("SEPARATOR", "Edit");
-	scrMenuMgr->addMenuItemString("editColors", "Edit");
+	scrMenuMgr->addMenuItemString("editColorsAndFills", "Edit");
 	scrMenuMgr->addMenuItemString("editReplaceColors", "Edit");
 	scrMenuMgr->addMenuItemString("editStyles", "Edit");
 	scrMenuMgr->addMenuItemString("editMarks", "Edit");
@@ -1515,7 +1515,7 @@ void ScribusMainWindow::setStatusBarTextSelectedItemInfo()
 				break;
 		}
 		QString txtBody = tr("%1 selected").arg(whatSel) + " : " + tr("Size");
-		setStatusBarInfoText( QString("%1 = %3 x %4").arg(txtBody).arg(widthTxt).arg(heightTxt));
+		setStatusBarInfoText( QString("%1 = %3 x %4").arg(txtBody, widthTxt, heightTxt));
 	}
 	else
 	{
@@ -1558,10 +1558,8 @@ void ScribusMainWindow::setTBvals(PageItem *currItem)
 	if (!item || item->itemText.length() <= 0)
 		return;
 
-	const ParagraphStyle& currPStyle( inEditMode ? item->currentStyle() : item->itemText.defaultStyle());
+	const ParagraphStyle& currPStyle(inEditMode ? item->currentStyle() : item->itemText.defaultStyle());
 	setAlignmentValue(currPStyle.alignment());
-	textPalette->textPal->showParStyle(currPStyle.parent());
-	textPalette->textPal->showCharStyle(item->currentCharStyle().parent());
 	doc->currentStyle = item->currentStyle();
 	if (doc->appMode == modeEdit || doc->appMode == modeEditTable)
 		item->currentTextProps(doc->currentStyle);
@@ -2902,8 +2900,6 @@ void ScribusMainWindow::HaveNewSel()
 		else
 		{
 			doc->currentStyle = currItem->itemText.defaultStyle();
-			textPalette->textPal->showParStyle(doc->currentStyle.parent());
-			textPalette->textPal->showCharStyle(doc->currentStyle.charStyle().parent());
 			emit TextStyle(doc->currentStyle);
 			// to go: (av)
 			textPalette->textPal->updateStyle(doc->currentStyle);
@@ -2914,8 +2910,9 @@ void ScribusMainWindow::HaveNewSel()
 		if (doc->appMode == modeEditTable)
 		{
 			charPalette->setEnabled(true, currItem);
-			PageItem *i2 = currItem->asTable()->activeCell().textFrame();
-			appModeHelper->enableTextActions(true, i2->currentCharStyle().font().scName());
+			PageItem *cellItem = currItem->asTable()->activeCell().textFrame();
+			setTBvals(cellItem);
+			appModeHelper->enableTextActions(true, cellItem->currentCharStyle().font().scName());
 		}
 		break;
 	case PageItem::PathText: //Path Text
@@ -6353,13 +6350,13 @@ void ScribusMainWindow::changePageProperties()
 	if (doc->appMode == modeEditClip)
 		view->requestMode(submodeEndNodeEdit);
 	QString currPageMasterPageName(doc->currentPage()->MPageNam);
-	MarginDialog *dia = new MarginDialog(this, doc);
+	PagePropertiesDialog *dia = new PagePropertiesDialog(this, doc);
 	if (dia->exec())
 	{
 		int orientation = dia->getPageOrientation();
 		double pageHeight = dia->getPageHeight();
 		double pageWidth = dia->getPageWidth();
-		QString pageSizeName = dia->getpPrefsPageSizeName();
+		QString pageSizeName = dia->getPrefsPageSizeName();
 		int lp=0;
 		if (doc->masterPageMode() && doc->pagePositioning() != singlePage)
 			lp = dia->pageOrder();
@@ -7332,7 +7329,7 @@ void ScribusMainWindow::doSaveAsPDF()
 					qApp->restoreOverrideCursor();
 					QString message = tr("Cannot write the file: \n%1").arg(doc->pdfOptions().fileName);
 					if (!errorMsg.isEmpty())
-						message = QString("%1\n%2").arg(message).arg(errorMsg);
+						message = QString("%1\n%2").arg(message, errorMsg);
 					ScMessageBox::warning(this, CommonStrings::trWarning, message);
 					return;
 				}
@@ -7354,7 +7351,7 @@ void ScribusMainWindow::doSaveAsPDF()
 				qApp->changeOverrideCursor(QCursor(Qt::ArrowCursor));
 				QString message = tr("Cannot write the file: \n%1").arg(doc->pdfOptions().fileName);
 				if (!errorMsg.isEmpty())
-					message = QString("%1\n%2").arg(message).arg(errorMsg);
+					message = QString("%1\n%2").arg(message, errorMsg);
 				ScMessageBox::warning(this, CommonStrings::trWarning, message);
 			}
 		}
@@ -7364,11 +7361,10 @@ void ScribusMainWindow::doSaveAsPDF()
 		if (errorMsg.isEmpty() && doc->pdfOptions().openAfterExport && !doc->pdfOptions().doMultiFile)
 		{
 			QString pdfViewer(PrefsManager::instance()->appPrefs.extToolPrefs.pdfViewerExecutable);
-			QFileInfo fi(pdfViewer);
 			if (pdfViewer.isEmpty())
 			{
 				pdfViewer = QFileDialog::getOpenFileName(this, tr("Locate your PDF viewer"), QString::null, QString::null);
-				if (!QFileInfo(pdfViewer).exists())
+				if (!QFileInfo::exists(pdfViewer))
 					pdfViewer="";
 				PrefsManager::instance()->appPrefs.extToolPrefs.pdfViewerExecutable=pdfViewer;
 			}
@@ -7597,6 +7593,13 @@ void ScribusMainWindow::editSymbolStart(QString temp)
 {
 	if (!HaveDoc || !doc->docPatterns.contains(temp))
 		return;
+	if (doc->symbolEditMode())
+	{
+		QString editedSymbol = doc->getEditedSymbol();
+		if (editedSymbol == temp)
+			return;
+		editSymbolEnd();
+	}
 	m_WasAutoSave = doc->autoSave();
 	if (m_WasAutoSave)
 	{
@@ -8329,8 +8332,8 @@ void ScribusMainWindow::initHyphenator()
 	//Build our list of hyphenation dictionaries we have in the install dir
 	//Grab the language abbreviation from it, get the full language text
 	//Insert the name as key and a new string list into the map
-	QString hyphDirName = QDir::toNativeSeparators(ScPaths::instance().dictDir()+"/hyph/");
-	QDir hyphDir(hyphDirName, "hyph*.dic", QDir::Name, QDir::Files | QDir::NoSymLinks);
+//	QString hyphDirName = QDir::toNativeSeparators(ScPaths::instance().dictDir()+"/hyph/");
+//	QDir hyphDir(hyphDirName, "hyph*.dic", QDir::Name, QDir::Files | QDir::NoSymLinks);
 //IL	if ((hyphDir.exists()) && (hyphDir.count() != 0))
 //IL	{
 // 		LanguageManager langmgr;
@@ -8404,17 +8407,15 @@ void ScribusMainWindow::initHyphenator()
 
 void ScribusMainWindow::ImageEffects()
 {
-	if (HaveDoc)
-	{
-		if (!doc->m_Selection->isEmpty())
-		{
-			PageItem *currItem = doc->m_Selection->itemAt(0);
-			EffectsDialog* dia = new EffectsDialog(this, currItem, doc);
-			if (dia->exec())
-				doc->itemSelection_ApplyImageEffects(dia->effectsList);
-			delete dia;
-		}
-	}
+	if (!HaveDoc)
+		return;
+	if (doc->m_Selection->isEmpty())
+		return;
+	PageItem *currItem = doc->m_Selection->itemAt(0);
+	EffectsDialog* dia = new EffectsDialog(this, currItem, doc);
+	if (dia->exec())
+		doc->itemSelection_ApplyImageEffects(dia->effectsList);
+	delete dia;
 }
 
 QString ScribusMainWindow::fileCollect(bool compress, bool withFonts, const bool withProfiles, const QString& )
@@ -8424,6 +8425,7 @@ QString ScribusMainWindow::fileCollect(bool compress, bool withFonts, const bool
 	CollectForOutput_UI c(this, doc, QString::null, withFonts, withProfiles, compress);
 	QString newFileName;
 	QString errorMsg=c.collect(newFileName);
+	qDebug()<<errorMsg;
 	return newFileName;
 }
 
@@ -9318,7 +9320,7 @@ void ScribusMainWindow::ConvertToSymbol()
 	m_undoManager->setUndoEnabled(true);
 }
 
-void ScribusMainWindow::managePaints()
+void ScribusMainWindow::manageColorsAndFills()
 {
 	ColorList edc;
 	QHash<QString, VGradient> *Gradients;
@@ -9340,12 +9342,11 @@ void ScribusMainWindow::managePaints()
 		doc = m_doc;
 	}
 	m_undoManager->setUndoEnabled(false);
-	PaintManagerDialog *dia = new PaintManagerDialog(this, Gradients, edc, m_prefsManager->colorSetName(), docPatterns, tmpDoc, this);
+	ColorsAndFillsDialog *dia = new ColorsAndFillsDialog(this, Gradients, edc, m_prefsManager->colorSetName(), docPatterns, tmpDoc, this);
 	if (dia->exec())
 	{
 		if (HaveDoc)
 		{
-			QColor tmpc;
 			slotDocCh();
 			doc->PageColors = dia->m_colorList;
 			if (dia->replaceColorMap.isEmpty())

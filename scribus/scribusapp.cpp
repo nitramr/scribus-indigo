@@ -177,7 +177,7 @@ void ScribusQApp::parseCommandLine()
 				std::exit(EXIT_FAILURE);
 			}
 			pythonScript = QFile::decodeName(args[argi + 1].toLocal8Bit());
-			if (!QFileInfo(pythonScript).exists())
+			if (!QFileInfo::exists(pythonScript))
 			{
 				std::cout << tr("Python script %1 does not exist, aborting.").arg(pythonScript).toLocal8Bit().data() << std::endl;
 				std::exit(EXIT_FAILURE);
@@ -298,7 +298,7 @@ void ScribusQApp::parseCommandLine()
 				std::exit(EXIT_FAILURE);
 			}
 			m_fileName = QFile::decodeName(args[argi].toLocal8Bit());
-			if (!QFileInfo(m_fileName).exists())
+			if (!QFileInfo::exists(m_fileName))
 			{
 				std::cout << tr("File %1 does not exist, aborting.").arg(m_fileName).toLocal8Bit().data() << std::endl;
 				std::exit(EXIT_FAILURE);
@@ -313,7 +313,7 @@ void ScribusQApp::parseCommandLine()
 	for ( ; argi<argsc; argi++)
 	{
 		m_fileName = QFile::decodeName(args[argi].toLocal8Bit());
-		if (!QFileInfo(m_fileName).exists())
+		if (!QFileInfo::exists(m_fileName))
 		{
 			std::cout << tr("File %1 does not exist, aborting.").arg(m_fileName).toLocal8Bit().data() << std::endl;
 			std::exit(EXIT_FAILURE);
@@ -393,7 +393,7 @@ QStringList ScribusQApp::getLang(QString lang)
 
 	//add in user preferences lang, only overridden by lang command line option
 	QString Pff = QDir::toNativeSeparators(ScPaths::preferencesDir());
-	QFileInfo Pffi = QFileInfo(Pff);
+	QFileInfo Pffi(Pff);
 	if (Pffi.exists())
 	{
 		QString PrefsPfad;
@@ -670,7 +670,7 @@ void ScribusQApp::neverSplash(bool splashOff)
 
 bool ScribusQApp::neverSplashExists()
 {
-	return QFileInfo(ScPaths::preferencesDir() + ".neversplash").exists();
+	return QFileInfo::exists(ScPaths::preferencesDir() + ".neversplash");
 }
 
 void ScribusQApp::downloadComplete(const QString &t)

@@ -103,6 +103,23 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("am",       "",         "Amharic",                 QObject::tr("Amharic")));
 	m_langTable.append(LangDef("blo",      "",         "Anii",                    QObject::tr("Anii")));
 	m_langTable.append(LangDef("ar",       "",         "Arabic",                  QObject::tr("Arabic")));
+	m_langTable.append(LangDef("ar_dz",    "",         "Arabic (Algeria)",        QObject::tr("Arabic (Algeria)")));
+	m_langTable.append(LangDef("ar_bh",    "",         "Arabic (Bahrain)",        QObject::tr("Arabic (Bahrain)")));
+	m_langTable.append(LangDef("ar_eg",    "",         "Arabic (Egypt)",          QObject::tr("Arabic (Egypt)")));
+	m_langTable.append(LangDef("ar_iq",    "",         "Arabic (Iraq)",           QObject::tr("Arabic (Iraq)")));
+	m_langTable.append(LangDef("ar_jo",    "",         "Arabic (Jordan)",         QObject::tr("Arabic (Jordan)")));
+	m_langTable.append(LangDef("ar_kw",    "",         "Arabic (Kuwait)",         QObject::tr("Arabic (Kuwait)")));
+	m_langTable.append(LangDef("ar_lb",    "",         "Arabic (Lebanon)",        QObject::tr("Arabic (Lebanon)")));
+	m_langTable.append(LangDef("ar_ly",    "",         "Arabic (Libya)",          QObject::tr("Arabic (Libya)")));
+	m_langTable.append(LangDef("ar_ma",    "",         "Arabic (Morocco)",        QObject::tr("Arabic (Morocco)")));
+	m_langTable.append(LangDef("ar_om",    "",         "Arabic (Oman)",           QObject::tr("Arabic (Oman)")));
+	m_langTable.append(LangDef("ar_qa",    "",         "Arabic (Qatar)",          QObject::tr("Arabic (Qatar)")));
+	m_langTable.append(LangDef("ar_sa",    "",         "Arabic (Saudi Arabia)",   QObject::tr("Arabic (Saudi Arabia)")));
+	m_langTable.append(LangDef("ar_sd",    "",         "Arabic (Sudan)",          QObject::tr("Arabic (Sudan)")));
+	m_langTable.append(LangDef("ar_sy",    "",         "Arabic (Syria)",          QObject::tr("Arabic (Syria)")));
+	m_langTable.append(LangDef("ar_tn",    "",         "Arabic (Tunisia)",        QObject::tr("Arabic (Tunisia)")));
+	m_langTable.append(LangDef("ar_ae",    "",         "Arabic (UAE)",            QObject::tr("Arabic (UAE)")));
+	m_langTable.append(LangDef("ar_ye",    "",         "Arabic (Yemen)",          QObject::tr("Arabic (Yemen)")));
 	m_langTable.append(LangDef("an",       "an_ES",    "Aragonese",               QObject::tr("Aragonese")));
 	m_langTable.append(LangDef("hy",       "",         "Armenian",                QObject::tr("Armenian")));
 	m_langTable.append(LangDef("rup",      "",         "Aromanian",               QObject::tr("Aromanian")));
@@ -180,7 +197,7 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("zh_TW",    "",         "Chinese (Trad.)",         QObject::tr("Chinese (Trad.)")));
 	m_langTable.append(LangDef("chp",      "",         "Chipewyan",               QObject::tr("Chipewyan")));
 	m_langTable.append(LangDef("ctg",      "",         "Chittagonian",            QObject::tr("Chittagonian")));
-	m_langTable.append(LangDef("cho",       "",        "Choctaw",                 QObject::tr("Choctaw")));
+	m_langTable.append(LangDef("cho",      "",         "Choctaw",                 QObject::tr("Choctaw")));
 	m_langTable.append(LangDef("ckt",      "",         "Chukchi",                 QObject::tr("Chukchi")));
 	m_langTable.append(LangDef("cu",       "",         "Church Slavic",           QObject::tr("Church Slavic")));
 	m_langTable.append(LangDef("cv",       "",         "Chuvash",                 QObject::tr("Chuvash")));
@@ -188,7 +205,7 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("cop",      "",         "Coptic",                  QObject::tr("Coptic")));
 	m_langTable.append(LangDef("kw",       "",         "Cornish",                 QObject::tr("Cornish")));
 	m_langTable.append(LangDef("cr",       "",         "Cree",                    QObject::tr("Cree")));
-	m_langTable.append(LangDef("crm",      "",         "Cree (Moose) ",           QObject::tr("Cree (Moose)")));
+	m_langTable.append(LangDef("crm",      "",         "Cree (Moose)",            QObject::tr("Cree (Moose)")));
 	m_langTable.append(LangDef("crl",      "",         "Cree (East Northern)",    QObject::tr("Cree (East Southern)")));
 	m_langTable.append(LangDef("crj",      "",         "Cree (East Southern)",    QObject::tr("Cree (East Southern)")));
 	m_langTable.append(LangDef("cwd",      "",         "Cree (Woods)",            QObject::tr("Woods Cree")));
@@ -252,7 +269,7 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("gog",      "",         "Gogo",                    QObject::tr("Gogo")));
 	m_langTable.append(LangDef("gon",      "",         "Gondi",                   QObject::tr("Gondi")));
 	m_langTable.append(LangDef("gno",      "",         "Gondi Northern",          QObject::tr("Gondi Northern")));
-	m_langTable.append(LangDef("ggo",      "",         "Gondi Southern",          QObject::tr("Gondi Southern ")));
+	m_langTable.append(LangDef("ggo",      "",         "Gondi Southern",          QObject::tr("Gondi Southern")));
 	m_langTable.append(LangDef("el",       "",         "Greek",                   QObject::tr("Greek")));
 	m_langTable.append(LangDef("gn",       "",         "Guarani",                 QObject::tr("Guarani")));
 	m_langTable.append(LangDef("gu",       "gu_IN",    "Gujarati",                QObject::tr("Gujarati")));
@@ -329,7 +346,7 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("mwk",      "",         "Kita Maninkakan",         QObject::tr("Kita Maninkakan")));
 	m_langTable.append(LangDef("kex",      "",         "Kituba (Congo)",          QObject::tr("Kituba (Congo)")));
 	m_langTable.append(LangDef("kex",      "",         "Kokni",                   QObject::tr("Kokni")));
-	m_langTable.append(LangDef("ksh",      "",         "Kölsch",                  QObject::trUtf8("K \303\266lsch")));
+	m_langTable.append(LangDef("ksh",      "",         "Kölsch",                  QObject::trUtf8("K\303\266lsch")));
 	m_langTable.append(LangDef("kv",       "",         "Komi",                    QObject::tr("Komi")));
 	m_langTable.append(LangDef("koi",      "",         "Komi-Permyak",            QObject::tr("Komi-Permyak")));
 	m_langTable.append(LangDef("kpv",      "",         "Komi-Zyrian",             QObject::tr("Komi-Zyrian")));
@@ -478,7 +495,9 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("pag",      "",         "Pangasinan",              QObject::tr("Pangasinan")));
 	m_langTable.append(LangDef("ps",       "",         "Pashto",                  QObject::tr("Pashto")));
 	m_langTable.append(LangDef("pdc",      "",         "Pennsylvania German",     QObject::tr("Pennsylvania German")));
-	m_langTable.append(LangDef("fa_IR",    "",         "Persian",                 QObject::tr("Persian")));
+	m_langTable.append(LangDef("fa",       "",         "Persian",                 QObject::tr("Persian")));
+	m_langTable.append(LangDef("fa_AF",    "",         "Persian (Afghanistan)",   QObject::tr("Persian (Afghanistan)")));
+	m_langTable.append(LangDef("fa_IR",    "",         "Persian (Iran)",          QObject::tr("Persian")));
 	m_langTable.append(LangDef("phk",      "",         "Phake",                   QObject::tr("Phake")));
 	m_langTable.append(LangDef("pih",      "",         "Pitcairn-Norfolk",        QObject::tr("Pitcairn-Norfolk")));
 	m_langTable.append(LangDef("pcd",      "",         "Picard",                  QObject::tr("Picard")));
@@ -581,7 +600,7 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("ti",       "",         "Tigrinya",                QObject::tr("Tigrinya")));
 	m_langTable.append(LangDef("tiv",      "",         "Tiv",                     QObject::tr("Tiv")));
 	m_langTable.append(LangDef("tpi",      "",         "Tok Pisin",               QObject::tr("Tok Pisin")));
-	m_langTable.append(LangDef("to",      "",          "Tonga (Tonga Islands)",   QObject::tr("Tonga (Tonga Islands)")));
+	m_langTable.append(LangDef("to",       "",         "Tonga (Tonga Islands)",   QObject::tr("Tonga (Tonga Islands)")));
 	m_langTable.append(LangDef("ts",       "",         "Tsonga",                  QObject::tr("Tsonga")));
 	m_langTable.append(LangDef("tn",       "",         "Tswana",                  QObject::tr("Tswana")));
 	m_langTable.append(LangDef("tcy",      "",         "Tulu",                    QObject::tr("Tulu")));
@@ -617,7 +636,7 @@ void LanguageManager::generateLangList()
 	m_langTable.append(LangDef("cy",       "cy_GB",    "Welsh",                   QObject::tr("Welsh")));
 	m_langTable.append(LangDef("wle",      "",         "Wolane",                  QObject::tr("Wolane")));
 	m_langTable.append(LangDef("wo",       "",         "Wolof",                   QObject::tr("Wolof")));
-	m_langTable.append(LangDef("xwo",      "",         "Written Oirat (Todo)",    QObject::tr(" Written Oirat (Todo)")));
+	m_langTable.append(LangDef("xwo",      "",         "Written Oirat (Todo)",    QObject::tr("Written Oirat (Todo)")));
 	m_langTable.append(LangDef("xh",       "",         "Xhosa",                   QObject::tr("Xhosa")));
 	m_langTable.append(LangDef("yao",      "",         "Yao",                     QObject::tr("Yao")));
 	m_langTable.append(LangDef("sah",      "",         "Yakut",                   QObject::tr("Yakut")));
@@ -818,39 +837,45 @@ const QString LanguageManager::getAlternativeAbbrevfromAbbrev(QString langAbbrev
 	return "";
 }
 
-void LanguageManager::fillInstalledStringList(QStringList *stringListToFill, bool addDefaults) 
+void LanguageManager::fillInstalledStringList(QStringList *stringListToFill)
 {
-	if (stringListToFill)
-	{
-		for (int i = 0; i < m_langTable.size(); ++i)
-			stringListToFill->append(m_langTable[i].m_transName);
-	}
+	if (!stringListToFill)
+		return;
+	for (int i = 0; i < m_langTable.size(); ++i)
+		stringListToFill->append(m_langTable[i].m_transName);
 }
 
-void LanguageManager::fillInstalledGUIStringList(QStringList *stringListToFill, bool addDefaults)
+void LanguageManager::fillInstalledGUIStringList(QStringList *stringListToFill)
 {
-	if (stringListToFill)
+	if (!stringListToFill)
+		return;
+	for (int i = 0; i < m_langTable.size(); ++i)
 	{
-		for (int i = 0; i < m_langTable.size(); ++i)
-		{
-			//qDebug()<<langTable[i].m_transName<<langTable[i].m_transAvailable;
-			if (m_langTable[i].m_transAvailable)
-				stringListToFill->append(m_langTable[i].m_transName);
-		}
-		stringListToFill->sort();
+		if (m_langTable[i].m_transAvailable)
+			stringListToFill->append(m_langTable[i].m_transName);
 	}
 }
 
 void LanguageManager::fillInstalledHyphStringList(QStringList *stringListToFill)
 {
-	if (stringListToFill)
+	if (!stringListToFill)
+		return;
+	for (int i = 0; i < m_langTable.size(); ++i)
 	{
-		for (int i = 0; i < m_langTable.size(); ++i)
-		{
-			//qDebug()<<langTable[i].m_transName<<langTable[i].m_hyphAvailable;
-			if (m_langTable[i].m_hyphAvailable)
-				stringListToFill->append(m_langTable[i].m_transName);
-		}
+		if (m_langTable[i].m_hyphAvailable)
+			stringListToFill->append(m_langTable[i].m_transName);
+	}
+	stringListToFill->sort();
+}
+
+void LanguageManager::fillInstalledSpellStringList(QStringList *stringListToFill)
+{
+	if (!stringListToFill)
+		return;
+	for (int i = 0; i < m_langTable.size(); ++i)
+	{
+		if (m_langTable[i].m_spellAvailable)
+			stringListToFill->append(m_langTable[i].m_transName);
 	}
 	stringListToFill->sort();
 }
@@ -948,8 +973,8 @@ void LanguageManager::findSpellingDictionarySets(QStringList &dictionaryPaths, Q
 		dictList.replaceInStrings(".dic","");
 
 		//Ensure we have aff+dic file pairs, remove any hyphenation dictionaries from the list
-		QString dictName;
-		foreach(dictName, dictList)
+
+		foreach(const QString& dictName, dictList)
 		{
 			if (!QFile::exists(dictionaryPaths.at(i)+dictName+".aff"))
 				dictList.removeAll(dictName);
@@ -1026,7 +1051,7 @@ void LanguageManager::findHyphDictionarySets(QStringList& dictionaryPaths, QMap<
 				dictFilters.append("*.dic");
 		QStringList dictList(dictLocation.entryList(dictFilters, QDir::Files, QDir::Name));
 		dictList.replaceInStrings(".dic","");
-		foreach(QString dn, dictList)
+		foreach(const QString& dn, dictList)
 		{
 //			qDebug()<<dn;
 			QString dictName;
@@ -1038,7 +1063,6 @@ void LanguageManager::findHyphDictionarySets(QStringList& dictionaryPaths, QMap<
 			{
 				if (dictName.length()<=2)
 				{
-					QString shortAbbrev(LanguageManager::getShortAbbrevFromAbbrev(dictName));
 					dictionaryMap.insert(dictName, dictionaryPaths.at(i)+dn+".dic");
 				}
 				if (dictName.length()>2)

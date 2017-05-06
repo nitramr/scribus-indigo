@@ -418,19 +418,21 @@ class LineSpec
 	{
 		x = 0.0;
 		y = 0.0;
-		firstCluster = 0;
-		lastCluster = 0;
-		ascent = 0.0;
-		descent = 0.0;
 		width  = 0.0;
 		height = 0.0;
-		naturalWidth = 0.0;
+		ascent = 0.0;
+		descent = 0.0;
 		colLeft = 0.0;
+		firstCluster = 0;
+		lastCluster = 0;
+		naturalWidth = 0.0;
+		isFirstLine = false;
 	}
 
 	qreal x;
 	qreal y;
 	qreal width;
+	qreal height;
 	qreal ascent;
 	qreal descent;
 	qreal colLeft;
@@ -439,7 +441,6 @@ class LineSpec
 	int lastCluster;
 	qreal naturalWidth;
 	bool isFirstLine;
-	qreal height;
 };
 
 /**
@@ -494,7 +495,6 @@ struct LineControl {
 		colWidth = colwidth;
 		colGap = colgap;
 		hyphenCount = 0;
-
 		isEmpty = true;
 		colLeft = insets.left() + lineCorr;
 		colRight = colLeft + colWidth;
@@ -517,6 +517,7 @@ struct LineControl {
 		breakIndex = -1;
 		breakXPos = 0.0;
 		maxShrink = 0.0;
+		maxStretch = 0.0;
 	}
 
 	/// move position to next column
@@ -1564,6 +1565,7 @@ void PageItem_TextFrame::layout()
 			//set style for paragraph effects
 			if (itemText.isBlockStart(a))
 			{
+				// FIXME: we should avoid calling setCharStyle() in layout()
 				if (style.hasDropCap() || style.hasBullet() || style.hasNum())
 				{
 					const QString& curParent(style.hasParent() ? style.parent() : style.name());
@@ -1576,13 +1578,16 @@ void PageItem_TextFrame::layout()
 					itemText.setCharStyle(a, 1 , charStyle);
 				}
 				else if (!style.peCharStyleName().isEmpty())
-				//par effect is cleared but is set dcCharStyleName = clear drop cap char style
 				{
-					const QString& curParent(style.hasParent() ? style.parent() : style.name());
-					if (m_Doc->charStyles().contains(style.peCharStyleName()))
-						charStyle.eraseCharStyle(m_Doc->charStyle(style.peCharStyleName()));
-					charStyle.setParent(m_Doc->paragraphStyle(curParent).charStyle().name());
-					itemText.setCharStyle(a, 1,charStyle);
+					//par effect is cleared but is set dcCharStyleName = clear drop cap char style
+					if (charStyle.parent() == style.peCharStyleName())
+					{
+						const QString& curParent(style.hasParent() ? style.parent() : style.name());
+						if (m_Doc->charStyles().contains(style.peCharStyleName()))
+							charStyle.eraseCharStyle(m_Doc->charStyle(style.peCharStyleName()));
+						charStyle.setParent(m_Doc->paragraphStyle(curParent).charStyle().name());
+						itemText.setCharStyle(a, 1,charStyle);
+					}
 				}
 			}
 
@@ -2987,7 +2992,7 @@ void PageItem_TextFrame::layout()
 		}
 	}
 	MaxChars = itemText.length();
-	if ((verticalAlign > 0) && (NextBox == NULL))
+	if (verticalAlign > 0)
 	{
 		double hAdjust = height() - textLayout.box()->naturalHeight() - m_textDistanceMargins.bottom();
 		if (hAdjust > 0)
@@ -3038,6 +3043,28 @@ NoRoom:
 	invalid = false;
 	
 	adjustParagraphEndings ();
+
+	if (verticalAlign > 0)
+	{
+		double hAdjust = height() - textLayout.box()->naturalHeight() - m_textDistanceMargins.bottom();
+		if (hAdjust > 0)
+		{
+			if (verticalAlign == 1)
+				hAdjust /= 2;
+			if (FrameType == 0) // Rectangular frame
+				textLayout.box()->moveBy(0, hAdjust);
+			else
+			{
+				int vertAlign = verticalAlign;
+				double topDist = m_textDistanceMargins.top();
+				m_textDistanceMargins.setTop(topDist + hAdjust);
+				verticalAlign = 0;
+				layout();
+				verticalAlign = vertAlign;
+				m_textDistanceMargins.setTop(topDist);
+			}
+		}
+	}
 
 	if (!isNoteFrame() && (!m_Doc->notesList().isEmpty() || m_Doc->notesChanged()))
 	{
@@ -3980,16 +4007,38 @@ void PageItem_TextFrame::handleModeEditKey(QKeyEvent *k, bool& keyRepeat)
 					conv = 32;
 				if (UndoManager::undoEnabled())
 				{
+					ScItemState<ParagraphStyle> *ip = 0;
 					SimpleState *ss = dynamic_cast<SimpleState*>(undoManager->getLastUndo());
-					if (ss && ss->get("ETEA") == "insert_frametext")
-						ss->set("TEXT_STR",ss->get("TEXT_STR") + QString(QChar(conv)));
+					UndoObject *undoTarget = this;
+					int cursorPos = itemText.cursorPosition();
+					if (conv == SpecialChars::PARSEP.unicode())
+					{
+						ip = new ScItemState<ParagraphStyle>(Um::InsertText, "", Um::ICreate);
+						ip->set("INSERT_FRAMEPARA");
+						ip->set("ETEA", "insert_framepara");
+						ip->set("START", cursorPos);
+						ip->setItem(itemText.paragraphStyle(cursorPos));
+						if (isNoteFrame())
+						{
+							undoTarget = dynamic_cast<UndoObject*>(m_Doc);
+							ip->set("noteframeName", getUName());
+						}
+						undoManager->action(undoTarget, ip);
+					}
+					else if (ss && ss->get("ETEA") == "insert_frametext")
+						ss->set("TEXT_STR", ss->get("TEXT_STR") + QString(QChar(conv)));
 					else {
 						ss = new SimpleState(Um::InsertText,"",Um::ICreate);
 						ss->set("INSERT_FRAMETEXT");
 						ss->set("ETEA", QString("insert_frametext"));
 						ss->set("TEXT_STR", QString(QChar(conv)));
 						ss->set("START", itemText.cursorPosition());
-						undoManager->action(this, ss);
+						if (isNoteFrame())
+						{
+							undoTarget = dynamic_cast<UndoObject*>(m_Doc);
+							ss->set("noteframeName", getUName());
+						}
+						undoManager->action(undoTarget, ss);
 					}
 				}
 				itemText.insertChars(QString(QChar(conv)), true);
@@ -4449,20 +4498,36 @@ void PageItem_TextFrame::handleModeEditKey(QKeyEvent *k, bool& keyRepeat)
 		{
 			if (UndoManager::undoEnabled())
 			{
+				ScItemState<ParagraphStyle> *ip = 0;
 				SimpleState *ss = dynamic_cast<SimpleState*>(undoManager->getLastUndo());
-				if (ss && ss->get("ETEA") == "insert_frametext")
+				UndoObject *undoTarget = this;
+				int cursorPos = itemText.cursorPosition();
+				if (uc[0] == SpecialChars::PARSEP)
+				{
+					ip = new ScItemState<ParagraphStyle>(Um::InsertText, "", Um::ICreate);
+					ip->set("INSERT_FRAMEPARA");
+					ip->set("ETEA", "insert_framepara");
+					ip->set("START", cursorPos);
+					ip->setItem(itemText.paragraphStyle(cursorPos));
+					if (isNoteFrame())
+					{
+						undoTarget = dynamic_cast<UndoObject*>(m_Doc);
+						ip->set("noteframeName", getUName());
+					}
+					undoManager->action(undoTarget, ip);
+				}
+				else if (ss && ss->get("ETEA") == "insert_frametext")
 					ss->set("TEXT_STR", ss->get("TEXT_STR") + uc);
 				else
 				{
-					ss = new SimpleState(Um::InsertText,"",Um::ICreate);
+					ss = new SimpleState(Um::InsertText, "", Um::ICreate);
 					ss->set("INSERT_FRAMETEXT");
 					ss->set("ETEA", QString("insert_frametext"));
 					ss->set("TEXT_STR", uc);
-					ss->set("START", itemText.cursorPosition());
-					UndoObject * undoTarget = this;
+					ss->set("START", cursorPos);
 					if (isNoteFrame())
 					{
-						undoTarget = m_Doc;
+						undoTarget = dynamic_cast<UndoObject*>(m_Doc);
 						ss->set("noteframeName", getUName());
 					}
 					undoManager->action(undoTarget, ss);
@@ -4542,10 +4607,12 @@ void PageItem_TextFrame::deleteSelectedTextFromFrame(/*bool findNotes*/)
 	int start = itemText.startOfSelection();
 	int stop = itemText.endOfSelection();
 	int marksNum = 0;
-	if (UndoManager::undoEnabled()) {
+	if (UndoManager::undoEnabled()) 
+	{
 		int lastPos = start;
 		CharStyle lastParent = itemText.charStyle(start);
 		UndoState* state = undoManager->getLastUndo();
+		ScItemState<ParagraphStyle> *ip = NULL;
 		ScItemState<CharStyle> *is = NULL;
 		TransactionState *ts = NULL;
 		bool added = false;
@@ -4582,30 +4649,33 @@ void PageItem_TextFrame::deleteSelectedTextFromFrame(/*bool findNotes*/)
 		//delete text
 		for (int i=start; i <= stop; ++i)
 		{
-			Mark* mark = i < itemText.length() && itemText.hasMark(i)? itemText.mark(i) : NULL;
+			Mark* mark = i < itemText.length() && itemText.hasMark(i) ? itemText.mark(i) : NULL;
 			const CharStyle& curParent = itemText.charStyle(i);
-			if (i==stop || !curParent.equiv(lastParent) || (mark!=NULL && mark->isType(MARKNoteFrameType)))
+			bool needParaAction = ((i < stop) && (itemText.text(i) == SpecialChars::PARSEP));
+			if (i==stop || !curParent.equiv(lastParent) || (mark && mark->isType(MARKNoteFrameType)) || needParaAction)
 			{
 				added = false;
 				lastIsDelete = false;
 				if (is && ts && is->get("ETEA") == "delete_frametext" && lastPos < is->getInt("START"))
 				{
-					if (is->getItem().equiv(lastParent))
+					int oldStart = is->getInt("START");
+					if (is->getItem().equiv(lastParent) && (i - lastPos > 0) && (start + i - lastPos == oldStart))
 					{
 						is->set("START", start);
 						is->set("TEXT_STR", itemText.text(lastPos, i - lastPos) + is->get("TEXT_STR"));
 						added = true;
+						lastIsDelete = true;
 					}
-					lastIsDelete = true;
 				}
 				else if (is && ts && is->get("ETEA") == "delete_frametext"  && lastPos >= is->getInt("START"))
 				{
-					if (is->getItem().equiv(lastParent))
+					int oldStart = is->getInt("START");
+					if (is->getItem().equiv(lastParent) && (i - lastPos > 0) && (oldStart == start))
 					{
 						is->set("TEXT_STR", is->get("TEXT_STR") + itemText.text(lastPos, i - lastPos));
 						added = true;
+						lastIsDelete = true;
 					}
-					lastIsDelete = true;
 				}
 				if (!added)
 				{
@@ -4671,6 +4741,30 @@ void PageItem_TextFrame::deleteSelectedTextFromFrame(/*bool findNotes*/)
 				}
 				lastPos = i;
 				lastParent = curParent;
+			}
+			if (needParaAction)
+			{
+				UndoObject * undoTarget = this;
+				if (isNoteFrame())
+					undoTarget = m_Doc;
+				ip = new ScItemState<ParagraphStyle>(Um::DeleteText, "", Um::IDelete);
+				ip->set("DELETE_FRAMEPARA");
+				ip->set("ETEA", "delete_framepara");
+				ip->set("START", start);
+				ip->setItem(itemText.paragraphStyle(i));
+				lastPos = i + 1;
+				if (lastPos < itemText.length())
+					lastParent = itemText.charStyle(lastPos);
+				QString etea;
+				SimpleState* ss = ts ? dynamic_cast<SimpleState*>(ts->last()) : NULL;
+				if (ss)
+					etea = ss->get("ETEA");
+				if (ts && ((etea == "delete_frametext") || (etea == "delete_framepara")))
+					ts->pushBack(undoTarget, ip);
+				else
+					undoManager->action(undoTarget, ip);
+				is = NULL;
+				ts = NULL;
 			}
 		}
 		if (trans)
@@ -5056,7 +5150,7 @@ void PageItem_TextFrame::applicableActions(QStringList & actionList)
 		return;
 	actionList << "fileImportText";
 	actionList << "fileImportAppendText";
-	actionList << "toolsEditContents";
+	actionList << "toolsEditWithStoryEditor";
 	actionList << "insertSampleText";
 	actionList << "itemPDFIsAnnotation";
 	if (doc()->currentPage()->pageName().isEmpty())
@@ -5484,8 +5578,8 @@ bool PageItem_TextFrame::hasNoteFrame(NotesStyle *NS, bool inChain)
 		item = firstInChain();
 	while (item != NULL)
 	{
-		QMap<PageItem_NoteFrame*, QList<TextNote*> >::iterator it = m_notesFramesMap.begin();
-		QMap<PageItem_NoteFrame*, QList<TextNote*> >::iterator end = m_notesFramesMap.end();
+		NotesInFrameMap::iterator it = m_notesFramesMap.begin();
+		NotesInFrameMap::iterator end = m_notesFramesMap.end();
 		while (it != end)
 		{
 			if (it.key()->notesStyle() == NS)
@@ -5888,7 +5982,7 @@ void PageItem_TextFrame::setTextFrameHeight()
 			QString ohString  = QString::number(oldHeight * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 			QString nwString  = QString::number(m_width * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 			QString nhString  = QString::number(m_height * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
-			QString tooltip   = QString(Um::ResizeFromTo).arg(owString).arg(ohString).arg(nwString).arg(nhString);
+			QString tooltip   = QString(Um::ResizeFromTo).arg(owString, ohString, nwString, nhString);
 			undoTransaction = undoManager->beginTransaction(Um::Selection, Um::ITextFrame, Um::Resize, tooltip, Um::IResize);
 		}
 

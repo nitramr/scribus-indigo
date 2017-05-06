@@ -73,9 +73,9 @@ Hruler::Hruler(ScribusView *pa, ScribusDoc *doc) : QWidget(pa)
 	prefsManager=PrefsManager::instance();
 	setBackgroundRole(QPalette::Base);
 	setAutoFillBackground(true);
-	//	QPalette palette;
-	//	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
-	//	setPalette(palette);
+	QPalette palette;
+	palette.setBrush(QPalette::Window, QColor(240, 240, 240));
+	setPalette(palette);
 	m_doc = doc;
 	m_view = pa;
 	offs = 0;
@@ -495,7 +495,6 @@ void Hruler::paintEvent(QPaintEvent *e)
 {
 	if (m_doc->isLoading())
 		return;
-	QString tx = "";
 	double sc = m_view->scale();
 	Scaling = sc;
 	QFont ff = font();

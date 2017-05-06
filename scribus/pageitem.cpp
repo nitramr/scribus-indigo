@@ -1529,7 +1529,8 @@ const ParagraphStyle& PageItem::currentStyle() const
 		int lastSelected  = qMax(itemText.endOfSelection() - 1, 0);
 		cursorPosition = qMax(firstSelected, qMin(cursorPosition, lastSelected));
 	}
-	if (frameDisplays(cursorPosition))
+	// Note: cursor position can be past last characters, don't use frameDisplays() here
+	if (cursorPosition >= 0 && cursorPosition <= itemText.length())
 		return itemText.paragraphStyle(cursorPosition);
 	return itemText.defaultStyle();
 }
@@ -1544,7 +1545,8 @@ ParagraphStyle& PageItem::changeCurrentStyle()
 		int lastSelected  = qMax(itemText.endOfSelection() - 1, 0);
 		cursorPosition = qMax(firstSelected, qMin(cursorPosition, lastSelected));
 	}
-	if (frameDisplays(cursorPosition))
+	// Note: cursor position can be past last characters, don't use frameDisplays() here
+	if (cursorPosition >= 0 && cursorPosition <= itemText.length())
 		return const_cast<ParagraphStyle&>(itemText.paragraphStyle(cursorPosition));
 	else
 		return const_cast<ParagraphStyle&>(itemText.defaultStyle());
@@ -1560,7 +1562,8 @@ const CharStyle& PageItem::currentCharStyle() const
 		int lastSelected  = qMax(itemText.endOfSelection() - 1, 0);
 		cursorPosition = qMax(firstSelected, qMin(cursorPosition, lastSelected));
 	}
-	if (frameDisplays(cursorPosition))
+	// Note: cursor position can be past last characters, don't use frameDisplays() here
+	if (cursorPosition >= 0 && cursorPosition <= itemText.length())
 		return itemText.charStyle(cursorPosition);
 	else
 		return itemText.defaultStyle().charStyle();
@@ -1576,7 +1579,8 @@ void PageItem::currentTextProps(ParagraphStyle& parStyle) const
 	if (itemText.lengthOfSelection() > 0)
 		position = qMin(qMax(itemText.endOfSelection() - 1, 0), qMax(position, itemText.startOfSelection()));
 
-	if (frameDisplays(position))
+	// Note: cursor position can be past last characters, don't use frameDisplays() here
+	if (position >= 0 && position <= itemText.length())
 	{
 		// Do not use setStyle here otherwise char style properties explicitly
 		// set at paragraph level without using styles might get lost
@@ -2563,7 +2567,7 @@ void PageItem::setItemName(const QString& newName)
 	AutoName=false;
 	if (UndoManager::undoEnabled())
 	{
-		SimpleState *ss = new SimpleState(Um::Rename, QString(Um::FromTo).arg(oldName).arg(newName));
+		SimpleState *ss = new SimpleState(Um::Rename, QString(Um::FromTo).arg(oldName, newName));
 		ss->set("OLD_NAME", oldName);
 		ss->set("NEW_NAME", newName);
 		undoManager->action(this, ss);
@@ -3343,6 +3347,22 @@ void PageItem::createConicalMesh()
 	double radius = angLin.length();
 	double radius2 = radius * 2.0;
 	QList<VColorStop*> rstops = gradient.colorStops();
+	if (rstops.count() < 2)
+	{
+		const VColorStop* firstStop = rstops.at(0);
+		if (firstStop->rampPoint > 0)
+		{
+			VColorStop* newStop = new VColorStop(*firstStop);
+			newStop->rampPoint = 0;
+			rstops.prepend(newStop);
+		}
+		if (firstStop->rampPoint < 1.0)
+		{
+			VColorStop* newStop = new VColorStop(*firstStop);
+			newStop->rampPoint = 1.0;
+			rstops.append(newStop);
+		}
+	}
 	double stepAngle = 360 * rstops.at(1)->rampPoint;
 	path.arcMoveTo(-radius, -radius, radius2, radius2, 0);
 	path.arcTo(-radius, -radius, radius2, radius2, 0, -stepAngle);
@@ -3397,6 +3417,8 @@ void PageItem::createConicalMesh()
 	for (uint rst = 2; rst < gradient.Stops(); ++rst)
 	{
 		stepAngle = 360 * (rstops.at(rst)->rampPoint - rstops.at(rst-1)->rampPoint);
+		if (stepAngle <= 0)
+			continue;
 		path = QPainterPath();
 		arcPath.resize(0);
 		path.arcMoveTo(-radius, -radius, radius2, radius2, 0);
@@ -3660,7 +3682,7 @@ void PageItem::setFillColor(const QString &newColor)
 	if (UndoManager::undoEnabled())
 	{
 		SimpleState *ss = new SimpleState(Um::SetFill,
-										  QString(Um::ColorFromTo).arg(fillColorVal).arg(tmp),
+										  QString(Um::ColorFromTo).arg(fillColorVal, tmp),
                                           Um::IFill);
 		ss->set("FILL");
 		ss->set("OLD_FILL", fillColorVal);
@@ -3762,7 +3784,7 @@ void PageItem::setLineColor(const QString &newColor)
 	if (UndoManager::undoEnabled())
 	{
 		SimpleState *ss = new SimpleState(Um::SetLineColor,
-										  QString(Um::ColorFromTo).arg(lineColorVal).arg(tmp),
+										  QString(Um::ColorFromTo).arg(lineColorVal, tmp),
 										  Um::IFill);
 		ss->set("LINE_COLOR");
 		ss->set("OLD_COLOR", lineColorVal);
@@ -4068,8 +4090,7 @@ void PageItem::setCustomLineStyle(const QString& newStyle)
 		QString oldStyle = NamedLStyle.isEmpty() ? Um::NoStyle : NamedLStyle;
 		QString nStyle   = newStyle.isEmpty() ? Um::NoStyle : newStyle;
 		QString action   = newStyle.isEmpty() ? Um::NoLineStyle : Um::CustomLineStyle;
-		SimpleState *ss = new SimpleState(action,
-				QString(Um::FromTo).arg(oldStyle).arg(nStyle),Um::ILineStyle);
+		SimpleState *ss = new SimpleState(action, QString(Um::FromTo).arg(oldStyle, nStyle), Um::ILineStyle);
 		ss->set("CUSTOM_LINE_STYLE");
 		ss->set("OLD_STYLE", NamedLStyle);
 		ss->set("NEW_STYLE", newStyle);
@@ -4184,7 +4205,7 @@ void PageItem::setImageScalingMode(bool freeScale, bool keepRatio)
 		QString to = freeScale ? Um::FreeScaling : Um::FrameSize;
 		to += ", ";
 		to += keepRatio ? Um::KeepRatio : Um::BreakRatio;
-		SimpleState *ss = new SimpleState(Um::ImageScaling, QString(Um::FromTo).arg(from).arg(to), Um::IImageScaling);
+		SimpleState *ss = new SimpleState(Um::ImageScaling, QString(Um::FromTo).arg(from, to), Um::IImageScaling);
 		ss->set("SCALE_MODE");
 		if (freeScale != ScaleType)
 		{
@@ -4679,8 +4700,7 @@ void PageItem::moveUndoAction()
 		QString oyString = QString::number(oldYpos * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 		QString nxString = QString::number(m_xPos * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 		QString nyString = QString::number(m_yPos * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
-		QString tooltip  =  QString(Um::MoveFromTo).arg(oxString).arg(oyString).arg(oldp)
-			                                        .arg(nxString).arg(nyString).arg(newp);
+		QString tooltip  =  QString(Um::MoveFromTo).arg(oxString, oyString, oldp, nxString, nyString, newp);
 		SimpleState *ss = new SimpleState(Um::Move, tooltip, Um::IMove);
 		ss->set("ITEM_MOVE");
 		ss->set("OLD_XPOS", oldXpos);
@@ -4713,7 +4733,7 @@ void PageItem::resizeUndoAction()
 		QString ohString  = QString::number(oldHeight * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 		QString nwString  = QString::number(m_width * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 		QString nhString  = QString::number(m_height * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
-		QString tooltip   = QString(Um::ResizeFromTo).arg(owString).arg(ohString).arg(nwString).arg(nhString);
+		QString tooltip   = QString(Um::ResizeFromTo).arg(owString, ohString, nwString, nhString);
 		SimpleState *ss = new SimpleState(Um::Resize, tooltip, Um::IResize);
 		ss->set("ITEM_RESIZE");
 		if (!isNoteFrame() || !asNoteFrame()->isAutoWidth())
@@ -4802,7 +4822,7 @@ void PageItem::changeImageOffsetUndoAction()
 		QString olyString  = QString::number(oldLocalY * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 		QString nlxString  = QString::number(m_imageXOffset * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
 		QString nlyString  = QString::number(m_imageYOffset * unitRatio, 'f', unitPrecision) + " " + unitSuffix;
-		QString tooltip   =  QString(Um::ImageOffsetFromTo).arg(olxString).arg(olyString).arg(nlxString).arg(nlyString);
+		QString tooltip   =  QString(Um::ImageOffsetFromTo).arg(olxString, olyString, nlxString, nlyString);
 		SimpleState *ss = new SimpleState(Um::ImageOffset, tooltip, Um::IMove);
 		ss->set("IMAGE_OFFSET");
 		ss->set("OLD_IMAGEXOFFSET", oldLocalX);
@@ -4890,34 +4910,38 @@ void PageItem::restore(UndoState *state, bool isUndo)
 				restoreLineShade(ss, isUndo);
 			else if (ss->contains("DELETE_FRAMETEXT"))
 				restoreDeleteFrameText(ss, isUndo);
+			else if (ss->contains("DELETE_FRAMEPARA"))
+				restoreDeleteFrameParagraph(ss, isUndo);
 			else if (ss->contains("INSERT_FRAMETEXT"))
-				restoreInsertFrameText(ss,isUndo);
+				restoreInsertFrameText(ss, isUndo);
+			else if (ss->contains("INSERT_FRAMEPARA"))
+				restoreInsertFrameParagraph(ss, isUndo);
 			else if (ss->contains("LOREM_FRAMETEXT"))
-				restoreInsertFrameText(ss,isUndo);
+				restoreInsertFrameText(ss, isUndo);
 			else if (ss->contains("APPLY_CHARSTYLE"))
-				restoreCharStyle(ss,isUndo);
+				restoreCharStyle(ss, isUndo);
 			else if (ss->contains("SET_CHARSTYLE"))
-				restoreSetCharStyle(ss,isUndo);
+				restoreSetCharStyle(ss, isUndo);
 			else if (ss->contains("SET_PARASTYLE"))
-				restoreSetParagraphStyle(ss,isUndo);
+				restoreSetParagraphStyle(ss, isUndo);
 			else if (ss->contains("APPLY_PARASTYLE"))
-				restoreParagraphStyle(ss,isUndo);
+				restoreParagraphStyle(ss, isUndo);
 			else if (ss->contains("APPLY_DEFAULTPARASTYLE"))
-				restoreDefaultParagraphStyle(ss,isUndo);
+				restoreDefaultParagraphStyle(ss, isUndo);
 			else if (ss->contains("LEFT_TEXTFRAMEDIST"))
-				restoreLeftTextFrameDist(ss,isUndo);
+				restoreLeftTextFrameDist(ss, isUndo);
 			else if (ss->contains("RIGHT_TEXTFRAMEDIST"))
-				restoreRightTextFrameDist(ss,isUndo);
+				restoreRightTextFrameDist(ss, isUndo);
 			else if (ss->contains("TOP_TEXTFRAMEDIST"))
-				restoreTopTextFrameDist(ss,isUndo);
+				restoreTopTextFrameDist(ss, isUndo);
 			else if (ss->contains("BOTTOM_TEXTFRAMEDIST"))
-				restoreBottomTextFrameDist(ss,isUndo);
+				restoreBottomTextFrameDist(ss, isUndo);
 			else if (ss->contains("FIRSTLINEOFFSET"))
-				restoreFirstLineOffset(ss,isUndo);
+				restoreFirstLineOffset(ss, isUndo);
 			else if (ss->contains("PASTE_TEXT"))
-				restorePasteText(ss,isUndo);
+				restorePasteText(ss, isUndo);
 			else if (ss->contains("CORNER_RADIUS"))
-				restoreCornerRadius(ss,isUndo);
+				restoreCornerRadius(ss, isUndo);
 			else if (ss->contains("IMAGEFLIPH"))
 			{
 				select();
@@ -5051,15 +5075,15 @@ void PageItem::restore(UndoState *state, bool isUndo)
 			else if (ss->contains("APPLY_IMAGE_EFFECTS"))
 				restoreImageEffects(ss, isUndo);
 			else if (ss->contains("DROP_LINKS"))
-				restoreDropLinks(ss,isUndo);
+				restoreDropLinks(ss, isUndo);
 			else if (ss->contains("LINK_TEXT_FRAME"))
-				restoreLinkTextFrame(ss,isUndo);
+				restoreLinkTextFrame(ss, isUndo);
 			else if (ss->contains("UNLINK_TEXT_FRAME"))
-				restoreUnlinkTextFrame(ss,isUndo);
+				restoreUnlinkTextFrame(ss, isUndo);
 			else if (ss->contains("CLEAR_IMAGE"))
-				restoreClearImage(ss,isUndo);
+				restoreClearImage(ss, isUndo);
 			else if (ss->contains("PASTE_INLINE"))
-				restorePasteInline(ss,isUndo);
+				restorePasteInline(ss, isUndo);
 			else if (ss->contains("TRANSFORM"))
 				restoreTransform(ss, isUndo);
 			else if (ss->contains("PATH_OPERATION"))
@@ -6636,6 +6660,27 @@ void PageItem::restoreDeleteFrameText(SimpleState *ss, bool isUndo)
 	update();
 }
 
+void PageItem::restoreDeleteFrameParagraph(SimpleState *ss, bool isUndo)
+{
+	ScItemState<ParagraphStyle> *is = dynamic_cast<ScItemState<ParagraphStyle> *>(ss);
+	if (!is)
+		qFatal("PageItem::restoreDeleteFrameParagraph: dynamic cast failed");
+	int start = is->getInt("START");
+	if (isUndo)
+	{
+		itemText.insertChars(start, SpecialChars::PARSEP);
+		itemText.applyStyle(start, is->getItem());
+		invalid = true;
+		invalidateLayout();
+	}
+	else
+	{
+		itemText.select(start, 1);
+		asTextFrame()->deleteSelectedTextFromFrame();
+	}
+	update();
+}
+
 void PageItem::restoreInsertFrameText(SimpleState *ss, bool isUndo)
 {
 	QString text = ss->get("TEXT_STR");
@@ -6648,6 +6693,27 @@ void PageItem::restoreInsertFrameText(SimpleState *ss, bool isUndo)
 	}
 	else
 		itemText.insertChars(start, text);
+}
+
+void PageItem::restoreInsertFrameParagraph(SimpleState *ss, bool isUndo)
+{
+	ScItemState<ParagraphStyle> *is = dynamic_cast<ScItemState<ParagraphStyle> *>(ss);
+	if (!is)
+		qFatal("PageItem::restoreInsertFrameParagraph: dynamic cast failed");
+	int start = is->getInt("START");
+	if (isUndo)
+	{
+		itemText.select(start, 1);
+		asTextFrame()->deleteSelectedTextFromFrame();
+		itemText.applyStyle(start, is->getItem());
+	}
+	else
+	{
+		itemText.insertChars(start, SpecialChars::PARSEP);
+		invalid = true;
+		invalidateLayout();
+	}
+	update();
 }
 
 void PageItem::restoreCornerRadius(SimpleState *state, bool isUndo)
@@ -9603,7 +9669,7 @@ void PageItem::setExternalFile(QString val)
 	}
 }
 
-void PageItem::setFileIconPressed(QString val)
+void PageItem::setFileIconPressed(const QString& val)
 {
 	Pfile2 = val;
 	if (!Pfile2.isEmpty())
@@ -9614,7 +9680,7 @@ void PageItem::setFileIconPressed(QString val)
 	}
 }
 
-void PageItem::setFileIconRollover(QString val)
+void PageItem::setFileIconRollover(const QString& val)
 {
 	Pfile3 = val;
 	if (!Pfile3.isEmpty())
@@ -10285,7 +10351,7 @@ void PageItem::setFirstLineOffset(FirstLineOffsetPolicy flop)
 	}
 }
 
-void PageItem::setInlineData(QString data)
+void PageItem::setInlineData(const QString& data)
 {
 	QByteArray inlineImageData;
 	inlineImageData.append(data);
@@ -10326,7 +10392,7 @@ void PageItem::makeImageInline()
 	delete tempFile;
 }
 
-void PageItem::makeImageExternal(QString path)
+void PageItem::makeImageExternal(const QString& path)
 {
 	if ((isTempFile) && (isInlineImage) && (!path.isEmpty()))
 	{

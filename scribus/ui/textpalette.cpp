@@ -52,7 +52,6 @@ TextPalette::TextPalette( QWidget* parent, const char* name) : ScDockPalette( pa
 	m_unitRatio = 1.0;
 
 	setObjectName(QString::fromLocal8Bit(name));
-//	setObjectName(QString::fromLocal8Bit("PropertiesPalette"));
 ///	setSizePolicy( QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 	textPal = new PropertiesPalette_Text( this );
@@ -73,11 +72,16 @@ void TextPalette::closeEvent(QCloseEvent *closeEvent)
 
 void TextPalette::setMainWindow(ScribusMainWindow* mw)
 {
-	m_ScMW=mw;
-	QPoint p1 = mapToGlobal(pos());
+	m_ScMW = mw;
+
+	// For some reason, the mapToGlobal() / mapFromGlobal() roundtrip
+	// performed below does not give always good results, causing TP to
+	// not display in some situations. Moreover the reparenting is useless 
+	// as TP is already created with ScribusMainWindow as parent.
+	/*QPoint p1 = mapToGlobal(pos());
 	QPoint p2 = m_ScMW->mapFromGlobal(p1);
 	setParent(m_ScMW);
-	move(p2);
+	move(p2);*/
 
 	this->textPal->setMainWindow(mw);
 

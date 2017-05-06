@@ -168,7 +168,7 @@ void CanvasMode_EditMeshGradient::drawControlsMeshGradient(QPainter* psx, PageIt
 			else if (m_view->editStrokeGradient == 6)
 			{
 				if (isSelected)
-					psx->setPen(p14r);				
+					psx->setPen(p14r);
 				else
 					psx->setPen(p14w);
 				psx->drawPoint(QPointF(mp1.gridPoint.x(), mp1.gridPoint.y()));

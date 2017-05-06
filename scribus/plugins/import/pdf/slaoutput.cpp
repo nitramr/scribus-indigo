@@ -174,15 +174,26 @@ QString AnoOutputDev::getColor(GfxColorSpace *color_space, GfxColor *color, int 
 	else if (color_space->getMode() == csSeparation)
 	{
 		GfxCMYK cmyk;
-		color_space->getCMYK(color, &cmyk);
-		int Cc = qRound(colToDbl(cmyk.c) * 255);
-		int Mc = qRound(colToDbl(cmyk.m) * 255);
-		int Yc = qRound(colToDbl(cmyk.y) * 255);
-		int Kc = qRound(colToDbl(cmyk.k) * 255);
+		QString name = QString(((GfxSeparationColorSpace*)color_space)->getName()->getCString());
+		int Cc, Mc, Yc, Kc;
+		bool isRegistrationColor = (name == "All");
+		if (!isRegistrationColor)
+		{
+			color_space->getCMYK(color, &cmyk);
+			Cc = qRound(colToDbl(cmyk.c) * 255);
+			Mc = qRound(colToDbl(cmyk.m) * 255);
+			Yc = qRound(colToDbl(cmyk.y) * 255);
+			Kc = qRound(colToDbl(cmyk.k) * 255);
+		}
+		else
+		{
+			Cc = Mc = Yc = Kc = 255;
+			tmp.setRegistrationColor(true);
+			name = "Registration";
+		}
 		tmp.setColor(Cc, Mc, Yc, Kc);
 		tmp.setSpotColor(true);
-		QString nam = QString(((GfxSeparationColorSpace*)color_space)->getName()->getCString());
-		fNam = m_doc->PageColors.tryAddColor(nam, tmp);
+		fNam = m_doc->PageColors.tryAddColor(name, tmp);
 		*shade = qRound(colToDbl(color->c[0]) * 100);
 	}
 	else
@@ -2499,6 +2510,7 @@ void SlaOutputDev::drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str
 	mskStr->reset();
 	Guchar *mdest = 0;
 	unsigned char * mbuffer = new unsigned char[maskWidth * maskHeight];
+	memset(mbuffer, 0, maskWidth * maskHeight);
 	for (int y = 0; y < maskHeight; y++)
 	{
 		mdest = (Guchar *)(mbuffer + y * maskWidth);
@@ -2642,6 +2654,7 @@ void SlaOutputDev::drawMaskedImage(GfxState *state, Object *ref, Stream *str,  i
 	Guchar *mdest = 0;
 	int invert_bit = maskInvert ? 1 : 0;
 	unsigned char * mbuffer = new unsigned char[maskWidth * maskHeight];
+	memset(mbuffer, 0, maskWidth * maskHeight);
 	for (int y = 0; y < maskHeight; y++)
 	{
 		mdest = (Guchar *)(mbuffer + y * maskWidth);
@@ -3141,12 +3154,12 @@ void SlaOutputDev::updateFont(GfxState *state)
 	Object refObj, strObj;
 	GooString *fileName;
 	char *tmpBuf;
-	int tmpBufLen;
+	int tmpBufLen = 0;
 	int *codeToGID;
 	double *textMat;
 	double m11, m12, m21, m22, fontSize;
 	SplashCoord mat[4];
-	int n;
+	int n = 0;
 	int faceIndex = 0;
 	SplashCoord matrix[6];
 
@@ -3810,15 +3823,27 @@ QString SlaOutputDev::getColor(GfxColorSpace *color_space, GfxColor *color, int 
 	else if (color_space->getMode() == csSeparation)
 	{
 		GfxCMYK cmyk;
-		color_space->getCMYK(color, &cmyk);
-		int Cc = qRound(colToDbl(cmyk.c) * 255);
-		int Mc = qRound(colToDbl(cmyk.m) * 255);
-		int Yc = qRound(colToDbl(cmyk.y) * 255);
-		int Kc = qRound(colToDbl(cmyk.k) * 255);
+		QString name = QString(((GfxSeparationColorSpace*)color_space)->getName()->getCString());
+		int Cc, Mc, Yc, Kc;
+		bool isRegistrationColor = (name == "All");
+		if (!isRegistrationColor)
+		{
+			color_space->getCMYK(color, &cmyk);
+			Cc = qRound(colToDbl(cmyk.c) * 255);
+			Mc = qRound(colToDbl(cmyk.m) * 255);
+			Yc = qRound(colToDbl(cmyk.y) * 255);
+			Kc = qRound(colToDbl(cmyk.k) * 255);
+		}
+		else
+		{
+			Cc = Mc = Yc = Kc = 255;
+			tmp.setRegistrationColor(true);
+			name = "Registration";
+		}
 		tmp.setColor(Cc, Mc, Yc, Kc);
 		tmp.setSpotColor(true);
-		QString nam = QString(((GfxSeparationColorSpace*)color_space)->getName()->getCString());
-		fNam = m_doc->PageColors.tryAddColor(nam, tmp);
+
+		fNam = m_doc->PageColors.tryAddColor(name, tmp);
 		*shade = qRound(colToDbl(color->c[0]) * 100);
 	}
 	else

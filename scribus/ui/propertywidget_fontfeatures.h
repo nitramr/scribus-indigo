@@ -22,7 +22,7 @@ class PropertyWidget_FontFeatures : public QFrame, Ui::PropertyWidget_FontFeatur
 
 public:
 	PropertyWidget_FontFeatures(QWidget *parent);
-	~PropertyWidget_FontFeatures() {};
+	~PropertyWidget_FontFeatures() {}
 	void enableFeatures(QStringList fontFeatures);
 
 protected:
@@ -36,18 +36,23 @@ protected:
 	void setCurrentItem(PageItem *item);
 	virtual void changeEvent(QEvent *e);
 
+	quint64 featureFlags();
+
 public slots:
 	void setMainWindow(ScribusMainWindow *mw);
 	void setDoc(ScribusDoc *d);
 	void handleSelectionChanged();
 	void languageChange();
-	void unitChange() {};
+	void unitChange() {}
 	void showFontFeatures(QString s, QStringList availableFeatures);
 	void updateCharStyle(const CharStyle& charStyle);
 	void updateStyle(const ParagraphStyle& newCurrent);
 
 private slots:
 	void handlefontfeatures();
+
+signals:
+	void needsRelayout();
 };
 
 #endif

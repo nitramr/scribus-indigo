@@ -795,7 +795,7 @@ QCursor CanvasMode::modeCursor()
 			cursor = im->loadCursor("drawtable.png");
 			break;
 		case modeDrawRegularPolygon:
-			cursor = im->loadCursor("drawpolylineframe.png");
+			cursor = im->loadCursor("drawpolyline.png");
 			break;
 		case modeDrawLine:
 		case modeDrawBezierLine:
@@ -875,7 +875,7 @@ void CanvasMode::setModeCursor()
 			m_view->setCursor(im->loadCursor("drawtable.png"));
 			break;
 		case modeDrawRegularPolygon:
-			m_view->setCursor(im->loadCursor("drawpolylineframe.png"));
+			m_view->setCursor(im->loadCursor("drawpolyline.png"));
 			break;
 		case modeDrawLine:
 		case modeDrawBezierLine:
@@ -1054,7 +1054,7 @@ void CanvasMode::commonkeyPressEvent_NormalNodeEdit(QKeyEvent *e)
 {
 	int kk = e->key();
 	Qt::KeyboardModifiers buttonModifiers = e->modifiers();
-	QString uc = e->text();
+//	QString uc = e->text();
 	ScribusMainWindow* mainWindow = m_view->m_ScMW;
 	QList<QMdiSubWindow *> windows;
 	

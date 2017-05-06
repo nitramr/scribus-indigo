@@ -124,7 +124,7 @@ void PropertyWidget_ParEffect::fillNumerationsCombo()
 	QStringList numNames;
 	if (m_doc)
 	{
-		foreach (QString numName, m_doc->numerations.keys())
+		foreach (const QString& numName, m_doc->numerations.keys())
 			numNames.append(numName);
 		numNames.sort();
 	}
@@ -230,6 +230,8 @@ void PropertyWidget_ParEffect::fillPECombo()
 
 void PropertyWidget_ParEffect::updateStyle(const ParagraphStyle& newPStyle)
 {
+	int oldPeComboIndex = peCombo->currentIndex();
+
 	if (peCombo->currentIndex() && !newPStyle.hasBullet() && !newPStyle.hasDropCap() && !newPStyle.hasNum())
 	{
 		enableParEffect(false);
@@ -293,6 +295,9 @@ void PropertyWidget_ParEffect::updateStyle(const ParagraphStyle& newPStyle)
 	showCharStyle(newPStyle.peCharStyleName());
 
 	enableParEffect(enablePE);
+
+	if (oldPeComboIndex != peCombo->currentIndex())
+		emit needsRelayout();
 }
 
 void PropertyWidget_ParEffect::connectSignals()
@@ -373,6 +378,7 @@ void PropertyWidget_ParEffect::handleParEffectUse()
 {
 	if (!m_doc || !m_item)
 		return;
+
 	ParagraphStyle newStyle;
 	enableParEffect(peCombo->currentIndex() != 0);
 	if (peCombo->currentIndex() == 1)
@@ -421,6 +427,8 @@ void PropertyWidget_ParEffect::handleParEffectUse()
 	newStyle.setParEffectOffset(peOffset->value() / m_unitRatio);
 	newStyle.setParEffectIndent(peIndent->isChecked());
 	handleChanges(m_item, newStyle);
+
+	emit needsRelayout();
 }
 
 void PropertyWidget_ParEffect::handleBulletStr(QString bulStr)
@@ -610,7 +618,7 @@ void PropertyWidget_ParEffect::openEnhanced()
 	connect(m_enhanced, SIGNAL(paletteShown(bool)), bulletCharTableButton, SLOT(setChecked(bool)));
 	m_enhanced->setDoc(m_doc);
 	m_enhanced->setEnabled(true);
-	QString styleName = peCharStyleCombo->currentText();
+//	QString styleName = peCharStyleCombo->currentText();
 	setCurrentComboItem(m_enhanced->fontSelector, m_item->currentStyle().charStyle().font().scName());
 	m_enhanced->newFont(m_enhanced->fontSelector->currentIndex());
 	m_enhanced->show();
