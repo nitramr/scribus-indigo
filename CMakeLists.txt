@@ -64,7 +64,7 @@ project(scribus)
 set (VERSION_MAJOR "1")
 set (VERSION_MINOR "5")
 set (VERSION_PATCH "3")
-set (VERSION_SUFFIX "svn")
+set (VERSION_SUFFIX "")
 set (VERSION ${VERSION_MAJOR})
 if (VERSION_MINOR GREATER -1)
 	set (VERSION ${VERSION}.${VERSION_MINOR})
@@ -1021,14 +1021,10 @@ add_subdirectory(resources/translations)
 #Install our READMEs etc.
 install(FILES
 	AUTHORS
-	BUILDING
 	ChangeLog
 	COPYING
 	LINKS
-	NEWS
-	PACKAGING
 	README
-	TODO
 	TRANSLATION
 	DESTINATION ${DOCDIR}
 )
@@ -1113,12 +1109,12 @@ if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
 	set(CPACK_TOPLEVEL_TAG "")
 	set(CPACK_SOURCE_IGNORE_FILES
 		CMakeCache.txt
-		scribus-1.5.2.tar.bz2
-		scribus-1.5.2.tar.Z
-		scribus-1.5.2.tar.gz
-		scribus-1.5.2.svn.tar.bz2
-		scribus-1.5.2.svn.tar.Z
-		scribus-1.5.2.svn.tar.gz
+		scribus-1.5.3.tar.bz2
+		scribus-1.5.3.tar.Z
+		scribus-1.5.3.tar.gz
+		scribus-1.5.3.svn.tar.bz2
+		scribus-1.5.3.svn.tar.Z
+		scribus-1.5.3.svn.tar.gz
 		"~$"
 		"\\\\.cvsignore$"
 		"\\\\.o$"

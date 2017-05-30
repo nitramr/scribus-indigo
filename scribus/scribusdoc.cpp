@@ -4282,14 +4282,18 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 	QMap<QString,int> Really;
 	QList<PageItem*> allItems;
 
+	bool wasMasterPageMode = m_masterPageMode;
+
 	for (int i = 0; i < 2; ++i)
 	{
 		switch (i)
 		{
 			case 0:
+				setMasterPageMode(true); // Necessary to avoid crash if some relayouting is necessary
 				allItems = MasterItems;
 				break;
 			case 1:
+				setMasterPageMode(false);
 				allItems = DocItems;
 				break;
 		}
@@ -4304,6 +4308,8 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 			}
 			if ((it->itemType() == PageItem::TextFrame) || (it->itemType() == PageItem::PathText))
 			{
+				if (it->invalid)
+					it->layout();
 				QString fontName(it->itemText.defaultStyle().charStyle().font().replacementName());
 				Really.insert(fontName, UsedFonts[fontName]);
 				int start = it->firstInFrame();
@@ -4319,6 +4325,8 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 		}
 	}
 
+	setMasterPageMode(wasMasterPageMode);
+
 	allItems = FrameItems.values();
 	while (allItems.count() > 0)
 	{
@@ -4330,6 +4338,8 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 		}
 		if ((it->itemType() == PageItem::TextFrame) || (it->itemType() == PageItem::PathText))
 		{
+			if (it->invalid)
+				it->layout();
 			QString fontName(it->itemText.defaultStyle().charStyle().font().replacementName());
 			Really.insert(fontName, UsedFonts[fontName]);
 			int start = it->firstInFrame();
@@ -4343,7 +4353,6 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 			}
 		}
 	}
-
 	QMap<QString,int>::Iterator itfo, itnext;
 	for (itfo = UsedFonts.begin(); itfo != UsedFonts.end(); itfo = itnext)
 	{
@@ -4609,14 +4618,21 @@ void ScribusDoc::getUsedProfiles(ProfilesL& usedProfiles)
 	QList<PageItem*> allItems;
 	profileNames.append(m_docPrefsData.colorPrefs.DCMSset.DefaultSolidColorRGBProfile);
 	profileNames.append(m_docPrefsData.colorPrefs.DCMSset.DefaultSolidColorCMYKProfile);
-	if ( profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultImageRGBProfile) < 0 )
+	if (profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultImageRGBProfile) < 0 )
 		profileNames.append(m_docPrefsData.colorPrefs.DCMSset.DefaultImageRGBProfile);
-	if ( profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultImageCMYKProfile) < 0 )
+	if (profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultImageCMYKProfile) < 0 )
 		profileNames.append(m_docPrefsData.colorPrefs.DCMSset.DefaultImageCMYKProfile);
-	if ( profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultMonitorProfile) < 0 )
+	if (profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultMonitorProfile) < 0 )
 		profileNames.append(m_docPrefsData.colorPrefs.DCMSset.DefaultMonitorProfile);
-	if ( profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultPrinterProfile) < 0 )
+	if (profileNames.indexOf(m_docPrefsData.colorPrefs.DCMSset.DefaultPrinterProfile) < 0 )
 		profileNames.append(m_docPrefsData.colorPrefs.DCMSset.DefaultPrinterProfile);
+
+	if (profileNames.indexOf(m_docPrefsData.pdfPrefs.SolidProf) < 0)
+		profileNames.append(m_docPrefsData.pdfPrefs.SolidProf);
+	if (profileNames.indexOf(m_docPrefsData.pdfPrefs.ImageProf) < 0)
+		profileNames.append(m_docPrefsData.pdfPrefs.ImageProf);
+	if (profileNames.indexOf(m_docPrefsData.pdfPrefs.PrintProf) < 0)
+		profileNames.append(m_docPrefsData.pdfPrefs.PrintProf);
 	
 	for (int lc = 0; lc < 2; ++lc)
 	{

@@ -169,7 +169,7 @@ void PrefsManager::initDefaults()
 
 	appPrefs.uiPrefs.mouseMoveTimeout = 150;
 	appPrefs.uiPrefs.wheelJump = 40;
-	appPrefs.uiPrefs.style = "";
+	appPrefs.uiPrefs.style = "Scribus Dark";
 	/** Set Default window position and size to sane default values which should work on every screen */
 //	appPrefs.uiPrefs.mainWinSettings.xPosition = 0;
 //	appPrefs.uiPrefs.mainWinSettings.yPosition = 0;
@@ -188,7 +188,7 @@ void PrefsManager::initDefaults()
 	appPrefs.uiPrefs.useTabs = false;
 	appPrefs.uiPrefs.stickyTools = false;
 	appPrefs.uiPrefs.grayscaleIcons = false;
-	appPrefs.uiPrefs.iconSet = "1_5_0";
+	appPrefs.uiPrefs.iconSet = "Scribus 1.5.1 Light";
 	appPrefs.guidesPrefs.marginsShown = true;
 	appPrefs.guidesPrefs.framesShown = true;
 	appPrefs.guidesPrefs.layerMarkersShown = false;
@@ -206,10 +206,10 @@ void PrefsManager::initDefaults()
 	appPrefs.guidesPrefs.guideRad = 10;
 	appPrefs.guidesPrefs.minorGridSpacing = 20;
 	appPrefs.guidesPrefs.majorGridSpacing = 100;
-	appPrefs.guidesPrefs.minorGridColor = QColor(Qt::green);
-	appPrefs.guidesPrefs.majorGridColor = QColor(Qt::green);
-	appPrefs.guidesPrefs.marginColor = QColor(Qt::blue);
-	appPrefs.guidesPrefs.guideColor = QColor(Qt::darkBlue);
+	appPrefs.guidesPrefs.minorGridColor = QColor(205,222,135);
+	appPrefs.guidesPrefs.majorGridColor = QColor(205,222,135);
+	appPrefs.guidesPrefs.marginColor = QColor(255,85,135);
+	appPrefs.guidesPrefs.guideColor = QColor(229,128,255);
 	appPrefs.guidesPrefs.baselineGridColor = QColor(Qt::lightGray);
 	appPrefs.guidesPrefs.renderStackOrder.clear();
 	appPrefs.guidesPrefs.renderStackOrder << 2 << 0 << 4 << 1 << 3;
@@ -262,15 +262,17 @@ void PrefsManager::initDefaults()
 	appPrefs.opToolPrefs.dispY = 10.0;
 	appPrefs.opToolPrefs.constrain = 15.0;
 	appPrefs.displayPrefs.paperColor = QColor(Qt::white);
-	appPrefs.displayPrefs.scratchColor = qApp->palette().color(QPalette::Active, QPalette::Window);
+	appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
 	appPrefs.displayPrefs.showPageShadow = true;
 	appPrefs.displayPrefs.showVerifierWarningsOnCanvas = true;
 	appPrefs.displayPrefs.showAutosaveClockOnCanvas = false;
-	appPrefs.displayPrefs.frameColor = QColor(Qt::red);
+	appPrefs.displayPrefs.pathEditColor = QColor(55,171,200);
+	appPrefs.displayPrefs.pathEditHandleColor = QColor(255,85,135);
+	appPrefs.displayPrefs.frameColor = QColor(55,171,200);
 	appPrefs.displayPrefs.frameNormColor = QColor(Qt::black);
 	appPrefs.displayPrefs.frameGroupColor = QColor(Qt::darkCyan);
-	appPrefs.displayPrefs.frameLockColor = QColor(Qt::darkRed);
-	appPrefs.displayPrefs.frameLinkColor = QColor(Qt::red);
+	appPrefs.displayPrefs.frameLockColor = QColor(255, 120, 115);
+	appPrefs.displayPrefs.frameLinkColor = QColor(55,171,130);
 	appPrefs.displayPrefs.frameAnnotationColor = QColor(Qt::blue);
 	appPrefs.displayPrefs.pageBorderColor = QColor(Qt::red);
 	appPrefs.displayPrefs.controlCharColor = QColor(Qt::darkRed);
@@ -1465,6 +1467,8 @@ bool PrefsManager::WritePref(QString ho)
 	deDisplay.setAttribute("ShowPageShadow",static_cast<int>(appPrefs.displayPrefs.showPageShadow));
 	deDisplay.setAttribute("PageColor",appPrefs.displayPrefs.paperColor.name());
 	deDisplay.setAttribute("ScratchColor",appPrefs.displayPrefs.scratchColor.name());
+	deDisplay.setAttribute("PathEditColor",appPrefs.displayPrefs.pathEditColor.name());
+	deDisplay.setAttribute("PathEditHandleColor",appPrefs.displayPrefs.pathEditHandleColor.name());
 	deDisplay.setAttribute("FrameSelectedColor",appPrefs.displayPrefs.frameColor.name());
 	deDisplay.setAttribute("FrameNormColor",appPrefs.displayPrefs.frameNormColor.name());
 	deDisplay.setAttribute("FrameGroupColor",appPrefs.displayPrefs.frameGroupColor.name());
@@ -1963,7 +1967,7 @@ bool PrefsManager::ReadPref(QString ho)
 
 		if (dc.tagName()=="UI")
 		{
-			appPrefs.uiPrefs.style = dc.attribute("Theme","Default");
+			appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
 			appPrefs.uiPrefs.wheelJump = dc.attribute("ScrollWheelJump").toInt();
 			appPrefs.uiPrefs.mouseMoveTimeout = dc.attribute("MouseMoveTimeout", "150").toInt();
 			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
@@ -1975,7 +1979,7 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.useTabs = static_cast<bool>(dc.attribute("UseDocumentTabs", "0").toInt());
 			appPrefs.uiPrefs.stickyTools = static_cast<bool>(dc.attribute("StickyTools", "0").toInt());
 			appPrefs.uiPrefs.grayscaleIcons = static_cast<bool>(dc.attribute("UseGrayscaleIcons",0).toInt());
-			appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "1_5_0");
+			appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Light");
 		}
 
 		if (dc.tagName()=="DocumentSetup")
@@ -2028,14 +2032,16 @@ bool PrefsManager::ReadPref(QString ho)
 			if (dc.hasAttribute("ScratchColor"))
 				appPrefs.displayPrefs.scratchColor = QColor(dc.attribute("ScratchColor"));
 			else
-				appPrefs.displayPrefs.scratchColor = qApp->palette().color(QPalette::Active, QPalette::Window);
-			appPrefs.displayPrefs.frameColor = QColor(dc.attribute("FrameSelectedColor","#ff0000"));
+				appPrefs.displayPrefs.scratchColor = QColor(128,128,128);//qApp->palette().color(QPalette::Active, QPalette::Window);
+			appPrefs.displayPrefs.pathEditColor = QColor(dc.attribute("PathEditColor","#37abc8"));
+			appPrefs.displayPrefs.pathEditHandleColor = QColor(dc.attribute("PathEditHandleColor","#ff5587"));
+			appPrefs.displayPrefs.frameColor = QColor(dc.attribute("FrameSelectedColor","#37abc8"));
 			appPrefs.displayPrefs.frameNormColor = QColor(dc.attribute("FrameNormColor","#000000"));
 			appPrefs.displayPrefs.frameGroupColor = QColor(dc.attribute("FrameGroupColor","#008080"));
-			appPrefs.displayPrefs.frameLockColor = QColor(dc.attribute("FrameLockColor","#800000"));
-			appPrefs.displayPrefs.frameLinkColor = QColor(dc.attribute("FrameLinkColor","#ff0000"));
+			appPrefs.displayPrefs.frameLockColor = QColor(dc.attribute("FrameLockColor","#ff5587"));
+			appPrefs.displayPrefs.frameLinkColor = QColor(dc.attribute("FrameLinkColor","#37ab82"));
 			appPrefs.displayPrefs.frameAnnotationColor = QColor(dc.attribute("FrameAnnotationColor","#0000ff"));
-			appPrefs.displayPrefs.pageBorderColor = QColor(dc.attribute("PageBorderColor","#ff0000"));
+			appPrefs.displayPrefs.pageBorderColor = QColor(dc.attribute("PageBorderColor","#000000"));
 			appPrefs.displayPrefs.controlCharColor = QColor(dc.attribute("ControlCharColor","#800000"));
 			appPrefs.displayPrefs.marginColored = static_cast<bool>(dc.attribute("ShowMarginsFilled", "0").toInt());
 			appPrefs.displayPrefs.displayScale = qRound(ScCLocale::toDoubleC(dc.attribute("DisplayScale"), appPrefs.displayPrefs.displayScale)*72)/72.0;
