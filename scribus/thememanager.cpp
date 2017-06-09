@@ -223,18 +223,22 @@ void ThemeManager::readThemeConfigFiles()
 bool ThemeManager::setActiveFromPrefs(QString prefsSet)
 {
     //qDebug()<<"setting active from prefs to"<<prefsSet;
-    if (m_themeSets.contains(prefsSet))
+	if (m_themeSets.contains(prefsSet))
     {
         m_activeSetBasename=m_themeSets[prefsSet].baseName;
         m_activeSetVersion=m_themeSets[prefsSet].activeversion;
         return true;
     }
+
+	if(prefsSet.isEmpty()) return true;
+
     return false;
 }
 
 QString ThemeManager::baseNameForTranslation(QString transName)
 {
     QString name;
+
     foreach (ScIconSetData value, m_themeSets)
     {
         QMapIterator<QString, QString> nameValue(value.nameTranslations);
@@ -265,6 +269,7 @@ QStringList ThemeManager::pathList()
 QStringList ThemeManager::nameList(QString language)
 {
     QStringList names;
+
     foreach (ScIconSetData value, m_themeSets)
     {
         if (value.nameTranslations.contains(language))

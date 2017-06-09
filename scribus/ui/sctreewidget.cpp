@@ -170,12 +170,22 @@ QWidget* ScTreeWidget::widget(int index)
 
 void ScTreeWidget::setItemEnabled(int index, bool enable)
 {
+//	if ((index < 0) || (index >= topLevelItemCount()))
+//		return;
+//	if (enable)
+//		topLevelItem(index)->setHidden(false);
+//	else
+//		topLevelItem(index)->setHidden(true);
+//	QTreeWidgetItem *child = topLevelItem(index)->child(0);
+//	if (child != NULL)
+//		itemWidget(child, 0)->setEnabled(enable);
+
 	if ((index < 0) || (index >= topLevelItemCount()))
 		return;
 	if (enable)
-		topLevelItem(index)->setHidden(false);
+		topLevelItem(index)->setFlags(Qt::ItemIsEnabled);
 	else
-		topLevelItem(index)->setHidden(true);
+		topLevelItem(index)->setFlags(0);
 	QTreeWidgetItem *child = topLevelItem(index)->child(0);
 	if (child != NULL)
 		itemWidget(child, 0)->setEnabled(enable);

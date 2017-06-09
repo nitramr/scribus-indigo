@@ -34,7 +34,8 @@ Prefs_UserInterface::Prefs_UserInterface(QWidget* parent, ScribusDoc* doc)
 
 	// qt styles
 	QStringList styleList;
-	styleList= ThemeManager::instance()->nameList(ScQApp->currGUILanguage());//QStyleFactory::keys();
+	styleList<<"";
+	styleList+= ThemeManager::instance()->nameList(ScQApp->currGUILanguage());//QStyleFactory::keys();
 	themeComboBox->addItems(styleList);
 	QStringList iconSetList;
 	iconSetList=IconManager::instance()->nameList(ScQApp->currGUILanguage());

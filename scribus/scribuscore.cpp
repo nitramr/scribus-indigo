@@ -59,7 +59,7 @@ ScribusCore::ScribusCore() : QObject(), defaultEngine(colorMgmtEngineFactory.cre
 	m_SplashScreen = 0;
 	m_iconManager = 0;
 	m_undoManager = 0;
-        m_themeManager = 0;
+	m_themeManager = 0;
 	m_prefsManager = 0;
 
 	m_UseGUI = false;
@@ -168,9 +168,9 @@ int ScribusCore::initScribusCore(bool showSplash, bool showFontInfo, bool showPr
 	m_iconManager = IconManager::instance();
 	if (!m_iconManager->setup())
 		return EXIT_FAILURE;
-        m_themeManager = ThemeManager::instance();
-        if (!m_themeManager->setup())
-                return EXIT_FAILURE;
+	m_themeManager = ThemeManager::instance();
+	if (!m_themeManager->setup())
+		return EXIT_FAILURE;
 
 	// FIXME: Splash needs the prefs loaded by initDefaults() to know if it must force the image to grayscale
 	initSplash(showSplash);

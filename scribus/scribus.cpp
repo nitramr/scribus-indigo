@@ -525,7 +525,9 @@ void ScribusMainWindow::setStyleSheet()
     QString sTheme = PrefsManager().instance()->appPrefs.uiPrefs.style;
 	QRegularExpression re("(?<=url\\()[\\s]*+(.*)(?=\\))", QRegularExpression::MultilineOption);
 
-    if(sysTheme.contains(sTheme)){
+	// Load system themes
+	if(sysTheme.contains(sTheme)){
+
         qApp->setStyle(QStyleFactory::create(sTheme));
         QByteArray stylesheet;
         // load alternative styles if available
@@ -539,7 +541,14 @@ void ScribusMainWindow::setStyleSheet()
 			qApp->setStyleSheet(style);
         }
 
+	// Load custom themes
     }else{
+
+		// Skip custom themes if name is empty
+		if(sTheme.isEmpty()){
+			return;
+		}
+
 
         qApp->setStyle("Fusion");
 
@@ -6715,17 +6724,15 @@ void ScribusMainWindow::slotPrefsOrg()
 		if (oldPrefs.uiPrefs.language != newUILanguage || ScQApp->currGUILanguage()!=newUILanguage)
 			ScQApp->changeGUILanguage(newUILanguage);
 
-		/* TODO: load new css theme */
-		qApp->setStyle(QStyleFactory::create("Fusion"));
-
-//		QString newUIStyle = m_prefsManager->guiStyle();
-//		if (oldPrefs.uiPrefs.style != newUIStyle)
-//		{
-//			if (newUIStyle.isEmpty())
-//				qApp->setStyle(m_prefsManager->guiSystemStyle());
-//			else
-//				qApp->setStyle(QStyleFactory::create(newUIStyle));
-//		}
+		QString newUIStyle = m_prefsManager->guiStyle();
+		if (oldPrefs.uiPrefs.style != newUIStyle)
+		{
+			if (newUIStyle.isEmpty())
+				qApp->setStyle(m_prefsManager->guiSystemStyle());
+			else
+				qApp->setStyle(QStyleFactory::create(newUIStyle));
+				//qApp->setStyle(QStyleFactory::create("Fusion"));
+		}
 		int newUIFontSize = m_prefsManager->guiFontSize();
 		if (oldPrefs.uiPrefs.applicationFontSize != newUIFontSize)
 		{

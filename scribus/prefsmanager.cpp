@@ -169,7 +169,7 @@ void PrefsManager::initDefaults()
 
 	appPrefs.uiPrefs.mouseMoveTimeout = 150;
 	appPrefs.uiPrefs.wheelJump = 40;
-	appPrefs.uiPrefs.style = "Scribus Dark";
+	appPrefs.uiPrefs.style = "";
 	/** Set Default window position and size to sane default values which should work on every screen */
 //	appPrefs.uiPrefs.mainWinSettings.xPosition = 0;
 //	appPrefs.uiPrefs.mainWinSettings.yPosition = 0;
@@ -188,7 +188,7 @@ void PrefsManager::initDefaults()
 	appPrefs.uiPrefs.useTabs = false;
 	appPrefs.uiPrefs.stickyTools = false;
 	appPrefs.uiPrefs.grayscaleIcons = false;
-	appPrefs.uiPrefs.iconSet = "Scribus 1.5.1 Light";
+	appPrefs.uiPrefs.iconSet = "Scribus 1.5.1 Dark";
 	appPrefs.guidesPrefs.marginsShown = true;
 	appPrefs.guidesPrefs.framesShown = true;
 	appPrefs.guidesPrefs.layerMarkersShown = false;
@@ -1967,7 +1967,7 @@ bool PrefsManager::ReadPref(QString ho)
 
 		if (dc.tagName()=="UI")
 		{
-			appPrefs.uiPrefs.style = dc.attribute("Theme","Scribus Dark");
+			appPrefs.uiPrefs.style = dc.attribute("Theme","");
 			appPrefs.uiPrefs.wheelJump = dc.attribute("ScrollWheelJump").toInt();
 			appPrefs.uiPrefs.mouseMoveTimeout = dc.attribute("MouseMoveTimeout", "150").toInt();
 			appPrefs.uiPrefs.applicationFontSize = dc.attribute("ApplicationFontSize", "12").toInt();
@@ -1979,7 +1979,7 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.useTabs = static_cast<bool>(dc.attribute("UseDocumentTabs", "0").toInt());
 			appPrefs.uiPrefs.stickyTools = static_cast<bool>(dc.attribute("StickyTools", "0").toInt());
 			appPrefs.uiPrefs.grayscaleIcons = static_cast<bool>(dc.attribute("UseGrayscaleIcons",0).toInt());
-			appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Light");
+			appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Dark");
 		}
 
 		if (dc.tagName()=="DocumentSetup")
