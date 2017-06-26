@@ -54,13 +54,13 @@ libhunspell-dev
 libhyphen-dev
 liblcms2-dev
 libpodofo-dev
-libtiff-dev
+libtiff5-dev
 libxml2-dev
 python-all-dev
 zlib1g-dev
 libgraphicsmagick++1-dev
 libpoppler-dev
-ibpoppler-private-dev
+libpoppler-private-dev
 libcairo2-dev
 libwpg-dev
 libmspub-dev
