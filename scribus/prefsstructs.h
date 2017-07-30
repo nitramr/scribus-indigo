@@ -149,6 +149,7 @@ struct UIPrefs
 	bool stickyTools; //! Whether a user's tool section remains after use or the normal tool is reselected
 	bool grayscaleIcons; //! Show icons in toolbars as grayscale
 	QString iconSet; //! Icon set name
+	int iconSetBrightness; //! IconSet Brightness factor 0 - 100
 	WindowPrefs mainWinSettings;
 	QByteArray mainWinState;
 	QList<tabPrefs> tabbedPalettes;

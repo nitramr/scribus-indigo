@@ -189,6 +189,7 @@ void PrefsManager::initDefaults()
 	appPrefs.uiPrefs.stickyTools = false;
 	appPrefs.uiPrefs.grayscaleIcons = false;
 	appPrefs.uiPrefs.iconSet = "Scribus 1.5.1 Dark";
+	appPrefs.uiPrefs.iconSetBrightness = 0;
 	appPrefs.guidesPrefs.marginsShown = true;
 	appPrefs.guidesPrefs.framesShown = true;
 	appPrefs.guidesPrefs.layerMarkersShown = false;
@@ -1371,6 +1372,7 @@ bool PrefsManager::WritePref(QString ho)
 	dcUI.setAttribute("RecentDocumentCount", appPrefs.uiPrefs.recentDocCount);
 	dcUI.setAttribute("UseGrayscaleIcons", appPrefs.uiPrefs.grayscaleIcons);
 	dcUI.setAttribute("IconSet", appPrefs.uiPrefs.iconSet);
+	dcUI.setAttribute("IconSetBrightness", appPrefs.uiPrefs.iconSetBrightness);
 	elem.appendChild(dcUI);
 
 	QDomElement deDocumentSetup=docu.createElement("DocumentSetup");
@@ -1980,6 +1982,7 @@ bool PrefsManager::ReadPref(QString ho)
 			appPrefs.uiPrefs.stickyTools = static_cast<bool>(dc.attribute("StickyTools", "0").toInt());
 			appPrefs.uiPrefs.grayscaleIcons = static_cast<bool>(dc.attribute("UseGrayscaleIcons",0).toInt());
 			appPrefs.uiPrefs.iconSet = dc.attribute("IconSet", "Scribus 1.5.1 Dark");
+			appPrefs.uiPrefs.iconSetBrightness = dc.attribute("IconSetBrightness", "0").toInt();
 		}
 
 		if (dc.tagName()=="DocumentSetup")

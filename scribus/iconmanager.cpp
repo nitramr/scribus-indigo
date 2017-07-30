@@ -237,6 +237,7 @@ QPixmap IconManager::loadPixmap(const QString nam, bool forceUseColor, bool rtlF
 	QString iconFilePath(pathForIcon(nam));
 	QPixmap *pm = new QPixmap();
 
+	// Render SVG files to Pixmap
 	if(nam.endsWith(".svg")){
 		QSvgRenderer renderer(iconFilePath);
 		QSize svgSize(renderer.defaultSize());
@@ -246,7 +247,7 @@ QPixmap IconManager::loadPixmap(const QString nam, bool forceUseColor, bool rtlF
 		renderer.render(&painter);
 		*pm = pmsvg;
 
-	}else{
+	}else{ // Load regular image files
 		pm->load(iconFilePath);
 	}
 
@@ -254,8 +255,13 @@ QPixmap IconManager::loadPixmap(const QString nam, bool forceUseColor, bool rtlF
 		qWarning("Unable to load icon %s: Got null pixmap", iconFilePath.toLatin1().constData());
 //	else
 //		qDebug()<<"Successful icon load from"<<iconFilePath;
+
+	// Apply Color offset
+	iconBrightness(pm, PrefsManager::instance()->appPrefs.uiPrefs.iconSetBrightness);
+
 	if (PrefsManager::instance()->appPrefs.uiPrefs.grayscaleIcons && !forceUseColor)
 		iconToGrayscale(pm);
+
 	if (rtlFlip)
 	{
 		QTransform t;
@@ -283,6 +289,39 @@ void IconManager::iconToGrayscale(QPixmap* pm)
 	}
 	*pm=QPixmap::fromImage(qi);
 }
+
+void IconManager::iconBrightness(QPixmap* pm, int value)
+{
+	QImage qi(pm->toImage());
+	int h=qi.height();
+	int w=qi.width();
+	QRgb c_rgb;
+
+	value = qMin(qMax(value,0), 100);
+	double brightness = (double)value/100;
+
+	for (int i=0;i<w;++i)
+	{
+		for (int j=0;j<h;++j)
+		{
+			c_rgb=qi.pixel(i,j);
+			// change only gray scale colors
+			if(qRed(c_rgb) == qGreen(c_rgb) && qRed(c_rgb) == qBlue(c_rgb) && qGray(c_rgb) < 255 && qGray(c_rgb) > 0){
+
+
+				//Brightness range is in percent from default pixel gray value until 255
+				qi.setPixelColor(i, j, QColor(
+					qRound(qRed(c_rgb) + (255 - qRed(c_rgb)) * brightness ),
+					qRound(qGreen(c_rgb) + (255 - qGreen(c_rgb)) * brightness),
+					qRound(qBlue(c_rgb) + (255 - qBlue(c_rgb)) * brightness),
+					qAlpha(c_rgb)));
+			}
+		}
+	}
+
+	*pm=QPixmap::fromImage(qi);
+}
+
 
 bool IconManager::setActiveFromPrefs(QString prefsSet)
 {

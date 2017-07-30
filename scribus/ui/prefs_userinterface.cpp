@@ -55,6 +55,7 @@ void Prefs_UserInterface::languageChange()
 	languageComboBox->setToolTip( "<qt>" + tr( "Select your default language for Scribus to run with. Leave this blank to choose based on environment variables. You can still override this by passing a command line option when starting Scribus." )+"</qt>");
 	themeComboBox->setToolTip( "<qt>" + tr( "Choose the default window decoration and looks. Scribus inherits any available KDE or Qt themes, if Qt is configured to search KDE plugins." ) + "</qt>");
 	iconSetComboBox->setToolTip( "<qt>" + tr( "Choose the default icon set" ) + "</qt>");
+	iconSetBrightnessSpinBox->setToolTip( "<qt>" + tr( "Set brightness value in percent of icon set" ) + "</qt>");
 	useSmallWidgetsCheckBox->setToolTip( "<qt>" + tr( "Palette windows will use smaller (space savy) widgets. Requires application restart." ) + "</qt>");
 	recentDocumentsSpinBox->setToolTip( "<qt>" + tr( "Number of recently edited documents to show in the File menu" ) + "</qt>");
 	fontSizeMenuSpinBox->setToolTip( "<qt>" + tr( "Default font size for the menus and windows" ) + "</qt>");
@@ -72,6 +73,7 @@ void Prefs_UserInterface::restoreDefaults(struct ApplicationPrefs *prefsData)
 	setCurrentComboItem(languageComboBox, LanguageManager::instance()->getLangFromAbbrev(selectedGUILang));
 	setCurrentComboItem(themeComboBox, prefsData->uiPrefs.style);
 	setCurrentComboItem(iconSetComboBox, prefsData->uiPrefs.iconSet);
+	iconSetBrightnessSpinBox->setValue(prefsData->uiPrefs.iconSetBrightness);
 	fontSizeMenuSpinBox->setValue( prefsData->uiPrefs.applicationFontSize );
 	fontSizePaletteSpinBox->setValue( prefsData->uiPrefs.paletteFontSize);
 	wheelJumpSpinBox->setValue( prefsData->uiPrefs.wheelJump );
@@ -96,6 +98,7 @@ void Prefs_UserInterface::saveGuiToPrefs(struct ApplicationPrefs *prefsData) con
 	prefsData->uiPrefs.language=selectedGUILang;
 	prefsData->uiPrefs.style=ThemeManager::instance()->baseNameForTranslation(themeComboBox->currentText());
 	prefsData->uiPrefs.iconSet=IconManager::instance()->baseNameForTranslation(iconSetComboBox->currentText());
+	prefsData->uiPrefs.iconSetBrightness= iconSetBrightnessSpinBox->value();
 	prefsData->uiPrefs.applicationFontSize=fontSizeMenuSpinBox->value();
 	prefsData->uiPrefs.paletteFontSize=fontSizePaletteSpinBox->value();
 	prefsData->uiPrefs.wheelJump=wheelJumpSpinBox->value();
