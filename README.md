@@ -73,7 +73,6 @@ binutils
 python-tk
 qtdeclarative5-dev
 
-
 ### Cmake
 The best way to compile Scribus is via Cmake.  
 
