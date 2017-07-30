@@ -4353,6 +4353,39 @@ QMap<QString,int> ScribusDoc::reorganiseFonts()
 			}
 		}
 	}
+
+	QHash<QString, ScPattern>::const_iterator patIter;
+	for (patIter = docPatterns.begin(); patIter != docPatterns.end(); ++patIter)
+	{
+		const ScPattern& pat = patIter.value();
+		allItems = pat.items;
+		while (allItems.count() > 0)
+		{
+			PageItem *it = allItems.takeFirst();
+			if (it->isGroup() || it->isTable())
+			{
+				allItems = it->getItemList() + allItems;
+				continue;
+			}
+			if ((it->itemType() == PageItem::TextFrame) || (it->itemType() == PageItem::PathText))
+			{
+				if (it->invalid)
+					it->layout();
+				QString fontName(it->itemText.defaultStyle().charStyle().font().replacementName());
+				Really.insert(fontName, UsedFonts[fontName]);
+				int start = it->firstInFrame();
+				int stop = it->lastInFrame();
+				for (int e = start; e <= stop; ++e)
+				{
+					QString rep = it->itemText.charStyle(e).font().replacementName();
+					if (Really.contains(rep))
+						continue;
+					Really.insert(rep, UsedFonts[rep]);
+				}
+			}
+		}
+	}
+
 	QMap<QString,int>::Iterator itfo, itnext;
 	for (itfo = UsedFonts.begin(); itfo != UsedFonts.end(); itfo = itnext)
 	{
@@ -16201,8 +16234,10 @@ void ScribusDoc::itemSelection_UnlinkTextFrameAndKeepText( Selection *customSele
 	for (uint i = 0; i < selectedItemCount; ++i)
 	{
 		PageItem *currItem = itemSelection->itemAt(i);
-		if (currItem != NULL && currItem->asTextFrame() && (currItem->nextInChain() != NULL || currItem->prevInChain() != NULL))
-				currItem->unlinkWithText(cutText);
+		if (!currItem || !currItem->asTextFrame())
+			continue;
+		if (currItem->nextInChain() || currItem->prevInChain())
+			currItem->unlinkWithText(cutText);
 	}
 	regionsChanged()->update(QRectF());
 	changed();

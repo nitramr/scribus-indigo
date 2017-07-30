@@ -34,7 +34,7 @@ typedef std::pair<QString, QString> langPair;
 
 class SCRIBUS_API LanguageManager
 {
-	LanguageManager() {};
+	LanguageManager() {}
 	~LanguageManager();
 
 	void init(bool generateInstalledList = true);
@@ -65,6 +65,8 @@ public:
 	
 	const QString getHyphFilename(const QString& langAbbrev);
 	int langTableIndex(const QString& abbrev);
+
+	bool isAvailableTranslation(QString langAbbrev);
 
 private:
 	static LanguageManager* m_instance;

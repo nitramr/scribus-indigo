@@ -22,6 +22,7 @@ for which a new license (GPL+exception) is in place.
  ***************************************************************************/
 
 // include cmdvar.h first, as it pulls in <Python.h>
+#include "cmdannotations.h"
 #include "cmdvar.h"
 #include "cmdcell.h"
 #include "cmdcolor.h"
@@ -336,7 +337,7 @@ PyMethodDef scribus_methods[] = {
 	{const_cast<char*>("fileQuit"), scribus_filequit, METH_VARARGS, tr(scribus_filequit__doc__)},
 	{const_cast<char*>("flipObject"), scribus_flipobject, METH_VARARGS, tr(scribus_flipobject__doc__)},
 	{const_cast<char*>("getActiveLayer"), (PyCFunction)scribus_getactlayer, METH_NOARGS, tr(scribus_getactlayer__doc__)},
-	{const_cast<char*>("getAllObjects"), scribus_getallobj, METH_VARARGS, tr(scribus_getallobj__doc__)},
+	{const_cast<char*>("getAllObjects"), (PyCFunction)scribus_getallobj, METH_VARARGS|METH_KEYWORDS, tr(scribus_getallobj__doc__)},
 	{const_cast<char*>("getAllStyles"), (PyCFunction)scribus_getstylenames, METH_NOARGS, tr(scribus_getstylenames__doc__)},
 	{const_cast<char*>("getCharStyles"), (PyCFunction)scribus_getcharstylenames, METH_NOARGS, tr(scribus_getcharstylenames__doc__)},
 	{const_cast<char*>("getAllText"), scribus_gettext, METH_VARARGS, tr(scribus_gettext__doc__)},
@@ -530,6 +531,7 @@ PyMethodDef scribus_methods[] = {
 	{const_cast<char*>("dehyphenateText"), scribus_dehyphenatetext, METH_VARARGS, tr(scribus_dehyphenatetext__doc__)},
 	{const_cast<char*>("setScaleImageToFrame"), (PyCFunction)scribus_setscaleimagetoframe, METH_KEYWORDS, tr(scribus_setscaleimagetoframe__doc__)},
 	{const_cast<char*>("setStyle"), scribus_setstyle, METH_VARARGS, tr(scribus_setstyle__doc__)},
+	{const_cast<char*>("setCharacterStyle"), scribus_setcharstyle, METH_VARARGS, tr(scribus_setcharstyle__doc__) },
 	{const_cast<char*>("setTableStyle"), scribus_settablestyle, METH_VARARGS, tr(scribus_settablestyle__doc__)},
 	{const_cast<char*>("setTableLeftBorder"), scribus_settableleftborder, METH_VARARGS, tr(scribus_settableleftborder__doc__)},
 	{const_cast<char*>("setTableRightBorder"), scribus_settablerightborder, METH_VARARGS, tr(scribus_settablerightborder__doc__)},
@@ -572,6 +574,12 @@ PyMethodDef scribus_methods[] = {
 	// Internal methods - Not for public use
 	{const_cast<char*>("retval"), (PyCFunction)scribus_retval, METH_VARARGS, const_cast<char*>("Scribus internal.")},
 	{const_cast<char*>("getval"), (PyCFunction)scribus_getval, METH_NOARGS, const_cast<char*>("Scribus internal.")},
+	{const_cast<char*>("setLinkAnnotation"), scribus_setlinkannotation, METH_VARARGS,tr(scribus_setlinkannotation__doc__)},
+	{const_cast<char*>("setFileAnnotation"), (PyCFunction)scribus_setfileannotation, METH_VARARGS|METH_KEYWORDS,tr(scribus_setfileannotation__doc__)},
+	{const_cast<char*>("setURIAnnotation"), scribus_seturiannotation, METH_VARARGS,tr(scribus_seturiannotation__doc__)},
+	{const_cast<char*>("setTextAnnotation"), scribus_settextannotation, METH_VARARGS,tr(scribus_settextannotation__doc__)},
+	{const_cast<char*>("createPdfAnnotation"), scribus_createpdfannotation, METH_VARARGS,tr(scribus_createpdfannotation__doc__)},
+	{const_cast<char*>("isAnnotated"),(PyCFunction)scribus_isannotated, METH_VARARGS|METH_KEYWORDS,tr(scribus_isannotated__doc__)},
 	{NULL, (PyCFunction)(0), 0, NULL} /* sentinel */
 };
 

@@ -122,6 +122,9 @@ class PdfPainter: public TextLayoutPainter
 	uint m_PNr;
 	const ScPage* m_page;
 
+	QByteArray m_prevFontName;
+	int        m_prevFontSize;
+
 	QByteArray transformToStr(QTransform tr)
 	{
 		return FToStr(tr.m11()) + " " + FToStr(-tr.m12()) + " " + FToStr(-tr.m21()) + " " + FToStr(tr.m22()) + " " + FToStr(tr.dx()) + " " + FToStr(-tr.dy());
@@ -134,7 +137,8 @@ public:
 //		m_item(ite),
 		m_pdf(pdf),
 		m_PNr(num),
-		m_page(pag)
+		m_page(pag),
+		m_prevFontSize(-1)
 	{}
 
 	~PdfPainter() {}
@@ -196,10 +200,19 @@ public:
 					break;
 				}
 
-				if (fontNr == 65535)
-					m_glyphBuffer += pdfFont.name + " " + FToStr(fontSize()) + " Tf\n";
-				else
-					m_glyphBuffer += pdfFont.name + "S" + Pdf::toPdf(fontNr) + " " + FToStr(fontSize()) + " Tf\n";
+				QByteArray pdfFontName = pdfFont.name;
+				if (fontNr != 65535)
+				{
+					pdfFontName += "S";
+					pdfFontName += Pdf::toPdf(fontNr);
+				}
+
+				if ((pdfFontName != m_prevFontName) || (fontSize() != m_prevFontSize))
+				{
+					m_glyphBuffer += pdfFontName + " " + FToStr(fontSize()) + " Tf\n";
+					m_prevFontName = pdfFontName;
+					m_prevFontSize = fontSize();
+				}
 
 				if (!StrokeColor.isEmpty())
 					m_glyphBuffer += StrokeColor;
@@ -212,7 +225,6 @@ public:
 				transform.translate(x() + gl.xoffset + current_x , y() + gl.yoffset);
 				transform.scale(qMax(gl.scaleH, 0.1), qMax(gl.scaleV, 0.1));
 				m_glyphBuffer += transformToStr(transform) + " Tm\n";
-
 
 				if (pdfFont.method != Use_Type3 || !FillColor.isEmpty())
 				{
@@ -333,10 +345,19 @@ public:
 					break;
 				}
 
-				if (fontNr == 65535)
-					m_glyphBuffer += pdfFont.name + " " + FToStr(fontSize()) + " Tf\n";
-				else
-					m_glyphBuffer += pdfFont.name + "S" + Pdf::toPdf(fontNr) + " " + FToStr(fontSize()) + " Tf\n";
+				QByteArray pdfFontName = pdfFont.name;
+				if (fontNr != 65535)
+				{
+					pdfFontName += "S";
+					pdfFontName += Pdf::toPdf(fontNr);
+				}
+
+				if ((pdfFontName != m_prevFontName) || (fontSize() != m_prevFontSize))
+				{
+					m_glyphBuffer += pdfFontName + " " + FToStr(fontSize()) + " Tf\n";
+					m_prevFontName = pdfFontName;
+					m_prevFontSize = fontSize();
+				}
 
 				if (!StrokeColor.isEmpty())
 					m_glyphBuffer += StrokeColor;
@@ -478,6 +499,8 @@ public:
 		m_glyphBuffer += m_pathBuffer+"\n";
 		m_pathBuffer = "";
 
+		m_prevFontName.clear();
+		m_prevFontSize = -1;
 		m_glyphBuffer += "BT\n";
 	}
 };
@@ -9717,15 +9740,17 @@ bool PDFLibCore::PDF_EmbeddedPDF(PageItem* c, const QString& fn, double sx, doub
 			importedObjects[page->GetObject()->Reference()] = xObj;
 			writer.startObj(xObj);
 			PutDoc("<<\n/Type /XObject\n/Subtype /Form\n/FormType 1");
-			PoDoFo::PdfRect pagesize = page->GetPageSize();
+			PoDoFo::PdfRect pageRect   = page->GetArtBox(); // Because scimagedataloader_pdf use ArtBox
 			int rotation = page->GetRotation();
 			QTransform pageM;
-			pageM.scale(1.0/pagesize.GetWidth(), 1.0/pagesize.GetHeight());
-			pageM.rotate(-rotation);
-			PutDoc("\n/BBox [" + Pdf::toPdf(pagesize.GetLeft()));
-			PutDoc(" " + Pdf::toPdf(pagesize.GetBottom()));
-			PutDoc(" " + Pdf::toPdf(pagesize.GetLeft() + pagesize.GetWidth()));
-			PutDoc(" " + Pdf::toPdf(pagesize.GetBottom() + pagesize.GetHeight()));
+			pageM.translate(pageRect.GetLeft(), pageRect.GetBottom());
+			pageM.scale(pageRect.GetWidth(), pageRect.GetHeight());
+			pageM.rotate(rotation);
+			pageM = pageM.inverted();
+			PutDoc("\n/BBox [" + Pdf::toPdf(pageRect.GetLeft()));
+			PutDoc(" " + Pdf::toPdf(pageRect.GetBottom()));
+			PutDoc(" " + Pdf::toPdf(pageRect.GetLeft() + pageRect.GetWidth()));
+			PutDoc(" " + Pdf::toPdf(pageRect.GetBottom() + pageRect.GetHeight()));
 			PutDoc("]");
 			PutDoc("\n/Matrix [" + Pdf::toPdf(pageM.m11()) + " "
 								 + Pdf::toPdf(pageM.m12()) + " "
@@ -9738,7 +9763,7 @@ bool PDFLibCore::PDF_EmbeddedPDF(PageItem* c, const QString& fn, double sx, doub
 			else if (rotation == 180)
 				PutDoc("1 1");
 			else if (rotation == 270)
-				PutDoc(Pdf::toPdf(pagesize.GetHeight() / pagesize.GetWidth()) + " " + Pdf::toPdf(1.0 - 1.0 / (pagesize.GetHeight() / pagesize.GetWidth())));
+				PutDoc("1 0");
 			else
 				PutDoc("0 0");
 			PutDoc("]");
@@ -9821,14 +9846,14 @@ bool PDFLibCore::PDF_EmbeddedPDF(PageItem* c, const QString& fn, double sx, doub
 			imgInfo.ResNum = ResCount;
 			ResCount++;
 			// Avoid a divide-by-zero if width/height are less than 1 point:
-			imgInfo.Width  = qMax(1, (int) pagesize.GetWidth());
-			imgInfo.Height = qMax(1, (int) pagesize.GetHeight());
-			imgInfo.xa  = sx * pagesize.GetWidth()/imgInfo.Width;
-			imgInfo.ya  = sy * pagesize.GetHeight()/imgInfo.Height;
-			// Width/Height are integers and may not exactly equal pagesize.GetWidth()/
-			// pagesize.GetHeight(). Adjust scale factor to compensate for the difference.
-			imgInfo.sxa = sx * pagesize.GetWidth()/imgInfo.Width;
-			imgInfo.sya = sy * pagesize.GetHeight()/imgInfo.Height;
+			imgInfo.Width  = qMax(1, (int) pageRect.GetWidth());
+			imgInfo.Height = qMax(1, (int) pageRect.GetHeight());
+			imgInfo.xa  = sx * pageRect.GetWidth()/imgInfo.Width;
+			imgInfo.ya  = sy * pageRect.GetHeight()/imgInfo.Height;
+			// Width/Height are integers and may not exactly equal pageRect.GetWidth()/
+			// pageRect.GetHeight(). Adjust scale factor to compensate for the difference.
+			imgInfo.sxa = sx * pageRect.GetWidth()/imgInfo.Width;
+			imgInfo.sya = sy * pageRect.GetHeight()/imgInfo.Height;
 
 			return true;
 		}
@@ -9843,15 +9868,17 @@ bool PDFLibCore::PDF_EmbeddedPDF(PageItem* c, const QString& fn, double sx, doub
 			importedObjects[page->GetObject()->Reference()] = xObj;
 			writer.startObj(xObj);
 			PutDoc("<<\n/Type /XObject\n/Subtype /Form\n/FormType 1");
-			PoDoFo::PdfRect pagesize = page->GetPageSize();
+			PoDoFo::PdfRect pageRect = page->GetArtBox(); // Because scimagedataloader_pdf use ArtBox
 			int rotation = page->GetRotation();
 			QMatrix pageM;
-			pageM.scale(1.0/pagesize.GetWidth(), 1.0/pagesize.GetHeight());
-			pageM.rotate(-rotation);
-			PutDoc("\n/BBox [" + Pdf::toPdf(pagesize.GetLeft()));
-			PutDoc(" " + Pdf::toPdf(pagesize.GetBottom()));
-			PutDoc(" " + Pdf::toPdf(pagesize.GetLeft() + pagesize.GetWidth()));
-			PutDoc(" " + Pdf::toPdf(pagesize.GetBottom() + pagesize.GetHeight()));
+			pageM.translate(pageRect.GetLeft(), pageRect.GetBottom());
+			pageM.scale(pageRect.GetWidth(), pageRect.GetHeight());
+			pageM.rotate(rotation);
+			pageM = pageM.inverted();
+			PutDoc("\n/BBox [" + Pdf::toPdf(pageRect.GetLeft()));
+			PutDoc(" " + Pdf::toPdf(pageRect.GetBottom()));
+			PutDoc(" " + Pdf::toPdf(pageRect.GetLeft() + pageRect.GetWidth()));
+			PutDoc(" " + Pdf::toPdf(pageRect.GetBottom() + pageRect.GetHeight()));
 			PutDoc("]");
 			PutDoc("\n/Matrix [" + Pdf::toPdf(pageM.m11()) + " "
 								 + Pdf::toPdf(pageM.m12()) + " "
@@ -9864,7 +9891,7 @@ bool PDFLibCore::PDF_EmbeddedPDF(PageItem* c, const QString& fn, double sx, doub
 			else if (rotation == 180)
 				PutDoc("1 1");
 			else if (rotation == 270)
-				PutDoc(Pdf::toPdf(pagesize.GetHeight() / pagesize.GetWidth()) + " " + Pdf::toPdf(1.0 - 1.0 / (pagesize.GetHeight() / pagesize.GetWidth())));
+				PutDoc("1 0");
 			else
 				PutDoc("0 0");
 			PutDoc("]");
@@ -9962,14 +9989,14 @@ bool PDFLibCore::PDF_EmbeddedPDF(PageItem* c, const QString& fn, double sx, doub
 			imgInfo.ResNum = ResCount;
 			ResCount++;
 			// Avoid a divide-by-zero if width/height are less than 1 point:
-			imgInfo.Width  = qMax(1, (int) pagesize.GetWidth());
-			imgInfo.Height = qMax(1, (int) pagesize.GetHeight());
-			imgInfo.xa  = sx * pagesize.GetWidth()/imgInfo.Width;
-			imgInfo.ya  = sy * pagesize.GetHeight()/imgInfo.Height;
-			// Width/Height are integers and may not exactly equal pagesize.GetWidth()/
-			// pagesize.GetHeight(). Adjust scale factor to compensate for the difference.
-			imgInfo.sxa = sx * pagesize.GetWidth()/imgInfo.Width;
-			imgInfo.sya = sy * pagesize.GetHeight()/imgInfo.Height;
+			imgInfo.Width  = qMax(1, (int) pageRect.GetWidth());
+			imgInfo.Height = qMax(1, (int) pageRect.GetHeight());
+			imgInfo.xa  = sx * pageRect.GetWidth() / imgInfo.Width;
+			imgInfo.ya  = sy * pageRect.GetHeight() / imgInfo.Height;
+			// Width/Height are integers and may not exactly equal pageRect.GetWidth()/
+			// pageRect.GetHeight(). Adjust scale factor to compensate for the difference.
+			imgInfo.sxa = sx * pageRect.GetWidth() / imgInfo.Width;
+			imgInfo.sya = sy * pageRect.GetHeight() / imgInfo.Height;
 
 			return true;
 		}
@@ -10172,6 +10199,7 @@ bool PDFLibCore::PDF_Image(PageItem* c, const QString& fn, double sx, double sy,
 					opts.append( "-sProcessColorModel=/DeviceRGB" );
 				else
 					opts.append( "-sProcessColorModel=/DeviceCMYK" ); */
+				opts.append( "-dAutoRotatePages=/None" ); // #14289: otherwise EPS might come out rotated
 				if (convertPS2PDF(fn, tmpFile, opts) == 0)
 				{
 					imageLoaded = PDF_EmbeddedPDF(c, tmpFile, sx, sy, x, y, fromAN, ImInfo, fatalError);

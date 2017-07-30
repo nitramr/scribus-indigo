@@ -38,6 +38,7 @@ for which a new license (GPL+exception) is in place.
 #include "commonstrings.h"
 #include "filewatcher.h"
 #include "latexhelpers.h"
+#include "langmgr.h"
 #include "localemgr.h"
 #include "pagesize.h"
 #include "pagestructs.h"
@@ -182,6 +183,9 @@ void PrefsManager::initDefaults()
 	appPrefs.uiPrefs.mainWinState = QByteArray();
 	appPrefs.uiPrefs.RecentDocs.clear();
 	appPrefs.uiPrefs.recentDocCount = 5;
+	appPrefs.uiPrefs.language = ScQApp->currGUILanguage();
+	if (appPrefs.uiPrefs.language.isEmpty())
+		appPrefs.uiPrefs.language = "en_GB";
 	appPrefs.uiPrefs.showStartupDialog = true;
 	appPrefs.uiPrefs.showSplashOnStartup = true;
 	appPrefs.uiPrefs.useSmallWidgets = false;
@@ -516,26 +520,28 @@ void PrefsManager::initDefaults()
 void PrefsManager::initDefaultActionKeys()
 {
 	ActionManager::createDefaultShortcuts();
-	QMap<QString, QKeySequence > *map=ActionManager::defaultShortcuts();
-	for( QMap<QString, QKeySequence >::ConstIterator it = map->begin(); it!=map->end(); ++it )
+	QMap<QString, QKeySequence > *map = ActionManager::defaultShortcuts();
+	for (QMap<QString, QKeySequence >::ConstIterator it = map->begin(); it != map->end(); ++it)
 	{
-		appPrefs.keyShortcutPrefs.KeyActions[it.key()].actionName = it.key();
-		appPrefs.keyShortcutPrefs.KeyActions[it.key()].keySequence = it.value();
+		Keys& keyAction = appPrefs.keyShortcutPrefs.KeyActions[it.key()];
+		keyAction.actionName = it.key();
+		keyAction.keySequence = it.value();
 	}
 }
 
 void PrefsManager::applyLoadedShortCuts()
 {
+	QMap<QString, QPointer<ScrAction> > &actions = ScCore->primaryMainWindow()->scrActions;
+
 	for (QMap<QString,Keys>::Iterator it = appPrefs.keyShortcutPrefs.KeyActions.begin(); it != appPrefs.keyShortcutPrefs.KeyActions.end(); ++it )
 	{
-		if (!it.value().actionName.isEmpty())
-		{
-			if (ScCore->primaryMainWindow()->scrActions[it.value().actionName])
-			{
-				ScCore->primaryMainWindow()->scrActions[it.value().actionName]->setShortcut(it.value().keySequence);
-				ScCore->primaryMainWindow()->scrActions[it.value().actionName]->setToolTipFromTextAndShortcut();
-			}
-		}
+		if (it.value().actionName.isEmpty())
+			continue;
+		QPointer<ScrAction> action = actions.value(it.value().actionName, QPointer<ScrAction>());
+		if (action.isNull())
+			continue;
+		action->setShortcut(it.value().keySequence);
+		action->setToolTipFromTextAndShortcut();
 	}
 }
 
@@ -951,7 +957,21 @@ void PrefsManager::ReadPrefsXML()
 		PrefsContext* userprefsContext = prefsFile->getContext("user_preferences");
 		if (userprefsContext)
 		{
-			appPrefs.uiPrefs.language = userprefsContext->get("gui_language","");
+			QString guiLanguage = userprefsContext->get("gui_language", "");
+			if (!guiLanguage.isEmpty())
+				appPrefs.uiPrefs.language = guiLanguage;
+			if (appPrefs.uiPrefs.language.isEmpty())
+			{
+				appPrefs.uiPrefs.language = ScQApp->currGUILanguage();
+				if (appPrefs.uiPrefs.language.isEmpty())
+					appPrefs.uiPrefs.language = "en_GB"; // If we get here, Houston, we have a problem!
+			}
+			if (!LanguageManager::instance()->isAvailableTranslation(appPrefs.uiPrefs.language))
+			{
+				appPrefs.uiPrefs.language = ScQApp->currGUILanguage();
+				if (!LanguageManager::instance()->isAvailableTranslation(appPrefs.uiPrefs.language))
+					appPrefs.uiPrefs.language = "en_GB"; // If we get here, Houston, we have a problem!
+			}
 			appPrefs.uiPrefs.mainWinState = QByteArray::fromBase64(userprefsContext->get("mainwinstate","").toLatin1());
 			appPrefs.uiPrefs.tabbedPalettes.clear();
 			PrefsTable *tabsTable = userprefsContext->getTable("tabbedPalettes");
