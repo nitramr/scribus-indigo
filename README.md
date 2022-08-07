@@ -1,3 +1,6 @@
+# Project is no longer maintained
+Check latest status here: [Scribus-IndigoUI-Mockup](https://github.com/nitramr/Scribus-IndigoUI-Mockup)
+
 Scribus-Indigo [![Build Status](https://travis-ci.org/nitramr/scribus-indigo.svg?branch=master)](https://travis-ci.org/nitramr/scribus-indigo) [![forum-thread](https://img.shields.io/badge/forum--thread-scribus-orange.svg)](http://forums.scribus.net/index.php/topic,1617.0.html)
 ==============
 The Scribus-Indigo branch is an unofficial experimental user interface version of the original open source Scribus desktop publishing software. The project includes:
@@ -7,7 +10,8 @@ The Scribus-Indigo branch is an unofficial experimental user interface version o
 * workflow improvements
 
 ## Status
-This is a experimental build of the Scribus DTP software that introduces and integrates [indigoDock](https://github.com/nitramr/indigoDock) in to Scribus trunk. 
+~~This is a experimental build of the Scribus DTP software that introduces and integrates [indigoDock](https://github.com/nitramr/indigoDock) in to Scribus trunk.~~
+
 
 ## Snapshot
 
